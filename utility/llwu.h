@@ -216,7 +216,7 @@ extern "C" {
     
     static inline
     void llwu_reset_enable( void ) {
-        LLWU_RST = LLWU_RST_LLRSTE_MASK;
+        LLWU_RST = 0x02;//LLWU_RST_LLRSTE_MASK;
     }
 #ifdef __cplusplus
 }

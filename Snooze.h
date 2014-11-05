@@ -69,14 +69,6 @@ typedef enum {
     VLLS1,
     VLLS0
 } SLEEP_MODE;
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-    extern uint8_t test;
-#ifdef __cplusplus
-}
-#endif
 /****************************************************************************************/
 class SnoozeBlock {
 private:
