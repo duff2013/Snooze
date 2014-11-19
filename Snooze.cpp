@@ -65,32 +65,39 @@ void SnoozeClass::sleep( SnoozeBlock &configuration ) {
     cmp_set( &p->cmp_mask );
     digital_set( &p->digital_mask );
     lptmr_set( &p->lptmr_mask );
-    peripheral_disable( &p->setPeripheral.periph_off_mask );
     rtc_alarm_set( &p->rtc_mask );
     tsi_set( &p->tsi_mask );
     
     if ( mcg_mode( ) == BLPI ) {
+        peripheral_disable( &p->setPeripheral.periph_off_mask );
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { enter_wait(); }
+        peripheral_set( &p->setPeripheral.periph_off_mask );
     }
     else if ( mcg_mode( ) == BLPE ) {
+        peripheral_set( &p->setPeripheral.periph_off_mask );
         blpe_blpi( );
         enter_vlpr( 0 );// now safe to enter vlpr
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { enter_wait(); }
         exit_vlpr( );
         blpi_blpe( );
+        peripheral_set( &p->setPeripheral.periph_off_mask );
     }
     else {
+        usbDisable( );
+        peripheral_set( &p->setPeripheral.periph_off_mask );
         pee_blpi( );
         enter_vlpr( 0 );// now safe to enter vlpr
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { enter_wait( ); }
         exit_vlpr( );
         blpi_pee( );
+        peripheral_set( &p->setPeripheral.periph_off_mask );
+        usbEnable( );
     }
     rtc_disable( &p->rtc_mask );
     cmp_disable( &p->cmp_mask );
     lptmr_disable( &p->lptmr_mask );
     digital_disable( &p->digital_mask );
-    peripheral_set( &p->setPeripheral.periph_off_mask );
+    
     /*Serial.println( p->setPeripheral.periph_off_mask.SCGC4, BIN );
     Serial.println( p->setPeripheral.periph_off_mask.SCGC5, BIN );
     Serial.println( p->setPeripheral.periph_off_mask.SCGC6, BIN );
