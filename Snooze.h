@@ -34,7 +34,7 @@
 #endif
 
 #include "Arduino.h"
-
+#include "utility/lvd.h"
 #include "utility/mcg.h"
 #include "utility/smc.h"
 #include "utility/rtc.h"
@@ -78,12 +78,14 @@ typedef enum {
 class SnoozeBlock {
 private:
     friend class SnoozeClass;
+    typedef void* ISR;
     digital_mask_t      digital_mask;
     lptmr_mask_t        lptmr_mask;
     llwu_mask_t         llwu_mask;
     tsi_mask_t          tsi_mask;
     rtc_mask_t          rtc_mask;
     cmp_mask_t          cmp_mask;
+    lvd_mask_t          lvd_mask;
     /* Peripherals */
     union periph_t {
         peripheral_mask_t   periph_on_mask;
@@ -104,6 +106,8 @@ public:
     void setTimer( uint32_t period );
     /* RTC Config */
     void setAlarm( uint8_t hours, uint8_t minutes, uint8_t seconds );
+    /* Low Voltage Config */
+    void setLowVoltage( double threshold );
     /* Peripherals Config */
     periph_t setPeripheral;
 };

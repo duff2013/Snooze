@@ -22,8 +22,8 @@ void SnoozeBlock::pinMode( int pin, int mode, int val ) {
         llwu_configure_pin_mask( pin, val, &llwu_mask );
     }
     else if ( mode == TSI ) {
-        llwu_configure_modules_mask( LLWU_TSI_MOD, &llwu_mask );
         tsi_configure_pin_mask( pin, val, &tsi_mask );
+        llwu_configure_modules_mask( LLWU_TSI_MOD, &llwu_mask );
     }
 }
 
@@ -34,14 +34,18 @@ void SnoozeBlock::pinMode( int pin, int mode, int type, double val ) {
     }
 }
 
+void SnoozeBlock::setTimer( uint32_t period ) {
+    lptmr_configure_period_mask( period, &lptmr_mask );
+    llwu_configure_modules_mask( LLWU_LPTMR_MOD, &llwu_mask );
+}
+
 void SnoozeBlock::setAlarm( uint8_t hours, uint8_t minutes, uint8_t seconds ) {
     rtc_configure_alarm_mask( hours, minutes, seconds, &rtc_mask );
     llwu_configure_modules_mask( LLWU_RTCA_MOD, &llwu_mask );
 }
 
-void SnoozeBlock::setTimer( uint32_t period ) {
-    lptmr_configure_period_mask( period, &lptmr_mask );
-    llwu_configure_modules_mask( LLWU_LPTMR_MOD, &llwu_mask );
+void SnoozeBlock::setLowVoltage( double threshold ) {
+    
 }
 /*********************************************************************************************/
 SLEEP_MODE SnoozeClass::sleep_mode;
