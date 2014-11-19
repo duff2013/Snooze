@@ -39,6 +39,7 @@ typedef struct {
     uint8_t pin;
     uint8_t mode;
     uint8_t type;
+    bool state = false;
 } cmp_mask_t;
 /********************************************************************/
 #include "Arduino.h"
@@ -60,6 +61,7 @@ extern "C" {
         mask->mode = mode;
         mask->type = type;
         mask->threshold_crossing = threshold;
+        mask->state = true;
     }
     /*******************************************************************************
      *
@@ -72,6 +74,8 @@ extern "C" {
     
     static inline
     void cmp_set( cmp_mask_t *mask ) {
+        if ( mask->state == false ) return;
+        digitalWrite(LED_BUILTIN, HIGH);
         uint8_t _pin;
         SIM_SCGC4 |= SIM_SCGC4_CMP;
         CMP0_CR0 = 0x00;
@@ -112,10 +116,12 @@ extern "C" {
     
     static inline
     void cmp_disable( cmp_mask_t *mask ) {
+        if ( mask->state == false ) return;
         NVIC_DISABLE_IRQ(IRQ_CMP0);
         CMP0_CR1 = 0x00;
         CMP0_CR1 = 0x00;
         SIM_SCGC4 &= ~SIM_SCGC4_CMP;
+        mask->state = false;
     }
     /*******************************************************************************
      *
