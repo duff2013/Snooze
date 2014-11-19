@@ -1,6 +1,6 @@
 /***************************************
 * Sleep with pushbutton w/ pullup. 
-* expect IID of around 900uA.
+* expect IDD of around 900uA.
 ****************************************/
 #include <Snooze.h>
  
