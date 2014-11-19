@@ -291,8 +291,8 @@ extern "C" {
      *       adcEnable
      *
      *******************************************************************************/
-    static inline void adcEnable( void ) __attribute__((always_inline, unused));
-    static inline void adcEnable( void ) {
+    static void adcEnable( void ) __attribute__((always_inline, unused));
+    static void adcEnable( void ) {
         //if ((SIM_SCGC6 & SIM_SCGC6_ADC0) == 0x00) {
         if ( (BITBAND_U32(SIM_SCGC6, SIM_SCGC6_ADC0_BIT) ) == 0x00 ) {
             BITBAND_U32( SIM_SCGC6, SIM_SCGC6_ADC0_BIT ) = 0x01;
