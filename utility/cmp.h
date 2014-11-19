@@ -75,7 +75,6 @@ extern "C" {
     static inline
     void cmp_set( cmp_mask_t *mask ) {
         if ( mask->state == false ) return;
-        digitalWrite(LED_BUILTIN, HIGH);
         uint8_t _pin;
         SIM_SCGC4 |= SIM_SCGC4_CMP;
         CMP0_CR0 = 0x00;

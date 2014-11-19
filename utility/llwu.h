@@ -77,9 +77,7 @@ extern "C" {
         else if ( pin == 10 ) mask->PE3 |= LLWU_PE3_WUPE8 ( detect_type );
         else if ( pin == 11 ) mask->PE3 |= LLWU_PE3_WUPE10( detect_type );
         else if ( pin == 13 ) mask->PE3 |= LLWU_PE3_WUPE9 ( detect_type );
-        else if ( pin == 16 ) {
-            mask->PE2 |= LLWU_PE2_WUPE5 ( detect_type );
-        }
+        else if ( pin == 16 ) mask->PE2 |= LLWU_PE2_WUPE5 ( detect_type );
         else if ( pin == 21 ) mask->PE4 |= LLWU_PE4_WUPE15( detect_type );
         else if ( pin == 22 ) mask->PE2 |= LLWU_PE2_WUPE6 ( detect_type );
         else if ( pin == 26 ) mask->PE1 |= LLWU_PE1_WUPE0 ( detect_type );

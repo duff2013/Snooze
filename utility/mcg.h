@@ -10,16 +10,6 @@
 #include "kinetis.h"
 #include "kinetis_ext.h"
 /********************************************************************/
-// mcg defines
-/*#define BLPI 1
-#define FBI  2
-#define FEI  3
-#define FEE  4
-#define FBE  5
-#define BLPE 6
-#define PBE  7
-#define PEE  8*/
-
 /* MCG Modes */
 typedef enum {
     BLPI = 1,
