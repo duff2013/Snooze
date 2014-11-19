@@ -54,6 +54,10 @@ SnoozeClass::SnoozeClass( void ) {
     attachInterruptVector( IRQ_LPTMR, lptmrISR );
     attachInterruptVector( IRQ_RTC_ALARM, rtcISR );
     lptmr_init( );
+#if defined( USE_HIBERNATE )
+    volatile int n;
+    for (n = 0; n < F_CPU*1000000; n++);
+#endif
 }
 //---------------------------------------idle--------------------------------------------
 void SnoozeClass::idle( void ) {

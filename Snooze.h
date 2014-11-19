@@ -106,9 +106,6 @@ public:
     void setAlarm( uint8_t hours, uint8_t minutes, uint8_t seconds );
     /* Peripherals Config */
     periph_t setPeripheral;
-#if defined( USE_HIBERNATE )
-    delay(1000);
-#endif
 };
 /****************************************************************************************/
 class SnoozeClass {
