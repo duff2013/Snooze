@@ -1,9 +1,10 @@
 /***************************************
-* Sleep with pushbutton w/ pullup. 
+* sleep with pushbutton w/ pullup.
 * expect IDD of around 900uA.
 ****************************************/
 #include <Snooze.h>
- 
+
+/*** Must be global ***/
 SnoozeBlock config;
 
 void setup() {
@@ -11,7 +12,11 @@ void setup() {
   /****************************
   * define the configuration 
   * parameters for waking the
-  * teensy up. 
+  * teensy up. Any digital pin
+  * can be used.
+  *
+  * This will configure the pin
+  * like the normal pinMode will.
   *****************************/
   config.pinMode(0, INPUT_PULLUP, RISING);
 }
