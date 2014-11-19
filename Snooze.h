@@ -52,7 +52,12 @@
     that the mcu will not see any valid reprogram
     signal from the USB when in this sleep mode.
     Use this only when you verfied that your
-    program sleep works correctly with deepSleep! */
+    program sleep works correctly with deepSleep! 
+    
+    For your Teensy's saftey I choose to add a small
+    delay in the constructor to allow a small window
+    for reprogramming if you go straight to sleep.
+*/
 //#define USE_HIBERNATE
 
 /* extended pinMode types */
@@ -101,6 +106,9 @@ public:
     void setAlarm( uint8_t hours, uint8_t minutes, uint8_t seconds );
     /* Peripherals Config */
     periph_t setPeripheral;
+#if defined( USE_HIBERNATE )
+    delay(1000);
+#endif
 };
 /****************************************************************************************/
 class SnoozeClass {
