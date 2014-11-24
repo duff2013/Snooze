@@ -16,6 +16,8 @@ void setup() {
    * define the configuration 
    * parameters for waking the
    * teensy up.
+   * Only pins:
+   * 2,4,6,7,9,10,11,13,16,21,22,26,30,33
    *****************************/
   config.pinMode(21, INPUT_PULLUP, RISING);//pin, mode, type
   config.pinMode(22, INPUT_PULLUP, RISING);//pin, mode, type
