@@ -16,8 +16,9 @@ void setup() {
    * define the configuration 
    * parameters for waking the
    * teensy up.
-   * Only pins:
-   * 2,4,6,7,9,10,11,13,16,21,22,26,30,33
+   * Digtal pins: 2,4,6,7,9,10,11,13,16,21,22,26,30,33
+   * Touch Sense pins: 0,1,15,16,17,18,19,22,23,25,32,33
+   * Compare pins: 11,12
    *****************************/
   config.pinMode(21, INPUT_PULLUP, RISING);//pin, mode, type
   config.pinMode(22, INPUT_PULLUP, RISING);//pin, mode, type
