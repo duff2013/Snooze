@@ -18,6 +18,7 @@ hibernate	KEYWORD2
 setAlarm	KEYWORD2
 setTimer	KEYWORD2
 setPeripheral	KEYWORD2
+source	KEYWORD2
 #######################################
 # Instances (KEYWORD2)
 #######################################
