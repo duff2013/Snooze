@@ -224,7 +224,7 @@ void pbe_pee( void ) {
     while ( (MCG_S & MCG_S_CLKST_MASK) != MCG_S_CLKST( 0x03 ) ) ;
 }
 
-unsigned char mcg_mode( void ) {
+CLOCK_MODE mcg_mode( void ) {
     // check if in FEI mode
     if ( ( ( (MCG_S & MCG_S_CLKST_MASK) >> MCG_S_CLKST_SHIFT) == 0x00 ) &&     // check CLKS mux has selcted FLL output
         ( MCG_S & MCG_S_IREFST_MASK ) &&                                     // check FLL ref is internal ref clk

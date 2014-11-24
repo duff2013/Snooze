@@ -20,7 +20,7 @@ typedef enum {
     BLPE = 6,
     PBE  = 7,
     PEE  = 8
-} MCG_MODE;
+} CLOCK_MODE;
 
 /* CPU SPeeds */
 typedef enum {
@@ -46,8 +46,10 @@ typedef enum {
 
 typedef struct {
     SPEED cpu;
-    MCG_MODE mode;
+    CLOCK_MODE mode;
 }mcg_mask_t;
+
+//extern mcg_mask_t CLK_MODE;
 /********************************************************************/
 #ifdef __cplusplus
 extern "C" {
@@ -61,7 +63,7 @@ extern "C" {
     void pbe_pee ( void );
     void blpi_blpe( void );
     void blpe_blpi( void );
-    unsigned char mcg_mode( void );
+    CLOCK_MODE mcg_mode( void );
     void mcg_div( uint8_t cpu, uint8_t bus, uint8_t mem, uint32_t syst );
 #ifdef __cplusplus
 }

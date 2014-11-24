@@ -40,6 +40,7 @@
 #include "utility/rtc.h"
 #include "utility/cmp.h"
 #include "utility/tsi.h"
+#include "utility/util.h"
 #include "utility/llwu.h"
 #include "utility/lptmr.h"
 #include "utility/digital.h"
@@ -58,7 +59,7 @@
     delay in the constructor to allow a small window
     for reprogramming if you go straight to sleep.
 */
-//#define USE_HIBERNATE
+#define USE_HIBERNATE
 
 /* extended pinMode types */
 typedef enum {
@@ -115,18 +116,19 @@ public:
 class SnoozeClass {
 private:
     static SLEEP_MODE sleep_mode;
+    static CLOCK_MODE clock_mode;
     static void wakeupISR( void );
 public:
-    SnoozeClass     ( void );
+    SnoozeClass  ( void );
     /* helpers functions */
-    void debug      ( Stream *port );
-    void source     ( void );
+    void debug   ( Stream *port );
+    int source   ( void );
     /* sleep functions */
-    void idle       ( void );
-    void sleep      ( SnoozeBlock &configuration );
-    void deepSleep  ( SnoozeBlock &configuration, SLEEP_MODE mode = LLS );
+    void idle    ( void );
+    int sleep    ( SnoozeBlock &configuration );
+    int deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode = LLS );
 #if defined( USE_HIBERNATE )
-    void hibernate  ( SnoozeBlock &configuration, SLEEP_MODE mode = LLS );
+    int hibernate( SnoozeBlock &configuration, SLEEP_MODE mode = LLS );
 #endif
 };
 

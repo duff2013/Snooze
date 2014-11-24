@@ -146,7 +146,7 @@ extern "C" {
     
     static inline
     void llwu_set( llwu_mask_t *mask ) {
-        //digitalWriteFast(LED_BUILTIN, HIGH);
+        NVIC_ENABLE_IRQ( IRQ_LLWU );
         LLWU_PE1 = mask->PE1;
         LLWU_PE2 = mask->PE2;
         LLWU_PE3 = mask->PE3;
@@ -164,13 +164,51 @@ extern "C" {
     
     static inline
     uint32_t llwu_clear_flags( void ) {
-        uint32_t flag = (LLWU_F1 | LLWU_F2<<8 | LLWU_F3<<16);
+        uint32_t flag = ( LLWU_F1 | LLWU_F2<<8 | LLWU_F3<<16 );
         LLWU_F1 = 0xFF;
         LLWU_F2 = 0xFF;
         LLWU_F3 = 0xFF;
         LLWU_FILT1 = 0x80;
         LLWU_FILT2 = 0x80;
         return flag;
+    }
+    /*******************************************************************************
+     *
+     *       llwu_disable -
+     *
+     *******************************************************************************/
+    static inline
+    void llwu_disable( void )
+    __attribute__((always_inline, unused));
+    
+    static inline
+    void llwu_disable( void ) {
+        LLWU_PE1 = 0;
+        LLWU_PE2 = 0;
+        LLWU_PE3 = 0;
+        LLWU_PE4 = 0;
+        LLWU_ME  = 0;
+        if      ( llwuFlag & LLWU_F1_WUF0_MASK ) wakeupSource = 26;
+        else if ( llwuFlag & LLWU_F1_WUF3_MASK ) wakeupSource = 33;
+        else if ( llwuFlag & LLWU_F1_WUF4_MASK ) wakeupSource = 4;
+        else if ( llwuFlag & LLWU_F1_WUF5_MASK ) wakeupSource = 16;
+        else if ( llwuFlag & LLWU_F1_WUF6_MASK ) wakeupSource = 22;
+        else if ( llwuFlag & LLWU_F1_WUF7_MASK ) wakeupSource = 9;
+        
+        else if ( (llwuFlag>>8) & LLWU_F2_WUF8_MASK  ) wakeupSource = 10;
+        else if ( (llwuFlag>>8) & LLWU_F2_WUF9_MASK  ) wakeupSource = 13;
+        else if ( (llwuFlag>>8) & LLWU_F2_WUF10_MASK ) wakeupSource = 11;
+        else if ( (llwuFlag>>8) & LLWU_F2_WUF11_MASK ) wakeupSource = 30;
+        else if ( (llwuFlag>>8) & LLWU_F2_WUF12_MASK ) wakeupSource = 2;
+        else if ( (llwuFlag>>8) & LLWU_F2_WUF13_MASK ) wakeupSource = 7;
+        else if ( (llwuFlag>>8) & LLWU_F2_WUF14_MASK ) wakeupSource = 6;
+        else if ( (llwuFlag>>8) & LLWU_F2_WUF15_MASK ) wakeupSource = 21;
+        
+        else if ( (llwuFlag>>16) & LLWU_ME_WUME0_MASK ) wakeupSource = 36;
+        else if ( (llwuFlag>>16) & LLWU_ME_WUME1_MASK ) wakeupSource = 34;
+        else if ( (llwuFlag>>16) & LLWU_ME_WUME4_MASK ) wakeupSource = 37;
+        else if ( (llwuFlag>>16) & LLWU_ME_WUME5_MASK ) wakeupSource = 35;
+        llwuFlag = 0;
     }
     /*******************************************************************************
      *
@@ -215,6 +253,19 @@ extern "C" {
     static inline
     void llwu_reset_enable( void ) {
         LLWU_RST = 0x02;//LLWU_RST_LLRSTE_MASK;
+    }
+    /*******************************************************************************
+     *
+     *       startup_early_hook -
+     *
+     *******************************************************************************/
+    void startup_early_hook() __attribute__ ((weak));
+    void startup_early_hook() {
+        WDOG_STCTRLH = WDOG_STCTRLH_ALLOWUPDATE;
+        if ( PMC_REGSC & PMC_REGSC_ACKISO ) {
+            llwuFlag = llwu_clear_flags( );// clear flags
+            llwu_disable( );
+        }
     }
 #ifdef __cplusplus
 }

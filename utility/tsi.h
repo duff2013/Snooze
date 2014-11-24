@@ -7,10 +7,13 @@
  *******************************************************************************/
 #ifndef __TSI_H__
 #define __TSI_H__
-/********************************************************************/
+/*******************************************************************************/
+#include <utility/util.h>
+
 typedef struct {
     uint8_t  pin = 0x03;
     uint16_t threshold;
+    bool state = false;
 } tsi_mask_t;
 /********************************************************************/
 static const uint8_t tsi_pins[] = {
@@ -37,6 +40,22 @@ extern "C" {
     void tsi_configure_pin_mask( uint8_t pin, uint16_t threshold, tsi_mask_t *mask ) {
         mask->pin = pin;
         mask->threshold = threshold;
+        mask->state = true;
+    }
+    /*******************************************************************************
+     *
+     *       tsiISR
+     *
+     *******************************************************************************/
+    static inline
+    void tsiISR( void )
+    __attribute__((always_inline, unused));
+    
+    static inline
+    void tsiISR( void ) {
+        if( !(SIM_SCGC5 & SIM_SCGC5_TSI) ) return;
+        TSI0_GENCS |= TSI_GENCS_OUTRGF;
+        TSI0_GENCS |= TSI_GENCS_EOSF;
     }
     /*******************************************************************************
      *
@@ -49,13 +68,16 @@ extern "C" {
     
     static inline
     void tsi_set( tsi_mask_t *mask ) {
-        
+        if ( mask->state == false ) return;
+        attachInterruptVector( IRQ_TSI, tsiISR );
         uint8_t pin = mask->pin;
         uint16_t threshold = mask->threshold;
         
         if ( tsi_pins[pin] == 255 ) return;
         
         SIM_SCGC5 |= SIM_SCGC5_TSI;
+        
+        TSI0_GENCS = 0;
         
         TSI0_THRESHOLD = threshold;
         
@@ -81,19 +103,21 @@ extern "C" {
         
         TSI0_GENCS |= TSI_GENCS_OUTRGF;   //Clear all pending flags
         TSI0_GENCS |= TSI_GENCS_EOSF;
-        
+        NVIC_ENABLE_IRQ( IRQ_TSI );
     }
     /*******************************************************************************
      *
-     *       tsi_stop
+     *       tsi_disable
      *
      *******************************************************************************/
     static inline
-    void tsi_disable( void )
+    void tsi_disable( tsi_mask_t *mask )
     __attribute__((always_inline, unused));
     
-    static inline void tsi_disable( void ) {
-        if ( !(SIM_SCGC5 & SIM_SCGC5_TSI) ) return;
+    static inline
+    void tsi_disable( tsi_mask_t *mask ) {
+        if ( mask->state == false ) return;
+        detachInterruptVector( IRQ_TSI );
         TSI0_GENCS |= TSI_GENCS_OUTRGF;
         TSI0_GENCS |= TSI_GENCS_EOSF;
         TSI0_GENCS &= ~TSI_GENCS_TSIEN;

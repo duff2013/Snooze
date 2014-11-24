@@ -7,11 +7,14 @@
  *******************************************************************************/
 #ifndef __RTC_H__
 #define __RTC_H__
-/********************************************************************/
+/*******************************************************************************/
+#include <utility/util.h>
+
 typedef struct {
     time_t alarm;
+    bool state = false;
 }rtc_mask_t;
-/********************************************************************/
+/*******************************************************************************/
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -27,6 +30,7 @@ extern "C" {
     static inline
     void rtc_configure_alarm_mask( uint8_t hours, uint8_t minutes, uint8_t seconds, rtc_mask_t *mask ) {
         mask->alarm = hours*3600 + minutes*60 + seconds;
+        mask->state = true;
     }
     /*******************************************************************************
      *
@@ -43,6 +47,21 @@ extern "C" {
     }
     /*******************************************************************************
      *
+     *       rtcISR
+     *
+     *******************************************************************************/
+    static inline
+    void rtcISR( void )
+    __attribute__((always_inline, unused));
+    
+    static inline
+    void rtcISR( void ) {
+        if ( !(SIM_SCGC6 & SIM_SCGC6_RTC) ) return;
+        RTC_TAR = RTC_TSR+1;
+        wakeupSource = 35;
+    }
+    /*******************************************************************************
+     *
      *       rtc_alarm_set
      *
      *******************************************************************************/
@@ -52,7 +71,8 @@ extern "C" {
     
     static inline
     void rtc_alarm_set( rtc_mask_t *mask ) {
-        if ( mask->alarm == 0 ) return;
+        if ( mask->state == false ) return;
+        attachInterruptVector( IRQ_RTC_ALARM, rtcISR );
         SIM_SCGC6 |= SIM_SCGC6_RTC;
         RTC_TAR = rtc_get( ) + ( mask->alarm - 1 );
         RTC_IER = RTC_IER_TAIE_MASK;
@@ -69,23 +89,10 @@ extern "C" {
     
     static inline
     void rtc_disable( rtc_mask_t *mask ) {
-        if ( mask->alarm == 0 ) return;
+        if (mask->state == false ) return;
+        detachInterruptVector(IRQ_RTC_ALARM);
         RTC_IER = 0;
         NVIC_DISABLE_IRQ(IRQ_RTC_ALARM);
-    }
-    /*******************************************************************************
-     *
-     *       rtcISR
-     *
-     *******************************************************************************/
-    static inline
-    void rtcISR( void )
-    __attribute__((always_inline, unused));
-    
-    static inline
-    void rtcISR( void ) {
-        if ( !(SIM_SCGC6 & SIM_SCGC6_RTC) ) return;
-        RTC_TAR = RTC_TSR+1;
     }
 #ifdef __cplusplus
 }
