@@ -69,7 +69,7 @@ extern "C" {
     static inline
     void tsi_set( tsi_mask_t *mask ) {
         if ( mask->state == false ) return;
-        attachInterruptVector( IRQ_TSI, tsiISR );
+        if ( enable_periph_irq ) attachInterruptVector( IRQ_TSI, tsiISR );
         uint8_t pin = mask->pin;
         uint16_t threshold = mask->threshold;
         
@@ -103,7 +103,7 @@ extern "C" {
         
         TSI0_GENCS |= TSI_GENCS_OUTRGF;   //Clear all pending flags
         TSI0_GENCS |= TSI_GENCS_EOSF;
-        NVIC_ENABLE_IRQ( IRQ_TSI );
+        if ( enable_periph_irq ) NVIC_ENABLE_IRQ( IRQ_TSI );
     }
     /*******************************************************************************
      *
@@ -117,7 +117,7 @@ extern "C" {
     static inline
     void tsi_disable( tsi_mask_t *mask ) {
         if ( mask->state == false ) return;
-        detachInterruptVector( IRQ_TSI );
+        if ( enable_periph_irq ) detachInterruptVector( IRQ_TSI );
         TSI0_GENCS |= TSI_GENCS_OUTRGF;
         TSI0_GENCS |= TSI_GENCS_EOSF;
         TSI0_GENCS &= ~TSI_GENCS_TSIEN;

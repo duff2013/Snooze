@@ -82,9 +82,9 @@ extern "C" {
     static inline
     void lptmr_set( lptmr_mask_t *mask ) {
         if ( mask->state == false ) return;
-        attachInterruptVector( IRQ_LPTMR, lptmrISR );
+        if ( enable_periph_irq ) attachInterruptVector( IRQ_LPTMR, lptmrISR );
         SIM_SCGC5 |= SIM_SCGC5_LPTIMER;
-        NVIC_ENABLE_IRQ(IRQ_LPTMR);
+        if ( enable_periph_irq ) NVIC_ENABLE_IRQ(IRQ_LPTMR);
         LPTMR0_CSR = LPTMR_CSR_TIE | LPTMR_CSR_TCF;
         LPTMR0_CMR = mask->period;
         LPTMR0_CSR |= LPTMR_CSR_TEN;
@@ -102,8 +102,8 @@ extern "C" {
     void lptmr_disable( lptmr_mask_t *mask ) {
         if ( mask->state == false ) return;
         SIM_SCGC5 &= ~SIM_SCGC5_LPTIMER;
-        NVIC_DISABLE_IRQ( IRQ_LPTMR );
-        detachInterruptVector( IRQ_LPTMR );
+        if ( enable_periph_irq ) NVIC_DISABLE_IRQ( IRQ_LPTMR );
+        if ( enable_periph_irq ) detachInterruptVector( IRQ_LPTMR );
     }
 #ifdef __cplusplus
 }

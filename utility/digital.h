@@ -112,11 +112,13 @@ extern "C" {
     static inline
     void digital_set( digital_mask_t *mask ) {
         if ( mask->state = false ) return;
-        attachInterruptVector( IRQ_PORTA, digitalISR );
-        attachInterruptVector( IRQ_PORTB, digitalISR );
-        attachInterruptVector( IRQ_PORTC, digitalISR );
-        attachInterruptVector( IRQ_PORTD, digitalISR );
-        attachInterruptVector( IRQ_PORTE, digitalISR );
+        if ( enable_periph_irq ) {
+            attachInterruptVector( IRQ_PORTA, digitalISR );
+            attachInterruptVector( IRQ_PORTB, digitalISR );
+            attachInterruptVector( IRQ_PORTC, digitalISR );
+            attachInterruptVector( IRQ_PORTD, digitalISR );
+            attachInterruptVector( IRQ_PORTE, digitalISR );
+        }
         uint64_t _pin = mask->pin;
         while ( __builtin_popcountll( _pin ) ) {
             int pin = 63 - __builtin_clzll( _pin );
@@ -129,7 +131,7 @@ extern "C" {
             if ( mode == 0 ) *config = PORT_PCR_MUX( 1 );
             else *config = PORT_PCR_MUX( 1 ) | PORT_PCR_PE | PORT_PCR_PS;
 
-            attachInterrupt(pin, digitalISR, type);
+            if ( enable_periph_irq ) attachInterrupt(pin, digitalISR, type);
             _pin &= ~( (uint64_t)1<<pin );
         }
     }
@@ -137,7 +139,7 @@ extern "C" {
      *
      *       digital_disable
      *
-     *******************************************************************************/
+     ******************************************************************************/
     static inline
     void digital_disable( digital_mask_t *mask )
     __attribute__((always_inline, unused));
@@ -145,15 +147,17 @@ extern "C" {
     static inline
     void digital_disable( digital_mask_t *mask ) {
         if ( mask->state = false ) return;
-        detachInterruptVector( IRQ_PORTA );
-        detachInterruptVector( IRQ_PORTB );
-        detachInterruptVector( IRQ_PORTC );
-        detachInterruptVector( IRQ_PORTD );
-        detachInterruptVector( IRQ_PORTE );
+        if (  enable_periph_irq ) {
+            detachInterruptVector( IRQ_PORTA );
+            detachInterruptVector( IRQ_PORTB );
+            detachInterruptVector( IRQ_PORTC );
+            detachInterruptVector( IRQ_PORTD );
+            detachInterruptVector( IRQ_PORTE );
+        }
         uint64_t _pin = mask->pin;
         while ( __builtin_popcountll( _pin ) ) {
             int pin = 63 - __builtin_clzll( _pin );
-            detachInterrupt(pin);
+            if (  enable_periph_irq) detachInterrupt( pin );
             _pin &= ~( (uint64_t)1<<pin );
         }
     }

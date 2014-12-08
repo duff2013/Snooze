@@ -56,7 +56,7 @@ extern "C" {
     
     static inline
     void rtcISR( void ) {
-        if ( !(SIM_SCGC6 & SIM_SCGC6_RTC) ) return;
+        //if ( !(SIM_SCGC6 & SIM_SCGC6_RTC) ) return;
         RTC_TAR = RTC_TSR+1;
         wakeupSource = 35;
     }
@@ -72,11 +72,11 @@ extern "C" {
     static inline
     void rtc_alarm_set( rtc_mask_t *mask ) {
         if ( mask->state == false ) return;
-        attachInterruptVector( IRQ_RTC_ALARM, rtcISR );
+        if ( enable_periph_irq ) attachInterruptVector( IRQ_RTC_ALARM, rtcISR );
         SIM_SCGC6 |= SIM_SCGC6_RTC;
         RTC_TAR = rtc_get( ) + ( mask->alarm - 1 );
         RTC_IER = RTC_IER_TAIE_MASK;
-        NVIC_ENABLE_IRQ(IRQ_RTC_ALARM);
+        if ( enable_periph_irq) NVIC_ENABLE_IRQ( IRQ_RTC_ALARM );
     }
     /*******************************************************************************
      *
@@ -89,10 +89,10 @@ extern "C" {
     
     static inline
     void rtc_disable( rtc_mask_t *mask ) {
-        if (mask->state == false ) return;
-        detachInterruptVector(IRQ_RTC_ALARM);
+        if ( mask->state == false ) return;
+        if ( enable_periph_irq ) detachInterruptVector( IRQ_RTC_ALARM );
         RTC_IER = 0;
-        NVIC_DISABLE_IRQ(IRQ_RTC_ALARM);
+        if ( enable_periph_irq ) NVIC_DISABLE_IRQ( IRQ_RTC_ALARM );
     }
 #ifdef __cplusplus
 }

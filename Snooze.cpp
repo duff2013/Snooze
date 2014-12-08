@@ -72,6 +72,7 @@ void SnoozeClass::idle( void ) {
 //---------------------------------------Sleep-------------------------------------------
 int SnoozeClass::sleep( SnoozeBlock &configuration ) {
     SnoozeBlock *p = &configuration;
+    enable_periph_irq = true;
     cmp_set( &p->cmp_mask );
     digital_set( &p->digital_mask );
     lptmr_set( &p->lptmr_mask );
@@ -123,6 +124,7 @@ int SnoozeClass::sleep( SnoozeBlock &configuration ) {
 //--------------------------------------DeepSleep----------------------------------------
 int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     SnoozeBlock *p = &configuration;
+    enable_periph_irq = false;
     sleep_mode = mode;
     cmp_set( &p->cmp_mask );
     digital_set( &p->digital_mask );
@@ -130,7 +132,6 @@ int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     rtc_alarm_set( &p->rtc_mask );
     tsi_set( &p->tsi_mask );
     llwu_set( &p->llwu_mask );
-
     if ( mode == LLS ) {
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { enter_lls( ); }
     }
@@ -158,6 +159,7 @@ int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
 #if defined( USE_HIBERNATE )
 int SnoozeClass::hibernate( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     SnoozeBlock *p = &configuration;
+    enable_periph_irq = false;
     sleep_mode = mode;
     cmp_set( &p->cmp_mask );
     digital_set( &p->digital_mask );

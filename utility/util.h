@@ -8,6 +8,7 @@
 #ifndef __UTIL_H__
 #define __UTIL_H__
 /*******************************************************************************/
+static volatile bool enable_periph_irq = false;
 static volatile int wakeupSource = -1;
 static DMAMEM volatile int llwuFlag = -1;
 /*******************************************************************************/
