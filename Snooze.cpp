@@ -47,7 +47,7 @@ void SnoozeBlock::setLowVoltage( double threshold ) {
     
 }
 /*********************************************************************************************/
-SLEEP_MODE SnoozeClass::sleep_mode;
+DMAMEM SLEEP_MODE SnoozeClass::sleep_mode;
 CLOCK_MODE SnoozeClass::clock_mode;
 
 SnoozeClass::SnoozeClass( void ) {
