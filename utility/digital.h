@@ -56,48 +56,48 @@ extern "C" {
         PORTD_ISFR = isfr_d;
         PORTE_ISFR = isfr_e;
         
-        if (isfr_a & CORE_PIN3_BITMASK)       { wakeupSource = 3;  return; }
-        else if (isfr_a & CORE_PIN4_BITMASK)  { wakeupSource = 4;  return; }
-        else if (isfr_a & CORE_PIN24_BITMASK) { wakeupSource = 24; return; }
-        else if (isfr_a & CORE_PIN33_BITMASK) { wakeupSource = 33; return; }
+        if ( isfr_a & CORE_PIN3_BITMASK )       { wakeupSource = 3;  return; }
+        else if ( isfr_a & CORE_PIN4_BITMASK )  { wakeupSource = 4;  return; }
+        else if ( isfr_a & CORE_PIN24_BITMASK ) { wakeupSource = 24; return; }
+        else if ( isfr_a & CORE_PIN33_BITMASK ) { wakeupSource = 33; return; }
         
 
-        if (isfr_b & CORE_PIN0_BITMASK)       { wakeupSource = 0;  return; }
-        else if (isfr_b & CORE_PIN1_BITMASK)  { wakeupSource = 1;  return; }
-        else if (isfr_b & CORE_PIN16_BITMASK) { wakeupSource = 16; return; }
-        else if (isfr_b & CORE_PIN17_BITMASK) { wakeupSource = 17; return; }
-        else if (isfr_b & CORE_PIN18_BITMASK) { wakeupSource = 18; return; }
-        else if (isfr_b & CORE_PIN19_BITMASK) { wakeupSource = 19; return; }
-        else if (isfr_b & CORE_PIN25_BITMASK) { wakeupSource = 25; return; }
-        else if (isfr_b & CORE_PIN32_BITMASK) { wakeupSource = 32; return; }
+        if ( isfr_b & CORE_PIN0_BITMASK )       { wakeupSource = 0;  return; }
+        else if ( isfr_b & CORE_PIN1_BITMASK )  { wakeupSource = 1;  return; }
+        else if ( isfr_b & CORE_PIN16_BITMASK ) { wakeupSource = 16; return; }
+        else if ( isfr_b & CORE_PIN17_BITMASK ) { wakeupSource = 17; return; }
+        else if ( isfr_b & CORE_PIN18_BITMASK ) { wakeupSource = 18; return; }
+        else if ( isfr_b & CORE_PIN19_BITMASK ) { wakeupSource = 19; return; }
+        else if ( isfr_b & CORE_PIN25_BITMASK ) { wakeupSource = 25; return; }
+        else if ( isfr_b & CORE_PIN32_BITMASK ) { wakeupSource = 32; return; }
 
 
-        if (isfr_c & CORE_PIN9_BITMASK)       { wakeupSource = 9;  return; }
-        else if (isfr_c & CORE_PIN10_BITMASK) { wakeupSource = 10; return; }
-        else if (isfr_c & CORE_PIN11_BITMASK) { wakeupSource = 11; return; }
-        else if (isfr_c & CORE_PIN12_BITMASK) { wakeupSource = 12; return; }
-        else if (isfr_c & CORE_PIN13_BITMASK) { wakeupSource = 13; return; }
-        else if (isfr_c & CORE_PIN15_BITMASK) { wakeupSource = 15; return; }
-        else if (isfr_c & CORE_PIN22_BITMASK) { wakeupSource = 22; return; }
-        else if (isfr_c & CORE_PIN23_BITMASK) { wakeupSource = 23; return; }
-        else if (isfr_c & CORE_PIN27_BITMASK) { wakeupSource = 27; return; }
-        else if (isfr_c & CORE_PIN28_BITMASK) { wakeupSource = 28; return; }
-        else if (isfr_c & CORE_PIN29_BITMASK) { wakeupSource = 29; return; }
-        else if (isfr_c & CORE_PIN30_BITMASK) { wakeupSource = 30; return; }
+        if ( isfr_c & CORE_PIN9_BITMASK )       { wakeupSource = 9;  return; }
+        else if ( isfr_c & CORE_PIN10_BITMASK ) { wakeupSource = 10; return; }
+        else if ( isfr_c & CORE_PIN11_BITMASK ) { wakeupSource = 11; return; }
+        else if ( isfr_c & CORE_PIN12_BITMASK ) { wakeupSource = 12; return; }
+        else if ( isfr_c & CORE_PIN13_BITMASK ) { wakeupSource = 13; return; }
+        else if ( isfr_c & CORE_PIN15_BITMASK ) { wakeupSource = 15; return; }
+        else if ( isfr_c & CORE_PIN22_BITMASK ) { wakeupSource = 22; return; }
+        else if ( isfr_c & CORE_PIN23_BITMASK ) { wakeupSource = 23; return; }
+        else if ( isfr_c & CORE_PIN27_BITMASK ) { wakeupSource = 27; return; }
+        else if ( isfr_c & CORE_PIN28_BITMASK ) { wakeupSource = 28; return; }
+        else if ( isfr_c & CORE_PIN29_BITMASK ) { wakeupSource = 29; return; }
+        else if ( isfr_c & CORE_PIN30_BITMASK ) { wakeupSource = 30; return; }
         
 
-        if (isfr_d & CORE_PIN2_BITMASK)       { wakeupSource = 2;  return; }
-        else if (isfr_d & CORE_PIN5_BITMASK)  { wakeupSource = 5;  return; }
-        else if (isfr_d & CORE_PIN6_BITMASK)  { wakeupSource = 6;  return; }
-        else if (isfr_d & CORE_PIN7_BITMASK)  { wakeupSource = 7;  return; }
-        else if (isfr_d & CORE_PIN8_BITMASK)  { wakeupSource = 8;  return; }
-        else if (isfr_d & CORE_PIN14_BITMASK) { wakeupSource = 14; return; }
-        else if (isfr_d & CORE_PIN20_BITMASK) { wakeupSource = 20; return; }
-        else if (isfr_d & CORE_PIN21_BITMASK) { wakeupSource = 21; return; }
+        if ( isfr_d & CORE_PIN2_BITMASK )       { wakeupSource = 2;  return; }
+        else if ( isfr_d & CORE_PIN5_BITMASK )  { wakeupSource = 5;  return; }
+        else if ( isfr_d & CORE_PIN6_BITMASK )  { wakeupSource = 6;  return; }
+        else if ( isfr_d & CORE_PIN7_BITMASK )  { wakeupSource = 7;  return; }
+        else if ( isfr_d & CORE_PIN8_BITMASK )  { wakeupSource = 8;  return; }
+        else if ( isfr_d & CORE_PIN14_BITMASK ) { wakeupSource = 14; return; }
+        else if ( isfr_d & CORE_PIN20_BITMASK ) { wakeupSource = 20; return; }
+        else if ( isfr_d & CORE_PIN21_BITMASK ) { wakeupSource = 21; return; }
         
 
-        if (isfr_e & CORE_PIN26_BITMASK)      { wakeupSource = 26; return; }
-        else if (isfr_e & CORE_PIN31_BITMASK) { wakeupSource = 31; return; }
+        if ( isfr_e & CORE_PIN26_BITMASK )      { wakeupSource = 26; return; }
+        else if ( isfr_e & CORE_PIN31_BITMASK ) { wakeupSource = 31; return; }
     }
     
     /*******************************************************************************
@@ -131,7 +131,7 @@ extern "C" {
             if ( mode == 0 ) *config = PORT_PCR_MUX( 1 );
             else *config = PORT_PCR_MUX( 1 ) | PORT_PCR_PE | PORT_PCR_PS;
 
-            if ( enable_periph_irq ) attachInterrupt(pin, digitalISR, type);
+            if ( enable_periph_irq ) attachInterrupt( pin, digitalISR, type );
             _pin &= ~( (uint64_t)1<<pin );
         }
     }

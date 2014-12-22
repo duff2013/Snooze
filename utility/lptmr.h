@@ -84,7 +84,7 @@ extern "C" {
         if ( mask->state == false ) return;
         if ( enable_periph_irq ) attachInterruptVector( IRQ_LPTMR, lptmrISR );
         SIM_SCGC5 |= SIM_SCGC5_LPTIMER;
-        if ( enable_periph_irq ) NVIC_ENABLE_IRQ(IRQ_LPTMR);
+        if ( enable_periph_irq ) NVIC_ENABLE_IRQ( IRQ_LPTMR );
         LPTMR0_CSR = LPTMR_CSR_TIE | LPTMR_CSR_TCF;
         LPTMR0_CMR = mask->period;
         LPTMR0_CSR |= LPTMR_CSR_TEN;

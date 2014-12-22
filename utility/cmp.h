@@ -93,7 +93,7 @@ extern "C" {
     static inline
     void cmp_set( cmp_mask_t *mask ) {
         if ( mask->state == false ) return;
-        if (enable_periph_irq) attachInterruptVector( IRQ_CMP0, cmp0ISR );
+        if ( enable_periph_irq ) attachInterruptVector( IRQ_CMP0, cmp0ISR );
         uint8_t _pin;
         SIM_SCGC4 |= SIM_SCGC4_CMP;
         CMP0_CR0 = 0x00;
@@ -121,7 +121,7 @@ extern "C" {
         CMP0_FPR = 0x00;
         CMP0_MUXCR = CMP_MUXCR_MSEL(0x07) | CMP_MUXCR_PSEL(_pin);
         CMP0_DACCR = CMP_DACCR_DACEN | CMP_DACCR_VRSEL | CMP_DACCR_VOSEL( tap );
-        if (enable_periph_irq) NVIC_ENABLE_IRQ(IRQ_CMP0);
+        if ( enable_periph_irq ) NVIC_ENABLE_IRQ( IRQ_CMP0 );
         CMP0_CR1 = CMP_CR1_EN;
     }
     /*******************************************************************************
@@ -136,8 +136,8 @@ extern "C" {
     static inline
     void cmp_disable( cmp_mask_t *mask ) {
         if ( mask->state == false ) return;
-        if (enable_periph_irq) detachInterruptVector(IRQ_CMP0);
-        if (enable_periph_irq) NVIC_DISABLE_IRQ(IRQ_CMP0);
+        if ( enable_periph_irq ) detachInterruptVector( IRQ_CMP0 );
+        if ( enable_periph_irq ) NVIC_DISABLE_IRQ( IRQ_CMP0 );
         CMP0_CR0 = 0x00;
         CMP0_CR1 = 0x00;
         SIM_SCGC4 &= ~SIM_SCGC4_CMP;

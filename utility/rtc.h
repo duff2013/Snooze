@@ -76,7 +76,7 @@ extern "C" {
         SIM_SCGC6 |= SIM_SCGC6_RTC;
         RTC_TAR = rtc_get( ) + ( mask->alarm - 1 );
         RTC_IER = RTC_IER_TAIE_MASK;
-        if ( enable_periph_irq) NVIC_ENABLE_IRQ( IRQ_RTC_ALARM );
+        if ( enable_periph_irq ) NVIC_ENABLE_IRQ( IRQ_RTC_ALARM );
     }
     /*******************************************************************************
      *
