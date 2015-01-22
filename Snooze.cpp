@@ -133,21 +133,20 @@ int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     tsi_set( &p->tsi_mask );
     llwu_set( &p->llwu_mask );
     if ( mode == LLS ) {
-        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { enter_lls( ); }
+        enter_lls( );
     }
     else if ( mode == VLLS3 ) {
-        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { enter_vlls3( ); }
+        enter_vlls3( );
     }
     else if ( mode == VLLS2 ) {
-        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { enter_vlls2( ); }
+        enter_vlls2( );
     }
     else if ( mode == VLLS1 ) {
-        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { enter_vlls1( ); }
+        enter_vlls1( );
     }
     else if ( mode == VLLS0 ) {
-        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { enter_vlls0( ); }
+        enter_vlls0( );
     }
-    
     llwu_disable( );
     tsi_disable( &p->tsi_mask );
     rtc_disable( &p->rtc_mask );
@@ -173,19 +172,19 @@ int SnoozeClass::hibernate( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     uint32_t PCR3 = PORTA_PCR3;
     PORTA_PCR3 = PORT_PCR_MUX( 0 );
     if ( mode == LLS ) {
-        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { enter_lls( ); }
+        enter_lls( );
     }
     else if ( mode == VLLS3 ) {
-        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { enter_vlls3( ); }
+        enter_vlls3( );
     }
     else if ( mode == VLLS2 ) {
-        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { enter_vlls2( ); }
+        enter_vlls2( );
     }
     else if ( mode == VLLS1 ) {
-        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { enter_vlls1( ); }
+        enter_vlls1( );
     }
     else if ( mode == VLLS0 ) {
-        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { enter_vlls0( ); }
+        enter_vlls0( );
     }
     PORTA_PCR3 = PCR3;
     SIM_SOPT1CFG |= SIM_SOPT1CFG_USSWE_MASK;
@@ -209,6 +208,7 @@ void SnoozeClass::wakeupISR( void ) {
         cmp0ISR( );
         rtcISR( );
         tsiISR( );
+        //
         /************************************
          * back to PEE if in PBE, else it is
          * in either BLPI/BLPE, if so nothing
