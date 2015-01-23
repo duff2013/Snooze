@@ -77,8 +77,8 @@ extern "C" {
     static inline
     void cmp0ISR( void ) {
         if ( !(SIM_SCGC4 & SIM_SCGC4_CMP) ) return;
-        if ( CMP0_SCR & CMP_SCR_CFF ) CMP0_SCR |= CMP_SCR_CFF;
-        if ( CMP0_SCR & CMP_SCR_CFR ) CMP0_SCR |= CMP_SCR_CFR;
+        if ( CMP0_SCR & CMP_SCR_CFF ) CMP0_SCR = CMP_SCR_CFF;
+        if ( CMP0_SCR & CMP_SCR_CFR ) CMP0_SCR = CMP_SCR_CFR;
         wakeupSource = 34;
     }
     /*******************************************************************************

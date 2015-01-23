@@ -54,8 +54,7 @@ extern "C" {
     static inline
     void tsiISR( void ) {
         if( !(SIM_SCGC5 & SIM_SCGC5_TSI) ) return;
-        TSI0_GENCS |= TSI_GENCS_OUTRGF;
-        TSI0_GENCS |= TSI_GENCS_EOSF;
+        TSI0_GENCS = TSI_GENCS_OUTRGF | TSI_GENCS_EOSF;
     }
     /*******************************************************************************
      *
@@ -81,28 +80,26 @@ extern "C" {
         
         TSI0_THRESHOLD = threshold;
         
-        TSI0_GENCS |= TSI_GENCS_EOSF;
+        TSI0_SCANC = ((TSI_SCANC_EXTCHRG(2)) |
+                      (TSI_SCANC_REFCHRG(3)) |
+                      (TSI_SCANC_AMPSC(1))   |
+                      (TSI_SCANC_AMCLKS(0)));
         
-        TSI0_GENCS |= ((TSI_GENCS_NSCN(9)) |
-                       (TSI_GENCS_PS(2)) |
-                       (TSI_GENCS_STPE) |
-                       (TSI_GENCS_LPSCNITV(7)) |
-                       (TSI_GENCS_TSIIE));
+        TSI0_PEN = TSI_PEN_LPSP(tsi_pins[pin]);
         
-        TSI0_SCANC |= ((TSI_SCANC_EXTCHRG(2)) |
-                       (TSI_SCANC_REFCHRG(3)) |
-                       (TSI_SCANC_AMPSC(1)) |
-                       (TSI_SCANC_AMCLKS(0)));
-        
-        TSI0_PEN |= TSI_PEN_LPSP(tsi_pins[pin]);
-        
-        TSI0_GENCS |= TSI_GENCS_TSIEN;  //Enables TSI
-        
+        TSI0_GENCS = ((TSI_GENCS_EOSF)          |
+                       (TSI_GENCS_NSCN(9))      |
+                       (TSI_GENCS_PS(2))        |
+                       (TSI_GENCS_STPE)         |
+                       (TSI_GENCS_LPSCNITV(7))  |
+                       (TSI_GENCS_TSIIE)        |
+                       (TSI_GENCS_OUTRGF)       |
+                       (TSI_GENCS_EOSF)         |
+                       (TSI_GENCS_TSIEN));
+
         // Wait for any in-progress scans to complete
         while (TSI0_GENCS & TSI_GENCS_SCNIP) yield();
         
-        TSI0_GENCS |= TSI_GENCS_OUTRGF;   //Clear all pending flags
-        TSI0_GENCS |= TSI_GENCS_EOSF;
         if ( enable_periph_irq ) NVIC_ENABLE_IRQ( IRQ_TSI );
     }
     /*******************************************************************************
@@ -118,8 +115,7 @@ extern "C" {
     void tsi_disable( tsi_mask_t *mask ) {
         if ( mask->state == false ) return;
         if ( enable_periph_irq ) detachInterruptVector( IRQ_TSI );
-        TSI0_GENCS |= TSI_GENCS_OUTRGF;
-        TSI0_GENCS |= TSI_GENCS_EOSF;
+        TSI0_GENCS = TSI_GENCS_OUTRGF | TSI_GENCS_EOSF;
         TSI0_GENCS &= ~TSI_GENCS_TSIEN;
         SIM_SCGC5 &= ~SIM_SCGC5_TSI;
     }

@@ -67,7 +67,7 @@ int SnoozeClass::source( void ) {
 }
 //---------------------------------------idle--------------------------------------------
 void SnoozeClass::idle( void ) {
-    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { enter_wait(); }
+    enter_wait( );
 }
 //---------------------------------------Sleep-------------------------------------------
 int SnoozeClass::sleep( SnoozeBlock &configuration ) {
@@ -80,14 +80,14 @@ int SnoozeClass::sleep( SnoozeBlock &configuration ) {
     
     if ( mcg_mode( ) == BLPI ) {
         peripheral_disable( &p->setPeripheral.periph_off_mask );
-        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { enter_wait( ); }
+        enter_wait( );
         peripheral_set( &p->setPeripheral.periph_off_mask );
     }
     else if ( mcg_mode( ) == BLPE ) {
         peripheral_set( &p->setPeripheral.periph_off_mask );
         blpe_blpi( );
         enter_vlpr( 0 );// now safe to enter vlpr
-        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { enter_wait( ); }
+        enter_wait( );
         exit_vlpr( );
         blpi_blpe( );
         peripheral_set( &p->setPeripheral.periph_off_mask );
@@ -97,7 +97,7 @@ int SnoozeClass::sleep( SnoozeBlock &configuration ) {
         peripheral_set( &p->setPeripheral.periph_off_mask );
         pee_blpi( );
         enter_vlpr( 0 );// now safe to enter vlpr
-        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { enter_wait( ); }
+        enter_wait( );
         exit_vlpr( );
         blpi_pee( );
         peripheral_set( &p->setPeripheral.periph_off_mask );
@@ -107,19 +107,6 @@ int SnoozeClass::sleep( SnoozeBlock &configuration ) {
     cmp_disable( &p->cmp_mask );
     lptmr_disable( &p->lptmr_mask );
     digital_disable( &p->digital_mask );
-    
-    /*Serial.println( p->setPeripheral.periph_off_mask.SCGC4, BIN );
-    Serial.println( p->setPeripheral.periph_off_mask.SCGC5, BIN );
-    Serial.println( p->setPeripheral.periph_off_mask.SCGC6, BIN );
-    Serial.println();
-    Serial.println( SIM_SCGC4, BIN );
-    Serial.println( SIM_SCGC5, BIN );
-    Serial.println( SIM_SCGC6, BIN );
-    
-    Serial.println();
-    Serial.println( SIM_SCGC4, BIN );
-    Serial.println( SIM_SCGC5, BIN );
-    Serial.println( SIM_SCGC6, BIN );*/
 }
 //--------------------------------------DeepSleep----------------------------------------
 int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
@@ -132,21 +119,11 @@ int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     rtc_alarm_set( &p->rtc_mask );
     tsi_set( &p->tsi_mask );
     llwu_set( &p->llwu_mask );
-    if ( mode == LLS ) {
-        enter_lls( );
-    }
-    else if ( mode == VLLS3 ) {
-        enter_vlls3( );
-    }
-    else if ( mode == VLLS2 ) {
-        enter_vlls2( );
-    }
-    else if ( mode == VLLS1 ) {
-        enter_vlls1( );
-    }
-    else if ( mode == VLLS0 ) {
-        enter_vlls0( );
-    }
+    if ( mode == LLS )        { enter_lls( ); }
+    else if ( mode == VLLS3 ) { enter_vlls3( ); }
+    else if ( mode == VLLS2 ) { enter_vlls2( ); }
+    else if ( mode == VLLS1 ) { enter_vlls1( ); }
+    else if ( mode == VLLS0 ) { enter_vlls0( ); }
     llwu_disable( );
     tsi_disable( &p->tsi_mask );
     rtc_disable( &p->rtc_mask );
@@ -166,26 +143,16 @@ int SnoozeClass::hibernate( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     rtc_alarm_set( &p->rtc_mask );
     tsi_set( &p->tsi_mask );
     llwu_set( &p->llwu_mask );
-
+    
     SIM_SOPT1CFG |= SIM_SOPT1CFG_USSWE_MASK;
     SIM_SOPT1 |= SIM_SOPT1_USBSSTBY_MASK;
     uint32_t PCR3 = PORTA_PCR3;
     PORTA_PCR3 = PORT_PCR_MUX( 0 );
-    if ( mode == LLS ) {
-        enter_lls( );
-    }
-    else if ( mode == VLLS3 ) {
-        enter_vlls3( );
-    }
-    else if ( mode == VLLS2 ) {
-        enter_vlls2( );
-    }
-    else if ( mode == VLLS1 ) {
-        enter_vlls1( );
-    }
-    else if ( mode == VLLS0 ) {
-        enter_vlls0( );
-    }
+    if ( mode == LLS )        { enter_lls( ); }
+    else if ( mode == VLLS3 ) { enter_vlls3( ); }
+    else if ( mode == VLLS2 ) { enter_vlls2( ); }
+    else if ( mode == VLLS1 ) { enter_vlls1( ); }
+    else if ( mode == VLLS0 ) { enter_vlls0( ); }
     PORTA_PCR3 = PCR3;
     SIM_SOPT1CFG |= SIM_SOPT1CFG_USSWE_MASK;
     SIM_SOPT1 &= ~SIM_SOPT1_USBSSTBY_MASK;
