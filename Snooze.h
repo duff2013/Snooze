@@ -1,7 +1,7 @@
 /*
  ||
  || @file 		Snooze.h
- || @version 	.1
+ || @version 	.2
  || @author 	duff
  || @contact    http://forum.pjrc.com/members/25610-duff
  ||
@@ -30,16 +30,18 @@
 #define Snooze_h
 
 #if(!defined(__arm__) && defined(TEENSYDUINO))
-#error Teensyduino 1.20 and Teensy 3.x only.
+#error Teensy 3.x and TeensyLC only.
 #endif
 
 #include "Arduino.h"
 #include "utility/lvd.h"
 #include "utility/mcg.h"
 #include "utility/smc.h"
+#ifdef KINETISK
 #include "utility/rtc.h"
-#include "utility/cmp.h"
+#endif
 #include "utility/tsi.h"
+#include "utility/cmp.h"
 #include "utility/util.h"
 #include "utility/llwu.h"
 #include "utility/lptmr.h"
@@ -84,7 +86,9 @@ private:
     lptmr_mask_t        lptmr_mask;
     llwu_mask_t         llwu_mask;
     tsi_mask_t          tsi_mask;
+#ifdef KINETISK
     rtc_mask_t          rtc_mask;
+#endif
     cmp_mask_t          cmp_mask;
     lvd_mask_t          lvd_mask;
     /* Peripherals */
@@ -105,8 +109,10 @@ public:
     void pinMode ( int pin, int mode, int type, double val );
     /* LPTMR Config */
     void setTimer( uint32_t period );
+#ifdef KINETISK
     /* RTC Config */
     void setAlarm( uint8_t hours, uint8_t minutes, uint8_t seconds );
+#endif
     /* Low Voltage Config */
     void setLowVoltage( double threshold );
     /* Peripherals Config */

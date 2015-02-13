@@ -37,12 +37,12 @@ void SnoozeBlock::setTimer( uint32_t period ) {
     lptmr_configure_period_mask( period, &lptmr_mask );
     llwu_configure_modules_mask( LLWU_LPTMR_MOD, &llwu_mask );
 }
-
+#ifdef KINETISK
 void SnoozeBlock::setAlarm( uint8_t hours, uint8_t minutes, uint8_t seconds ) {
     rtc_configure_alarm_mask( hours, minutes, seconds, &rtc_mask );
     llwu_configure_modules_mask( LLWU_RTCA_MOD, &llwu_mask );
 }
-
+#endif
 void SnoozeBlock::setLowVoltage( double threshold ) {
     
 }
@@ -76,7 +76,9 @@ int SnoozeClass::sleep( SnoozeBlock &configuration ) {
     cmp_set( &p->cmp_mask );
     digital_set( &p->digital_mask );
     lptmr_set( &p->lptmr_mask );
+#ifdef KINETISK
     rtc_alarm_set( &p->rtc_mask );
+#endif
     
     if ( mcg_mode( ) == BLPI ) {
         peripheral_disable( &p->setPeripheral.periph_off_mask );
@@ -103,10 +105,13 @@ int SnoozeClass::sleep( SnoozeBlock &configuration ) {
         peripheral_set( &p->setPeripheral.periph_off_mask );
         usbEnable( );
     }
+#ifdef KINETISK
     rtc_disable( &p->rtc_mask );
+#endif
     cmp_disable( &p->cmp_mask );
     lptmr_disable( &p->lptmr_mask );
     digital_disable( &p->digital_mask );
+    return 0;
 }
 //--------------------------------------DeepSleep----------------------------------------
 int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
@@ -116,7 +121,9 @@ int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     cmp_set( &p->cmp_mask );
     digital_set( &p->digital_mask );
     lptmr_set( &p->lptmr_mask );
+#ifdef KINETISK
     rtc_alarm_set( &p->rtc_mask );
+#endif
     tsi_set( &p->tsi_mask );
     llwu_set( &p->llwu_mask );
     if ( mode == LLS )        { enter_lls( ); }
@@ -126,10 +133,13 @@ int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     else if ( mode == VLLS0 ) { enter_vlls0( ); }
     llwu_disable( );
     tsi_disable( &p->tsi_mask );
+#ifdef KINETISK
     rtc_disable( &p->rtc_mask );
+#endif
     lptmr_disable( &p->lptmr_mask );
     digital_disable( &p->digital_mask );
     cmp_disable( &p->cmp_mask );
+    return 0;
 }
 //--------------------------------------Hibernate----------------------------------------
 #if defined( USE_HIBERNATE )
@@ -140,7 +150,9 @@ int SnoozeClass::hibernate( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     cmp_set( &p->cmp_mask );
     digital_set( &p->digital_mask );
     lptmr_set( &p->lptmr_mask );
+#ifdef KINETISK
     rtc_alarm_set( &p->rtc_mask );
+#endif
     tsi_set( &p->tsi_mask );
     llwu_set( &p->llwu_mask );
     
@@ -156,16 +168,19 @@ int SnoozeClass::hibernate( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     PORTA_PCR3 = PCR3;
     SIM_SOPT1CFG |= SIM_SOPT1CFG_USSWE_MASK;
     SIM_SOPT1 &= ~SIM_SOPT1_USBSSTBY_MASK;
-    
     tsi_disable( &p->tsi_mask );
+#ifdef KINETISK
     rtc_disable( &p->rtc_mask );
+#endif
     lptmr_disable( &p->lptmr_mask );
     digital_disable( &p->digital_mask );
     cmp_disable( &p->cmp_mask );
+    return 0;
 }
 #endif
 //----------------------------------------wakeup------------------------------------------
 void SnoozeClass::wakeupISR( void ) {
+    digitalWrite(LED_BUILTIN, HIGH);
     NVIC_DISABLE_IRQ( IRQ_LLWU ); // disable wakeup isr
     if ( sleep_mode == LLS ) {
         __disable_irq( );
@@ -173,9 +188,11 @@ void SnoozeClass::wakeupISR( void ) {
         __enable_irq( );
         lptmrISR( );
         cmp0ISR( );
+#ifdef KINETISK
         rtcISR( );
+#endif
         tsiISR( );
-        //
+        
         /************************************
          * back to PEE if in PBE, else it is
          * in either BLPI/BLPE, if so nothing

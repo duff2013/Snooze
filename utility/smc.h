@@ -437,7 +437,10 @@ extern "C" {
     void stop( void ) {
         SYST_CSR &= ~SYST_CSR_TICKINT;      // disable systick timer interrupt
         SCB_SCR |= SCB_SCR_SLEEPDEEP_MASK;  // Set the SLEEPDEEP bit to enable deep sleep mode (STOP)
+        
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { asm volatile( "wfi" ); } // WFI instruction will start entry into STOP mode
+        //asm volatile( "wfi" );
+        
         SCB_SCR &= ~SCB_SCR_SLEEPDEEP_MASK; // Clear the SLEEPDEEP bit
         SYST_CSR |= SYST_CSR_TICKINT;       // renable systick timer interrupt
     }

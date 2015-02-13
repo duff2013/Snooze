@@ -13,11 +13,13 @@
 /********************************************************************/
 // module_enable defines
 #define LLWU_LPTMR_MOD      0x01
+#ifdef KINETISK
 #define LLWU_RTCA_MOD       0x02
 #define LLWU_RTCS_MOD       0x04
+#endif
 #define LLWU_CMP0_MOD       0x08
 #define LLWU_CMP1_MOD       0x10
-#if defined(__MK20DX256__)
+#ifdef KINETISK
 #define LLWU_CMP2_MOD       0x20
 #endif
 #define LLWU_TSI_MOD        0x40
@@ -96,14 +98,16 @@ extern "C" {
     static inline
     void llwu_configure_modules_mask( uint8_t module, llwu_mask_t *mask ) {
          if( module & LLWU_LPTMR_MOD)     mask->ME |= LLWU_ME_WUME0_MASK;
+#ifdef KINETISK
          else if ( module & LLWU_RTCA_MOD) mask->ME |= LLWU_ME_WUME5_MASK;
          else if ( module & LLWU_RTCS_MOD) mask->ME |= LLWU_ME_WUME7_MASK;
+#endif
          else if ( module & LLWU_TSI_MOD ) mask->ME |= LLWU_ME_WUME4_MASK;
          else if ( module & LLWU_CMP0_MOD) mask->ME |= LLWU_ME_WUME1_MASK;
          else if ( module & LLWU_CMP1_MOD) mask->ME |= LLWU_ME_WUME2_MASK;
-    #if defined(__MK20DX256__)
+#ifdef KINETISK
          else if( module & LLWU_CMP2_MOD) mask->ME |= LLWU_ME_WUME3_MASK;
-    #endif
+#endif
     }
     /*******************************************************************************
      *
@@ -207,7 +211,9 @@ extern "C" {
         else if ( (llwuFlag>>16) & LLWU_ME_WUME0_MASK ) wakeupSource = 36;
         else if ( (llwuFlag>>16) & LLWU_ME_WUME1_MASK ) wakeupSource = 34;
         else if ( (llwuFlag>>16) & LLWU_ME_WUME4_MASK ) wakeupSource = 37;
+#ifdef KINETISK
         else if ( (llwuFlag>>16) & LLWU_ME_WUME5_MASK ) wakeupSource = 35;
+#endif
         llwuFlag = 0;
     }
     /*******************************************************************************
@@ -259,14 +265,17 @@ extern "C" {
      *       startup_early_hook -
      *
      *******************************************************************************/
+#ifdef KINETISK
     void startup_early_hook() __attribute__ ((weak));
     void startup_early_hook() {
         WDOG_STCTRLH = WDOG_STCTRLH_ALLOWUPDATE;
+        
         if ( PMC_REGSC & PMC_REGSC_ACKISO ) {
             llwuFlag = llwu_clear_flags( );// clear flags
             llwu_disable( );
         }
     }
+#endif
 #ifdef __cplusplus
 }
 #endif

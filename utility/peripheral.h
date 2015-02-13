@@ -113,8 +113,12 @@ typedef enum {
     ADC_OFF      = SIM_SCGC6_ADC0,
     I2S_OFF      = SIM_SCGC6_I2S,
     PDB_OFF      = SIM_SCGC6_PDB,
+#if defined(__MK20DX128__) || defined(__MK20DX256__)
     SPI0_OFF     = SIM_SCGC6_SPI0,
     SPI1_OFF     = SIM_SCGC6_SPI1,
+#elif defined(__MKL26Z64__)
+    
+#endif
     RTC_OFF      = SIM_SCGC6_RTC,
 } SCGC6_OFF_t;
 
@@ -122,8 +126,12 @@ typedef enum {
     ADC_ON      = SIM_SCGC6_ADC0,
     I2S_ON      = SIM_SCGC6_I2S,
     PDB_ON      = SIM_SCGC6_PDB,
+#if defined(__MK20DX128__) || defined(__MK20DX256__)
     SPI0_ON     = SIM_SCGC6_SPI0,
     SPI1_ON     = SIM_SCGC6_SPI1,
+#elif defined(__MKL26Z64__)
+    
+#endif
     RTC_ON      = SIM_SCGC6_RTC,
 } SCGC6_ON_t;
 //-------------------------------------
@@ -293,10 +301,10 @@ extern "C" {
      *******************************************************************************/
     static void adcEnable( void ) __attribute__((always_inline, unused));
     static void adcEnable( void ) {
-        //if ((SIM_SCGC6 & SIM_SCGC6_ADC0) == 0x00) {
-        if ( (BITBAND_U32(SIM_SCGC6, SIM_SCGC6_ADC0_BIT) ) == 0x00 ) {
-            BITBAND_U32( SIM_SCGC6, SIM_SCGC6_ADC0_BIT ) = 0x01;
-            //SIM_SCGC6 |= SIM_SCGC6_ADC0;// enable ADC clock
+        if ((SIM_SCGC6 & SIM_SCGC6_ADC0) == 0x00) {
+        //if ( (BITBAND_U32(SIM_SCGC6, SIM_SCGC6_ADC0_BIT) ) == 0x00 ) {
+            //BITBAND_U32( SIM_SCGC6, SIM_SCGC6_ADC0_BIT ) = 0x01;
+            SIM_SCGC6 |= SIM_SCGC6_ADC0;// enable ADC clock
             ADC0_SC1A |= ADC_SC1_ADCH( 0x05 );// enable ADC
         }
     }
@@ -307,11 +315,11 @@ extern "C" {
      *******************************************************************************/
     static inline void adcDisable( void ) __attribute__((always_inline, unused));
     static inline void adcDisable( void ) {
-        //if (SIM_SCGC6 & SIM_SCGC6_ADC0) {
-        if ( (BITBAND_U32( SIM_SCGC6, SIM_SCGC6_ADC0_BIT ) ) == 0x01 ) {
+        if (SIM_SCGC6 & SIM_SCGC6_ADC0) {
+        //if ( (BITBAND_U32( SIM_SCGC6, SIM_SCGC6_ADC0_BIT ) ) == 0x01 ) {
             ADC0_SC1A |= ADC_SC1_ADCH( 0x1F );// disable ADC
-            BITBAND_U32( SIM_SCGC6, SIM_SCGC6_ADC0_BIT ) = 0x00;
-            //SIM_SCGC6 &= ~SIM_SCGC6_ADC0;// disable ADC clock
+            //BITBAND_U32( SIM_SCGC6, SIM_SCGC6_ADC0_BIT ) = 0x00;
+            SIM_SCGC6 &= ~SIM_SCGC6_ADC0;// disable ADC clock
         }
     }
     /*******************************************************************************
@@ -321,10 +329,10 @@ extern "C" {
      *******************************************************************************/
     static inline void cmp0Enable( void ) __attribute__((always_inline, unused));
     static inline void cmp0Enable( void ) {
-        //if ((SIM_SCGC4 & SIM_SCGC4_CMP) == 0x00) {
-        if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_CMP_BIT)) == 0x00) {
-            BITBAND_U32(SIM_SCGC4, SIM_SCGC4_CMP_BIT) = 0x01;
-            //SIM_SCGC4 |= SIM_SCGC4_CMP;// enable CMP0 clock
+        if ((SIM_SCGC4 & SIM_SCGC4_CMP) == 0x00) {
+        //if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_CMP_BIT)) == 0x00) {
+            //BITBAND_U32(SIM_SCGC4, SIM_SCGC4_CMP_BIT) = 0x01;
+            SIM_SCGC4 |= SIM_SCGC4_CMP;// enable CMP0 clock
             CMP0_CR1 |= CMP_CR1_EN_MASK;// enable CMP0
         }else if ((CMP0_CR1 & CMP_CR1_EN_MASK) == 0x00) CMP0_CR1 |= CMP_CR1_EN_MASK;
     }
@@ -335,11 +343,11 @@ extern "C" {
      *******************************************************************************/
     static inline void cmp0Disable( void ) __attribute__((always_inline, unused));
     static inline void cmp0Disable( void ) {
-        //if (SIM_SCGC4 & SIM_SCGC4_CMP) {
-        if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_CMP_BIT)) == 0x01) {
+        if (SIM_SCGC4 & SIM_SCGC4_CMP) {
+        //if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_CMP_BIT)) == 0x01) {
             CMP0_CR1 &= ~CMP_CR1_EN_MASK;// disable CMP
-            BITBAND_U32(SIM_SCGC4, SIM_SCGC4_CMP_BIT) = 0x00;
-            //SIM_SCGC4 &= ~SIM_SCGC4_CMP;// disable CMP0 clock
+            //BITBAND_U32(SIM_SCGC4, SIM_SCGC4_CMP_BIT) = 0x00;
+            SIM_SCGC4 &= ~SIM_SCGC4_CMP;// disable CMP0 clock
         }
     }
     /*******************************************************************************
@@ -349,10 +357,10 @@ extern "C" {
      *******************************************************************************/
     static inline void cmp1Enable( void ) __attribute__((always_inline, unused));
     static inline void cmp1Enable( void ) {
-        //if ((SIM_SCGC4 & SIM_SCGC4_CMP) == 0x00) {
-        if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_CMP_BIT)) == 0x00) {
-            BITBAND_U32(SIM_SCGC4, SIM_SCGC4_CMP_BIT) = 0x01;
-            //SIM_SCGC4 |= SIM_SCGC4_CMP;// enable CMP1 clock
+        if ((SIM_SCGC4 & SIM_SCGC4_CMP) == 0x00) {
+        //if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_CMP_BIT)) == 0x00) {
+            //BITBAND_U32(SIM_SCGC4, SIM_SCGC4_CMP_BIT) = 0x01;
+            SIM_SCGC4 |= SIM_SCGC4_CMP;// enable CMP1 clock
             CMP1_CR1 |= CMP_CR1_EN_MASK;// enable CMP1
         }else if ((CMP1_CR1 & CMP_CR1_EN_MASK) == 0x00) CMP1_CR1 |= CMP_CR1_EN_MASK;
     }
@@ -363,11 +371,11 @@ extern "C" {
      *******************************************************************************/
     static inline void cmp1Disable( void ) __attribute__((always_inline, unused));
     static inline void cmp1Disable( void ) {
-        //if (SIM_SCGC4 & SIM_SCGC4_CMP) {
-        if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_CMP_BIT)) == 0x01) {
+        if (SIM_SCGC4 & SIM_SCGC4_CMP) {
+        //if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_CMP_BIT)) == 0x01) {
             CMP1_CR1 &= ~CMP_CR1_EN_MASK;// disable CMP1
-            BITBAND_U32(SIM_SCGC4, SIM_SCGC4_CMP_BIT) = 0x00;
-            //SIM_SCGC4 &= ~SIM_SCGC4_CMP;// disable CMP1 clock
+            //BITBAND_U32(SIM_SCGC4, SIM_SCGC4_CMP_BIT) = 0x00;
+            SIM_SCGC4 &= ~SIM_SCGC4_CMP;// disable CMP1 clock
         }
     }
     /*******************************************************************************
@@ -395,10 +403,10 @@ extern "C" {
      *******************************************************************************/
     static inline void i2cEnable( void ) __attribute__((always_inline, unused));
     static inline void i2cEnable( void ) {
-        //if ((SIM_SCGC4 & SIM_SCGC4_I2C0) == 0x00) {
-        if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_I2C0_BIT)) == 0x00) {
-            BITBAND_U32(SIM_SCGC4, SIM_SCGC4_I2C0_BIT) = 0x01;
-            //SIM_SCGC4 |= SIM_SCGC4_I2C0;// enable I2C clock
+        if ((SIM_SCGC4 & SIM_SCGC4_I2C0) == 0x00) {
+        //if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_I2C0_BIT)) == 0x00) {
+            //BITBAND_U32(SIM_SCGC4, SIM_SCGC4_I2C0_BIT) = 0x01;
+            SIM_SCGC4 |= SIM_SCGC4_I2C0;// enable I2C clock
             I2C0_C1 |= I2C_C1_IICEN;// enable I2C
         }
     }
@@ -409,11 +417,11 @@ extern "C" {
      *******************************************************************************/
     static inline void i2cDisable( void ) __attribute__((always_inline, unused));
     static inline void i2cDisable( void ) {
-        //if (SIM_SCGC4 & SIM_SCGC4_I2C0) {
-        if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_I2C0_BIT)) == 0x01) {
+        if (SIM_SCGC4 & SIM_SCGC4_I2C0) {
+        //if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_I2C0_BIT)) == 0x01) {
             I2C0_C1 &= ~I2C_C1_IICEN;// disable I2C
-            BITBAND_U32(SIM_SCGC4, SIM_SCGC4_I2C0_BIT) = 0x00;
-            //SIM_SCGC4 &= ~SIM_SCGC4_I2C0;// disable I2C clock
+            //BITBAND_U32(SIM_SCGC4, SIM_SCGC4_I2C0_BIT) = 0x00;
+            SIM_SCGC4 &= ~SIM_SCGC4_I2C0;// disable I2C clock
         }
     }
     /*******************************************************************************
@@ -423,10 +431,10 @@ extern "C" {
      *******************************************************************************/
     static inline void i2sEnable( void ) __attribute__((always_inline, unused));
     static inline void i2sEnable( void ) {
-        //if ((SIM_SCGC6 & SIM_SCGC6_I2S) == 0x00) {
-        if ((BITBAND_U32(SIM_SCGC6, SIM_SCGC6_I2S_BIT)) == 0x00) {
-            BITBAND_U32(SIM_SCGC6, SIM_SCGC6_I2S_BIT) = 0x01;
-            //SIM_SCGC6 |= SIM_SCGC6_I2S;// enable I2S clock
+        if ((SIM_SCGC6 & SIM_SCGC6_I2S) == 0x00) {
+        //if ((BITBAND_U32(SIM_SCGC6, SIM_SCGC6_I2S_BIT)) == 0x00) {
+            //BITBAND_U32(SIM_SCGC6, SIM_SCGC6_I2S_BIT) = 0x01;
+            SIM_SCGC6 |= SIM_SCGC6_I2S;// enable I2S clock
             I2S0_TCSR |= I2S_TCSR_TE_MASK;// enable I2S
         }
     }
@@ -437,11 +445,11 @@ extern "C" {
      *******************************************************************************/
     static inline void i2sDisable( void ) __attribute__((always_inline, unused));
     static inline void i2sDisable( void ) {
-        //if (SIM_SCGC6 & SIM_SCGC6_I2S) {
-        if ((BITBAND_U32(SIM_SCGC6, SIM_SCGC6_I2S_BIT)) == 0x01) {
+        if (SIM_SCGC6 & SIM_SCGC6_I2S) {
+        //if ((BITBAND_U32(SIM_SCGC6, SIM_SCGC6_I2S_BIT)) == 0x01) {
             I2S0_TCSR &= ~I2S_TCSR_TE_MASK;// disable I2S
-            BITBAND_U32(SIM_SCGC6, SIM_SCGC6_I2S_BIT) = 0x00;
-            //SIM_SCGC6 &= ~SIM_SCGC6_I2S;// disable I2S clock
+            //BITBAND_U32(SIM_SCGC6, SIM_SCGC6_I2S_BIT) = 0x00;
+            SIM_SCGC6 &= ~SIM_SCGC6_I2S;// disable I2S clock
         }
     }
     /*******************************************************************************
@@ -451,10 +459,10 @@ extern "C" {
      *******************************************************************************/
     static inline void lptmrEnable( void ) __attribute__((always_inline, unused));
     static inline void lptmrEnable( void ) {
-        //if (!(SIM_SCGC5 & SIM_SCGC5_LPTIMER) || !(LPTMR0_CSR & LPTMR_CSR_TEN_MASK)) {
-        if ((BITBAND_U32(SIM_SCGC5, SIM_SCGC5_LPTIMER_BIT)) == 0x00) {
-            BITBAND_U32(SIM_SCGC5, SIM_SCGC5_LPTIMER_BIT) = 0x01;
-            //SIM_SCGC5 |= SIM_SCGC5_LPTIMER;// enable LPTMR clock
+        if (!(SIM_SCGC5 & SIM_SCGC5_LPTIMER) || !(LPTMR0_CSR & LPTMR_CSR_TEN_MASK)) {
+        //if ((BITBAND_U32(SIM_SCGC5, SIM_SCGC5_LPTIMER_BIT)) == 0x00) {
+            //BITBAND_U32(SIM_SCGC5, SIM_SCGC5_LPTIMER_BIT) = 0x01;
+            SIM_SCGC5 |= SIM_SCGC5_LPTIMER;// enable LPTMR clock
             LPTMR0_CSR |= LPTMR_CSR_TEN_MASK;// enable LPTMR
         }
     }
@@ -465,12 +473,12 @@ extern "C" {
      *******************************************************************************/
     static inline void lptmrDisable( void ) __attribute__((always_inline, unused));
     static inline void lptmrDisable( void ) {
-        //if (SIM_SCGC5 & SIM_SCGC5_LPTIMER) {
-        if ((BITBAND_U32(SIM_SCGC5, SIM_SCGC5_LPTIMER_BIT)) == 0x01) {
+        if (SIM_SCGC5 & SIM_SCGC5_LPTIMER) {
+        //if ((BITBAND_U32(SIM_SCGC5, SIM_SCGC5_LPTIMER_BIT)) == 0x01) {
             //LPTMR0_CSR |= LPTMR_CSR_TCF_MASK;
             LPTMR0_CSR &= LPTMR_CSR_TEN_MASK;// disable LPTMR
-            BITBAND_U32(SIM_SCGC5, SIM_SCGC5_LPTIMER_BIT) = 0x00;
-            //SIM_SCGC5 &= ~SIM_SCGC5_LPTIMER;// disable LPTIMER clock
+            //BITBAND_U32(SIM_SCGC5, SIM_SCGC5_LPTIMER_BIT) = 0x00;
+            SIM_SCGC5 &= ~SIM_SCGC5_LPTIMER;// disable LPTIMER clock
         }
     }
     /*******************************************************************************
@@ -480,10 +488,10 @@ extern "C" {
      *******************************************************************************/
     static inline void pdbEnable( void ) __attribute__((always_inline, unused));
     static inline void pdbEnable( void ) {
-        //if ((SIM_SCGC6 & SIM_SCGC6_PDB) == 0x00) {
-        if ((BITBAND_U32(SIM_SCGC6, SIM_SCGC6_PDB_BIT)) == 0x00) {
-            BITBAND_U32(SIM_SCGC6, SIM_SCGC6_PDB_BIT) = 0x01;
-            //SIM_SCGC6 |= SIM_SCGC6_PDB;// enable PDB clock
+        if ((SIM_SCGC6 & SIM_SCGC6_PDB) == 0x00) {
+        //if ((BITBAND_U32(SIM_SCGC6, SIM_SCGC6_PDB_BIT)) == 0x00) {
+            //BITBAND_U32(SIM_SCGC6, SIM_SCGC6_PDB_BIT) = 0x01;
+            SIM_SCGC6 |= SIM_SCGC6_PDB;// enable PDB clock
             PDB0_SC |= PDB_SC_PDBEN;// enable PDB
         }
     }
@@ -494,11 +502,11 @@ extern "C" {
      *******************************************************************************/
     static inline void pdbDisable( void ) __attribute__((always_inline, unused));
     static inline void pdbDisable( void ) {
-        //if (SIM_SCGC6 & SIM_SCGC6_PDB) {
-        if ((BITBAND_U32(SIM_SCGC6, SIM_SCGC6_PDB_BIT)) == 0x01) {
+        if (SIM_SCGC6 & SIM_SCGC6_PDB) {
+        //if ((BITBAND_U32(SIM_SCGC6, SIM_SCGC6_PDB_BIT)) == 0x01) {
             PDB0_SC &= ~PDB_SC_PDBEN;// disable PDB
-            BITBAND_U32(SIM_SCGC6, SIM_SCGC6_PDB_BIT) = 0x00;
-            //SIM_SCGC6 &= ~SIM_SCGC6_PDB;// disable PDB clock
+            //BITBAND_U32(SIM_SCGC6, SIM_SCGC6_PDB_BIT) = 0x00;
+            SIM_SCGC6 &= ~SIM_SCGC6_PDB;// disable PDB clock
         }
     }
     /*******************************************************************************
@@ -508,12 +516,14 @@ extern "C" {
      *******************************************************************************/
     static inline void spiEnable( void ) __attribute__((always_inline, unused));
     static inline void spiEnable( void ) {
-        //if ((SIM_SCGC6 & SIM_SCGC6_SPI0) == 0x00) {
-        if ((BITBAND_U32(SIM_SCGC6, SIM_SCGC6_SPI0_BIT)) == 0x00) {
-            BITBAND_U32(SIM_SCGC6, SIM_SCGC6_SPI0_BIT) = 0x01;
-            //SIM_SCGC6 |= SIM_SCGC6_SPI0;// enable SPI clock
+#ifdef KINETISK
+        if ((SIM_SCGC6 & SIM_SCGC6_SPI0) == 0x00) {
+        //if ((BITBAND_U32(SIM_SCGC6, SIM_SCGC6_SPI0_BIT)) == 0x00) {
+            //BITBAND_U32(SIM_SCGC6, SIM_SCGC6_SPI0_BIT) = 0x01;
+            SIM_SCGC6 |= SIM_SCGC6_SPI0;// enable SPI clock
             SPI0_MCR |= SPI_MCR_MDIS;// enable SPI
         }
+#endif
     }
     /*******************************************************************************
      *
@@ -522,12 +532,14 @@ extern "C" {
      *******************************************************************************/
     static inline void spiDisable( void ) __attribute__((always_inline, unused));
     static inline void spiDisable( void ) {
-        //if (SIM_SCGC6 & SIM_SCGC6_SPI0) {
-        if ((BITBAND_U32(SIM_SCGC6, SIM_SCGC6_SPI0_BIT)) == 0x01) {
+#ifdef KINETISK
+        if (SIM_SCGC6 & SIM_SCGC6_SPI0) {
+        //if ((BITBAND_U32(SIM_SCGC6, SIM_SCGC6_SPI0_BIT)) == 0x01) {
             SPI0_MCR &= ~SPI_MCR_MDIS;// disable SPI
-            BITBAND_U32(SIM_SCGC6, SIM_SCGC6_SPI0_BIT) = 0x00;
-            //SIM_SCGC6 &= ~SIM_SCGC6_SPI0;// disable SPI clock
+            //BITBAND_U32(SIM_SCGC6, SIM_SCGC6_SPI0_BIT) = 0x00;
+            SIM_SCGC6 &= ~SIM_SCGC6_SPI0;// disable SPI clock
         }
+#endif
     }
     /*******************************************************************************
      *
@@ -536,10 +548,10 @@ extern "C" {
      *******************************************************************************/
     static inline void rtcEnable( void ) __attribute__((always_inline, unused));
     static inline void rtcEnable( void ) {
-        //if ((SIM_SCGC6 & SIM_SCGC6_RTC) == 0x00) {
-        if ((BITBAND_U32(SIM_SCGC6, SIM_SCGC6_RTC_BIT)) == 0x00) {
-            //SIM_SCGC6 |= SIM_SCGC6_RTC;// enable RTC clock
-            BITBAND_U32(SIM_SCGC6, SIM_SCGC6_RTC_BIT) = 0x01;
+        if ((SIM_SCGC6 & SIM_SCGC6_RTC) == 0x00) {
+        //if ((BITBAND_U32(SIM_SCGC6, SIM_SCGC6_RTC_BIT)) == 0x00) {
+            SIM_SCGC6 |= SIM_SCGC6_RTC;// enable RTC clock
+            //BITBAND_U32(SIM_SCGC6, SIM_SCGC6_RTC_BIT) = 0x01;
             RTC_CR |= RTC_CR_OSCE;// enable RTC
         }
     }
@@ -550,11 +562,11 @@ extern "C" {
      *******************************************************************************/
     static inline void rtcDisable( void ) __attribute__((always_inline, unused));
     static inline void rtcDisable( void ) {
-        //if (SIM_SCGC6 & SIM_SCGC6_RTC) {
-        if ((BITBAND_U32(SIM_SCGC6, SIM_SCGC6_RTC_BIT)) == 0x01) {
+        if (SIM_SCGC6 & SIM_SCGC6_RTC) {
+        //if ((BITBAND_U32(SIM_SCGC6, SIM_SCGC6_RTC_BIT)) == 0x01) {
             RTC_CR &= ~RTC_CR_OSCE;// disable RTC
-            BITBAND_U32(SIM_SCGC6, SIM_SCGC6_RTC_BIT) = 0x00;
-            //SIM_SCGC6 &= ~SIM_SCGC6_RTC;// disable RTC clock
+            //BITBAND_U32(SIM_SCGC6, SIM_SCGC6_RTC_BIT) = 0x00;
+            SIM_SCGC6 &= ~SIM_SCGC6_RTC;// disable RTC clock
         }
     }
     /*******************************************************************************
@@ -564,10 +576,10 @@ extern "C" {
      *******************************************************************************/
     static inline void tsiEnable( void ) __attribute__((always_inline, unused));
     static inline void tsiEnable( void ) {
-        //if ((SIM_SCGC5 & SIM_SCGC5_TSI) == 0x00) {
-        if ((BITBAND_U32(SIM_SCGC5, SIM_SCGC5_TSI_BIT)) == 0x00) {
-            BITBAND_U32(SIM_SCGC5, SIM_SCGC5_TSI_BIT) = 0x01;
-            //SIM_SCGC5 |= SIM_SCGC5_TSI;// enable TSI clock
+        if ((SIM_SCGC5 & SIM_SCGC5_TSI) == 0x00) {
+        //if ((BITBAND_U32(SIM_SCGC5, SIM_SCGC5_TSI_BIT)) == 0x00) {
+            //BITBAND_U32(SIM_SCGC5, SIM_SCGC5_TSI_BIT) = 0x01;
+            SIM_SCGC5 |= SIM_SCGC5_TSI;// enable TSI clock
             TSI0_GENCS |= TSI_GENCS_TSIEN;// enable TSI
         }
     }
@@ -578,11 +590,11 @@ extern "C" {
      *******************************************************************************/
     static inline void tsiDisable( void ) __attribute__((always_inline, unused));
     static inline void tsiDisable( void ) {
-        //if (SIM_SCGC5 & SIM_SCGC5_TSI) {
-        if ((BITBAND_U32(SIM_SCGC5, SIM_SCGC5_TSI_BIT)) == 0x01) {
+        if (SIM_SCGC5 & SIM_SCGC5_TSI) {
+        //if ((BITBAND_U32(SIM_SCGC5, SIM_SCGC5_TSI_BIT)) == 0x01) {
             TSI0_GENCS &= ~TSI_GENCS_TSIEN;// disable TSI
-            BITBAND_U32(SIM_SCGC5, SIM_SCGC5_TSI_BIT) = 0x00;
-            //SIM_SCGC5 &= ~SIM_SCGC5_TSI;// disable TSI clock
+            //BITBAND_U32(SIM_SCGC5, SIM_SCGC5_TSI_BIT) = 0x00;
+            SIM_SCGC5 &= ~SIM_SCGC5_TSI;// disable TSI clock
         }
     }
     /*******************************************************************************
@@ -592,10 +604,10 @@ extern "C" {
      *******************************************************************************/
     static inline void uart1Enable( void ) __attribute__((always_inline, unused));
     static inline void uart1Enable( void ) {
-        //if ((SIM_SCGC4 & SIM_SCGC4_UART0) == 0x00) {
-        if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART0_BIT)) == 0x00) {
-            BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART0_BIT) = 0x01;
-            //SIM_SCGC4 |= SIM_SCGC4_UART0;// enable UART1 clock
+        if ((SIM_SCGC4 & SIM_SCGC4_UART0) == 0x00) {
+        //if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART0_BIT)) == 0x00) {
+            //BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART0_BIT) = 0x01;
+            SIM_SCGC4 |= SIM_SCGC4_UART0;// enable UART1 clock
             UART0_C2 |= UART_C2_TE;// enable TX
             UART0_C2 |= UART_C2_RE;// enable RX
         }
@@ -607,12 +619,12 @@ extern "C" {
      *******************************************************************************/
     static inline void uart1Disable( void ) __attribute__((always_inline, unused));
     static inline void uart1Disable( void ) {
-        //if (SIM_SCGC4 & SIM_SCGC4_UART0) {
-        if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART0_BIT)) == 0x01) {
+        if (SIM_SCGC4 & SIM_SCGC4_UART0) {
+        //if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART0_BIT)) == 0x01) {
             UART0_C2 &= ~UART_C2_TE;// disable UART1 TX
             UART0_C2 &= ~UART_C2_RE;// disable UART1 RX
-            BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART0_BIT) = 0x00;
-            //SIM_SCGC4 &= ~SIM_SCGC4_UART0;// disable UART1 clock
+            //BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART0_BIT) = 0x00;
+            SIM_SCGC4 &= ~SIM_SCGC4_UART0;// disable UART1 clock
         }
     }
     /*******************************************************************************
@@ -622,10 +634,10 @@ extern "C" {
      *******************************************************************************/
     static inline void uart2Enable( void ) __attribute__((always_inline, unused));
     static inline void uart2Enable( void ) {
-        //if ((SIM_SCGC4 & SIM_SCGC4_UART1) == 0x00) {
-        if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART1_BIT)) == 0x00) {
-            BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART1_BIT) = 0x01;
-            //SIM_SCGC4 |= SIM_SCGC4_UART1;// enable UART2 clock
+        if ((SIM_SCGC4 & SIM_SCGC4_UART1) == 0x00) {
+        //if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART1_BIT)) == 0x00) {
+            //BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART1_BIT) = 0x01;
+            SIM_SCGC4 |= SIM_SCGC4_UART1;// enable UART2 clock
             UART1_C2 |= UART_C2_TE;// enable TX
             UART1_C2 |= UART_C2_RE;// enable RX
         }
@@ -637,12 +649,12 @@ extern "C" {
      *******************************************************************************/
     static inline void uart2Disable( void ) __attribute__((always_inline, unused));
     static inline void uart2Disable( void ) {
-        //if (SIM_SCGC4 & SIM_SCGC4_UART1) {
-        if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART1_BIT)) == 0x01) {
+        if (SIM_SCGC4 & SIM_SCGC4_UART1) {
+        //if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART1_BIT)) == 0x01) {
             UART1_C2 &= ~UART_C2_TE;// disable UART2 TX
             UART1_C2 &= ~UART_C2_RE;// disable  UART2 RX
-            BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART1_BIT) = 0x00;
-            //SIM_SCGC4 &= ~SIM_SCGC4_UART1;// disable UART2 clock
+            //BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART1_BIT) = 0x00;
+            SIM_SCGC4 &= ~SIM_SCGC4_UART1;// disable UART2 clock
         }
     }
     /*******************************************************************************
@@ -652,10 +664,10 @@ extern "C" {
      *******************************************************************************/
     static inline void uart3Enable( void ) __attribute__((always_inline, unused));
     static inline void uart3Enable( void ) {
-        //if ((SIM_SCGC4 & SIM_SCGC4_UART2) == 0x00) {
-        if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART2_BIT)) == 0x00) {
-            BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART2_BIT) = 0x01;
-            //SIM_SCGC4 |= SIM_SCGC4_UART2;// enable UART3 clock
+        if ((SIM_SCGC4 & SIM_SCGC4_UART2) == 0x00) {
+        //if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART2_BIT)) == 0x00) {
+            //BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART2_BIT) = 0x01;
+            SIM_SCGC4 |= SIM_SCGC4_UART2;// enable UART3 clock
             UART2_C2 |= UART_C2_TE;// enable TX
             UART2_C2 |= UART_C2_RE;// enable RX
         }
@@ -667,12 +679,12 @@ extern "C" {
      *******************************************************************************/
     static inline void uart3Disable( void ) __attribute__((always_inline, unused));
     static inline void uart3Disable( void ) {
-        //if (SIM_SCGC4 & SIM_SCGC4_UART2) {
-        if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART2_BIT)) == 0x01) {
+        if (SIM_SCGC4 & SIM_SCGC4_UART2) {
+        //if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART2_BIT)) == 0x01) {
             UART2_C2 &= ~UART_C2_TE;// disable UART3 TX
             UART2_C2 &= ~UART_C2_RE;// disable  UART3 RX
-            BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART2_BIT) = 0x00;
-            //SIM_SCGC4 &= ~SIM_SCGC4_UART2;// disable UART3 clock
+            //BITBAND_U32(SIM_SCGC4, SIM_SCGC4_UART2_BIT) = 0x00;
+            SIM_SCGC4 &= ~SIM_SCGC4_UART2;// disable UART3 clock
         }
     }
     /*******************************************************************************
@@ -682,10 +694,10 @@ extern "C" {
      *******************************************************************************/
     static inline void usbEnable( void ) __attribute__((always_inline, unused));
     static inline void usbEnable( void ) {
-        //if ((SIM_SCGC4 & SIM_SCGC4_USBOTG) == 0x00) {
-        if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_USBOTG_BIT)) == 0x00) {
-            BITBAND_U32(SIM_SCGC4, SIM_SCGC4_USBOTG_BIT) = 0x01;
-            //SIM_SCGC4 |= SIM_SCGC4_USBOTG;// enable USB clock
+        if ((SIM_SCGC4 & SIM_SCGC4_USBOTG) == 0x00) {
+        //if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_USBOTG_BIT)) == 0x00) {
+            //BITBAND_U32(SIM_SCGC4, SIM_SCGC4_USBOTG_BIT) = 0x01;
+            SIM_SCGC4 |= SIM_SCGC4_USBOTG;// enable USB clock
             USB0_USBCTRL &= ~USB_USBCTRL_SUSP;// suspended State
             USB0_CTL |= USB_CTL_USBENSOFEN;// enable USB
             while ((USB0_CTL & USB_CTL_USBENSOFEN) != 0x01) ;
@@ -699,13 +711,13 @@ extern "C" {
      *******************************************************************************/
     static inline void usbDisable( void ) __attribute__((always_inline, unused));
     static inline void usbDisable( void ) {
-        //if (SIM_SCGC4 & SIM_SCGC4_USBOTG) {
-        if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_USBOTG_BIT)) == 0x01) {
+        if (SIM_SCGC4 & SIM_SCGC4_USBOTG) {
+        //if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_USBOTG_BIT)) == 0x01) {
             USB0_USBCTRL |= USB_USBCTRL_SUSP;// suspended State
             USB0_CTL &= ~USB_CTL_USBENSOFEN;// disable USB
             while ((USB0_CTL & USB_CTL_USBENSOFEN) != 0x00) ;
-            BITBAND_U32(SIM_SCGC4, SIM_SCGC4_USBOTG_BIT) = 0x00;
-            //SIM_SCGC4 &= ~SIM_SCGC4_USBOTG;// disable USB clock
+            //BITBAND_U32(SIM_SCGC4, SIM_SCGC4_USBOTG_BIT) = 0x00;
+            SIM_SCGC4 &= ~SIM_SCGC4_USBOTG;// disable USB clock
         }
     }
     /*******************************************************************************
@@ -715,10 +727,10 @@ extern "C" {
      *******************************************************************************/
     static inline void vrefEnable( void ) __attribute__((always_inline, unused));
     static inline void vrefEnable( void ) {
-        //if ((SIM_SCGC4 & SIM_SCGC4_VREF) == 0x00) {
-        if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_VREF_BIT)) == 0x00) {
-            BITBAND_U32(SIM_SCGC4, SIM_SCGC4_VREF_BIT) = 0x01;
-            //SIM_SCGC4 |= SIM_SCGC4_VREF;// enable VREF clock
+        if ((SIM_SCGC4 & SIM_SCGC4_VREF) == 0x00) {
+        //if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_VREF_BIT)) == 0x00) {
+            //BITBAND_U32(SIM_SCGC4, SIM_SCGC4_VREF_BIT) = 0x01;
+            SIM_SCGC4 |= SIM_SCGC4_VREF;// enable VREF clock
             VREF_SC |= VREF_SC_VREFEN_MASK;// enable VREF
         }
     }
@@ -729,13 +741,14 @@ extern "C" {
      *******************************************************************************/
     static inline void vrefDisable( void ) __attribute__((always_inline, unused));
     static inline void vrefDisable( void ) {
-        //if (SIM_SCGC4 & SIM_SCGC4_VREF) {
-        if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_VREF_BIT)) == 0x01) {
+        if (SIM_SCGC4 & SIM_SCGC4_VREF) {
+        //if ((BITBAND_U32(SIM_SCGC4, SIM_SCGC4_VREF_BIT)) == 0x01) {
             VREF_SC &= ~VREF_SC_VREFEN_MASK;// disable VREF
-            BITBAND_U32(SIM_SCGC4, SIM_SCGC4_VREF_BIT) = 0x00;
-            //SIM_SCGC4 &= ~SIM_SCGC4_VREF;// disable VREF clock
+            //BITBAND_U32(SIM_SCGC4, SIM_SCGC4_VREF_BIT) = 0x00;
+            SIM_SCGC4 &= ~SIM_SCGC4_VREF;// disable VREF clock
         }
     }
+    
 #ifdef __cplusplus
 }
 #endif

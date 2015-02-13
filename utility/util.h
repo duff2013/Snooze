@@ -37,6 +37,7 @@ extern "C" {
             case IRQ_PORTA:
                 _VectorsRam[irq + 16] = porta_isr;
                 break;
+#if defined(__MK20DX128__) || defined(__MK20DX256__)
             case IRQ_PORTB:
                 _VectorsRam[irq + 16] = portb_isr;
                 break;
@@ -49,6 +50,11 @@ extern "C" {
             case IRQ_PORTE:
                 _VectorsRam[irq + 16] = porte_isr;
                 break;
+#elif defined(__MKL26Z64__)
+            case IRQ_PORTCD:
+                _VectorsRam[irq + 16] = portcd_isr;
+                break;
+#endif
             case IRQ_TSI:
                 _VectorsRam[irq + 16] = tsi0_isr;
                 break;
