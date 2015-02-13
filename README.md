@@ -1,7 +1,7 @@
 #Snooze
 >Updated for initial TeensyLC support, not all wakeup sources are available, RTC, TSI, CMP and some digital pins are not waking the LC up either.
 
->This library is the latest revision based on my earlier work on the LowPowwer_Teensy3. I changed the name to not conflict with the Arduino LowPower library plus I think it sounds cooler.
+>This library is the latest revision based on my earlier work on the LowPower_Teensy3. I changed the name to not conflict with the Arduino LowPower library plus I think it sounds cooler.
 
 <h4>Compatible with Teensyduino 1.20</h4> 
 
