@@ -1,6 +1,6 @@
 /*
  *  module.h
- *  Teensy3
+ *  Teensy 3.x/LC
  *
  */
 #ifndef __MODULE_H__
@@ -25,57 +25,6 @@
 #define SIM_SCGC6_PDB_BIT       22 //0x16
 #define SIM_SCGC6_ADC0_BIT      27 //0x1B
 #define SIM_SCGC6_RTC_BIT       29 //0x1D
-
-/*typedef enum {
-    ADC_ON      = SIM_SCGC6_ADC0,
-    CMP_ON      = SIM_SCGC4_CMP,
-    I2C0_ON     = SIM_SCGC4_I2C0,
-    I2C1_ON     = SIM_SCGC4_I2C1,
-    I2S_ON      = SIM_SCGC6_I2S,
-    LPTMR_ON    = SIM_SCGC5_LPTIMER,
-    PDB_ON      = SIM_SCGC6_PDB,
-    SPI0_ON     = SIM_SCGC6_SPI0,
-    SPI1_ON     = SIM_SCGC6_SPI1,
-    RTC_ON      = SIM_SCGC6_RTC,
-    TSI_ON      = SIM_SCGC5_TSI,
-    UART2_ON    = SIM_SCGC4_UART0,
-    UART1_ON    = SIM_SCGC4_UART1,
-    UART3_ON    = SIM_SCGC4_UART2,
-    USB_ON      = SIM_SCGC4_USBOTG,
-    VREF_ON     = SIM_SCGC4_VREF,
-    ADC_ON      = 0x01,
-    ADC_OFF     = 0x02,
-    CMP_ON      = 0x04,
-    CMP_OFF     = 0x08,
-    DMA_ON      = 0x10,
-    DMA_OFF     = 0x20,
-    I2C_ON      = 0x40,
-    I2C_OFF     = 0x80,
-    I2S_ON      = 0x100,
-    I2S_OFF     = 0x200,
-    LPTMR_ON    = 0x400,
-    LPTMR_OFF   = 0x800,
-    PDB_ON      = 0x1000,
-    PDB_OFF     = 0x2000,
-    SPI_ON      = 0x4000,
-    SPI_OFF     = 0x8000,
-    RTC_ON      = 0x10000,
-    RTC_OFFz    = 0x20000,
-    TSI_ON      = 0x40000,
-    TSI_OFF     = 0x80000,
-    UART1_ON    = 0x100000,
-    UART1_OFF   = 0x200000,
-    UART2_ON    = 0x400000,
-    UART2_OFF   = 0x800000,
-    UART3_ON    = 0x1000000,
-    UART3_OFF   = 0x2000000,
-    USB_ON      = 0x4000000,
-    USB_OFF     = 0x8000000,
-    VREF_ON     = 0x10000000,
-    VREF_OFF    = 0x20000000,
-    ALL_ON      = 0x40000000,
-    ALL_OFF     = 0x80000000,
-} mod_type_t;*/
 //-------------------------------------
 typedef enum {
     CMP_OFF      = SIM_SCGC4_CMP,
@@ -153,113 +102,6 @@ extern "C" {
      *******************************************************************************/
     static inline void peripheral_configure_scgc4_mask( uint32_t unit, peripheral_mask_t *mask ) __attribute__((always_inline, unused));
     static inline void peripheral_configure_scgc4_mask( uint32_t unit, peripheral_mask_t *mask ) {
-        /*switch ( unit ) {
-            case ADC_OFF:
-                mask->SCGC6 |= SIM_SCGC6_ADC0;
-                break;
-            case ADC_ON:
-                mask->SCGC6 &= ~SIM_SCGC6_ADC0;
-                break;
-            case CMP_OFF:
-                mask->SCGC4 |= SIM_SCGC4_CMP;
-                break;
-            case CMP_ON:
-                mask->SCGC4 &= ~SIM_SCGC4_CMP;
-                break;
-            case DMA_OFF:
-                // TODO: CAN THIS BE TURNED ON?
-                break;
-            case DMA_ON:
-                // TODO: CAN THIS BE TURNED OFF?
-                break;
-            case I2C_OFF:
-                mask->SCGC4 |= SIM_SCGC4_I2C0;
-                // TODO: SET I2C1
-                break;
-            case I2C_ON:
-                mask->SCGC4 &= ~SIM_SCGC4_I2C0;
-                break;
-            case I2S_OFF:
-                mask->SCGC6 |= SIM_SCGC6_I2S;
-                break;
-            case I2S_ON:
-                mask->SCGC6 &= ~SIM_SCGC6_I2S;
-                break;
-            case LPTMR_OFF:
-                mask->SCGC5 |= SIM_SCGC5_LPTIMER;
-                break;
-            case LPTMR_ON:
-                mask->SCGC5 &= ~SIM_SCGC5_LPTIMER;
-                break;
-            case PDB_OFF:
-                mask->SCGC6 |= SIM_SCGC6_PDB;
-                break;
-            case PDB_ON:
-                mask->SCGC6 &= ~SIM_SCGC6_PDB;
-                break;
-            case SPI_OFF:
-                mask->SCGC6 |= SIM_SCGC6_SPI0;
-                // TODO: SET SIM_SCGC6_SPI1
-                break;
-            case SPI_ON:
-                mask->SCGC6 &= ~SIM_SCGC6_SPI0;
-                // TODO: CLEAR SIM_SCGC6_SPI1
-                break;
-            case RTC_OFF:
-                mask->SCGC6 |= SIM_SCGC6_RTC;
-                break;
-            case RTC_ON:
-                mask->SCGC6 &= ~SIM_SCGC6_RTC;
-                break;
-            case TSI_OFF:
-                mask->SCGC5 |= SIM_SCGC5_TSI;
-                break;
-            case TSI_ON:
-                mask->SCGC5 &= ~SIM_SCGC5_TSI;
-                break;
-            case UART1_OFF:
-                mask->SCGC4 |= SIM_SCGC4_UART0;
-                break;
-            case UART1_ON:
-                mask->SCGC4 &= ~SIM_SCGC4_UART0;
-                break;
-            case UART2_OFF:
-                mask->SCGC4 |= SIM_SCGC4_UART1;
-                break;
-            case UART2_ON:
-                mask->SCGC4 &= ~SIM_SCGC4_UART1;
-                break;
-            case UART3_OFF:
-                mask->SCGC4 |= SIM_SCGC4_UART2;
-                break;
-            case UART3_ON:
-                mask->SCGC4 &= ~SIM_SCGC4_UART2;
-                break;
-            case USB_OFF:
-                mask->SCGC4 |= SIM_SCGC4_USBOTG;
-                break;
-            case USB_ON:
-                mask->SCGC4 &= ~SIM_SCGC4_USBOTG;
-                break;
-            case VREF_OFF:
-                mask->SCGC4 |= SIM_SCGC4_VREF;
-                break;
-            case VREF_ON:
-                mask->SCGC4 &= ~SIM_SCGC4_VREF;
-                break;
-            case ALL_OFF:
-                // TODO: TURN ALL ON?
-                break;
-            case ALL_ON:
-                // TODO: TURN ALL OFF
-                break;
-            default:
-                break;
-        }*/
-        //int n = __builtin_clz( unit );
-        //n = n%2;
-        //if ( n == 0 ) mask->SCGC4 &= ~( unit >> 1 );
-        //else mask->SCGC4 |= unit;
         mask->SCGC4 |= unit;
     }
     // ---------------------------------------------------------------------------------

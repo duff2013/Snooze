@@ -1,6 +1,6 @@
 /*******************************************************************************
  *  Snooze.cpp
- *  Teensy3
+ *  Teensy 3.x/LC
  *
  * Purpose:    Provides routines for configuring the Teensy for low power.
  *

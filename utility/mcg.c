@@ -24,7 +24,7 @@ void pee_blpe( void ) {
     // first move from PEE to PBE
     MCG_C1 |= MCG_C1_CLKS( 0x02 ); // select external reference clock as MCG_OUT
     // Wait for clock status bits to update indicating clock has switched
-    while ( (MCG_S & MCG_S_CLKST_MASK) != MCG_S_CLKST( 0x02 ) ) ;
+    while ( ( MCG_S & MCG_S_CLKST_MASK ) != MCG_S_CLKST( 0x02 ) ) ;
     MCG_C2 |= MCG_C2_LP; // set the LP bit to enter BLPE
 }
 
@@ -41,26 +41,34 @@ void blpe_pee( void ) {
     // ensure the system clock speeds are in spec.
 #if F_CPU == 168000000
     // config divisors: 168 MHz core, 56 MHz bus, 33.6 MHz flash
-    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 2 ) |	 SIM_CLKDIV1_OUTDIV4( 4 );
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 2 ) | SIM_CLKDIV1_OUTDIV4( 4 );
 #elif F_CPU == 144000000
     // config divisors: 144 MHz core, 48 MHz bus, 28.8 MHz flash
-    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 2 ) |	 SIM_CLKDIV1_OUTDIV4( 4 );
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 2 ) |	SIM_CLKDIV1_OUTDIV4( 4 );
 #elif F_CPU == 120000000
     // config divisors: 120 MHz core, 60 MHz bus, 24 MHz flash
-    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 1 ) |	 SIM_CLKDIV1_OUTDIV4( 4 );
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 1 ) | SIM_CLKDIV1_OUTDIV4( 4 );
 #elif F_CPU == 96000000
     // config divisors: 96 MHz core, 48 MHz bus, 24 MHz flash
-    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 1 ) |	 SIM_CLKDIV1_OUTDIV4( 3 );
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 1 ) |	SIM_CLKDIV1_OUTDIV4( 3 );
 #elif F_CPU == 72000000
     // config divisors: 72 MHz core, 36 MHz bus, 24 MHz flash
-    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 1 ) |	 SIM_CLKDIV1_OUTDIV4( 2 );
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 1 ) | SIM_CLKDIV1_OUTDIV4( 2 );
 #elif F_CPU == 48000000
     // config divisors: 48 MHz core, 48 MHz bus, 24 MHz flash
-    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 1 ) | SIM_CLKDIV1_OUTDIV2( 1 ) |	 SIM_CLKDIV1_OUTDIV4( 3 );
+    #if defined(KINETISK)
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 1 ) | SIM_CLKDIV1_OUTDIV2( 1 ) |	SIM_CLKDIV1_OUTDIV4( 3 );
+    #elif defined(KINETISL)
+    // config divisors: 48 MHz core, 24 MHz bus, 24 MHz flash
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 1 ) | SIM_CLKDIV1_OUTDIV4( 1 );
+    #endif
 #elif F_CPU == 24000000
     // config divisors: 24 MHz core, 24 MHz bus, 24 MHz flash
-    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 3 ) | SIM_CLKDIV1_OUTDIV2( 3 ) |	 SIM_CLKDIV1_OUTDIV4( 3 );
-#else
+    #if defined(KINETISK)
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 3 ) | SIM_CLKDIV1_OUTDIV2( 3 ) |	SIM_CLKDIV1_OUTDIV4( 3 );
+    #elif defined(KINETISL)
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 3 ) | SIM_CLKDIV1_OUTDIV4( 0 );
+    #endif
 //#error "Error, F_CPU must be 96000000, 48000000, or 24000000"
 #endif
     // now in PEE
@@ -74,7 +82,7 @@ void pee_blpi( void ) {
     // first move from PEE to PBE
     MCG_C1 |= MCG_C1_CLKS( 0x02 ); // select external reference clock as MCG_OUT
     // Wait for clock status bits to update indicating clock has switched
-    while ( (MCG_S & MCG_S_CLKST_MASK) != MCG_S_CLKST( 2 ) ) ;
+    while ( ( MCG_S & MCG_S_CLKST_MASK ) != MCG_S_CLKST( 2 ) ) ;
     // now move to FBE mode
     // make sure the FRDIV is configured to keep the FLL reference within spec.
     MCG_C1 &= ~MCG_C1_FRDIV_MASK; // clear FRDIV field
@@ -89,11 +97,11 @@ void pee_blpi( void ) {
     // set IREFS to 1 to select internal reference clock
     MCG_C1 = MCG_C1_CLKS( 0x01 ) | MCG_C1_FRDIV( 0x04 ) | MCG_C1_IREFS;
     // wait for internal reference to be selected
-    while ( !(MCG_S & MCG_S_IREFST) ) ;
+    while ( !( MCG_S & MCG_S_IREFST ) ) ;
     // wait for fast internal reference to be selected
-    while ( !(MCG_S & MCG_S_IRCST) ) ;
+    while ( !( MCG_S & MCG_S_IRCST ) ) ;
     // wait for clock to switch to IRC
-    while ( (MCG_S & MCG_S_CLKST_MASK) != MCG_S_CLKST( 1 ) ) ;
+    while ( ( MCG_S & MCG_S_CLKST_MASK ) != MCG_S_CLKST( 1 ) ) ;
     // now move to BLPI
     MCG_C2 |= MCG_C2_LP; // set the LP bit to enter BLPI
     mcg_div(0x00, 0x00, 0x01, 1999);
@@ -110,11 +118,11 @@ void blpi_pee( void ) {
     // it is assumed the oscillator parameters in MCG_C2 have not been changed
     MCG_C1 = MCG_C1_CLKS( 0x02 ) | MCG_C1_FRDIV( 0x04 );
     // wait for the oscillator to initialize again
-    while ( !(MCG_S & MCG_S_OSCINIT0) ) ;
+    while ( !( MCG_S & MCG_S_OSCINIT0 ) ) ;
     // wait for Reference clock to switch to external reference
     while ( MCG_S & MCG_S_IREFST ) ;
     // wait for MCGOUT to switch over to the external reference clock
-    while ( (MCG_S & MCG_S_CLKST_MASK) != MCG_S_CLKST( 0x02 ) ) ;
+    while ( ( MCG_S & MCG_S_CLKST_MASK ) != MCG_S_CLKST( 0x02 ) ) ;
     // configure PLL and system clock dividers
     // if we need faster than the crystal, turn on the PLL
 #if F_CPU == 168000000
@@ -134,31 +142,39 @@ void blpi_pee( void ) {
     // ensure the system clock speeds are in spec.
 #if F_CPU == 168000000
     // config divisors: 168 MHz core, 56 MHz bus, 33.6 MHz flash
-    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 2 ) |	 SIM_CLKDIV1_OUTDIV4( 4 );
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 2 ) |	SIM_CLKDIV1_OUTDIV4( 4 );
 #elif F_CPU == 144000000
     // config divisors: 144 MHz core, 48 MHz bus, 28.8 MHz flash
-    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 2 ) |	 SIM_CLKDIV1_OUTDIV4( 4 );
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 2 ) | SIM_CLKDIV1_OUTDIV4( 4 );
 #elif F_CPU == 120000000
     // config divisors: 120 MHz core, 60 MHz bus, 24 MHz flash
-    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 1 ) |	 SIM_CLKDIV1_OUTDIV4( 4 );
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 1 ) |	SIM_CLKDIV1_OUTDIV4( 4 );
 #elif F_CPU == 96000000
     // config divisors: 96 MHz core, 48 MHz bus, 24 MHz flash
-    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 1 ) |	 SIM_CLKDIV1_OUTDIV4( 3 );
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 1 ) | SIM_CLKDIV1_OUTDIV4( 3 );
 #elif F_CPU == 72000000
     // config divisors: 72 MHz core, 36 MHz bus, 24 MHz flash
-    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 1 ) |	 SIM_CLKDIV1_OUTDIV4( 2 );
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 1 ) |	SIM_CLKDIV1_OUTDIV4( 2 );
 #elif F_CPU == 48000000
     // config divisors: 48 MHz core, 48 MHz bus, 24 MHz flash
-    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 1 ) | SIM_CLKDIV1_OUTDIV2( 1) |	 SIM_CLKDIV1_OUTDIV4( 3 );
+    #if defined(KINETISK)
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 1 ) | SIM_CLKDIV1_OUTDIV2( 1 ) |	SIM_CLKDIV1_OUTDIV4( 3 );
+    #elif defined(KINETISL)
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 1 ) | SIM_CLKDIV1_OUTDIV4( 1 );
+    #endif
 #elif F_CPU == 24000000
     // config divisors: 24 MHz core, 24 MHz bus, 24 MHz flash
-    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 3 ) | SIM_CLKDIV1_OUTDIV2( 3 ) |	 SIM_CLKDIV1_OUTDIV4( 3 );
+    #if defined( KINETISK )
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 3 ) | SIM_CLKDIV1_OUTDIV2( 3 ) |	SIM_CLKDIV1_OUTDIV4( 3 );
+    #elif defined( KINETISL )
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 3 ) | SIM_CLKDIV1_OUTDIV4( 0 );
+    #endif
 #else
 //#error "Error, F_CPU must be 168, 144, 120, 96, 72, 48, 24, 16, 8, 4, or 2 MHz"
 #endif
     // switch to PLL as clock source, FLL input = 16 MHz / 512
     MCG_C1 = MCG_C1_CLKS( 0x00 ) | MCG_C1_FRDIV( 0x04 );
-    while ( (MCG_S & MCG_S_CLKST_MASK) != MCG_S_CLKST( 0x03 ) ) ;
+    while ( ( MCG_S & MCG_S_CLKST_MASK ) != MCG_S_CLKST( 0x03 ) ) ;
     // reinitialize the SysTick counter
     SYST_RVR = ( F_CPU / 1000 ) - 1;
 }
@@ -171,7 +187,7 @@ void blpi_blpe( void ) {
     // enable capacitors for crystal
     OSC0_CR = OSC_SC8P | OSC_SC2P;
     // enable osc, 8-32 MHz range, low power mode
-    MCG_C2 = MCG_C2_RANGE0(2) | MCG_C2_EREFS;
+    MCG_C2 = MCG_C2_RANGE0( 2 ) | MCG_C2_EREFS;
     // move to FBE
     // clear IREFS to select the external ref clock
     // set CLKS = 2 to select the ext ref clock as clk source
@@ -179,17 +195,17 @@ void blpi_blpe( void ) {
     MCG_C1 = MCG_C1_CLKS( 0x02 ) | MCG_C1_FRDIV( 0x04 );
     
     // wait for the oscillator to initialize again
-    while ( !(MCG_S & MCG_S_OSCINIT0) ) ;
+    while ( !( MCG_S & MCG_S_OSCINIT0 ) ) ;
     
     // wait for Reference clock to switch to external reference
     while ( MCG_S & MCG_S_IREFST ) ;
     
     // wait for MCGOUT to switch over to the external reference clock
-    while ( (MCG_S & MCG_S_CLKST_MASK) != MCG_S_CLKST( 0x02 ) ) ;
+    while ( ( MCG_S & MCG_S_CLKST_MASK ) != MCG_S_CLKST( 0x02 ) ) ;
     // To move from FBE to BLPE the LP bit must be set
     MCG_C2 |= MCG_C2_LP; // set LP bit
     
-    const uint32_t div = ( 16/(F_CPU/1000000) )-1;
+    const uint32_t div = ( 16/( F_CPU/1000000 ) )-1;
     const uint32_t systck = F_CPU - 1;
     mcg_div( div, div, div, systck );
 }
@@ -205,9 +221,9 @@ void blpe_blpi( void ) {
     // wait for Reference clock to switch to internal reference
     while ( MCG_S & MCG_S_IREFST ) ;
     // wait for MCGOUT to switch over to the internal reference clock
-    while ( (MCG_S & MCG_S_CLKST_MASK) != MCG_S_CLKST( 0x01 ) ) ;
+    while ( ( MCG_S & MCG_S_CLKST_MASK ) != MCG_S_CLKST( 0x01 ) ) ;
     MCG_C2 = MCG_C2_IRCS;
-    while (!(MCG_S & MCG_S_IRCST)) ;
+    while ( !(MCG_S & MCG_S_IRCST ) ) ;
     // To move from FBI to BLPI the LP bit must be set
     MCG_C2 |= MCG_C2_LP; // set LP bit
     mcg_div( 0x00, 0x00, 0x01, 1999 );
@@ -221,67 +237,67 @@ void pbe_pee( void ) {
     MCG_C1 = 0x00;
     MCG_C1 = MCG_C1_CLKS( 0 ) | MCG_C1_FRDIV( 4 );
     // wait for PLL clock to be used
-    while ( (MCG_S & MCG_S_CLKST_MASK) != MCG_S_CLKST( 0x03 ) ) ;
+    while ( ( MCG_S & MCG_S_CLKST_MASK ) != MCG_S_CLKST( 0x03 ) ) ;
 }
 
 CLOCK_MODE mcg_mode( void ) {
     // check if in FEI mode
-    if ( ( ( (MCG_S & MCG_S_CLKST_MASK) >> MCG_S_CLKST_SHIFT) == 0x00 ) &&     // check CLKS mux has selcted FLL output
+    if ( ( ( ( MCG_S & MCG_S_CLKST_MASK ) >> MCG_S_CLKST_SHIFT ) == 0x00 ) &&     // check CLKS mux has selcted FLL output
         ( MCG_S & MCG_S_IREFST_MASK ) &&                                     // check FLL ref is internal ref clk
-        ( !(MCG_S & MCG_S_PLLST_MASK) ) )                                     // check PLLS mux has selected FLL
+        ( !(  MCG_S & MCG_S_PLLST_MASK) ) )                                     // check PLLS mux has selected FLL
     {
         return FEI;                                                          // return FEI code
     }
     // Check MCG is in PEE mode
-    else if ( ( ( (MCG_S & MCG_S_CLKST_MASK) >> MCG_S_CLKST_SHIFT) == 0x03 ) && // check CLKS mux has selcted PLL output
-             ( !(MCG_S & MCG_S_IREFST_MASK) ) &&                              // check FLL ref is external ref clk
-             (MCG_S & MCG_S_PLLST_MASK) )                                    // check PLLS mux has selected PLL
+    else if ( ( ( ( MCG_S & MCG_S_CLKST_MASK ) >> MCG_S_CLKST_SHIFT ) == 0x03 ) && // check CLKS mux has selcted PLL output
+             ( !( MCG_S & MCG_S_IREFST_MASK ) ) &&                              // check FLL ref is external ref clk
+             ( MCG_S & MCG_S_PLLST_MASK ) )                                    // check PLLS mux has selected PLL
     {
         return PEE;                                                          // return PEE code
     }
     // Check MCG is in PBE mode
-    else if ( ( ( (MCG_S & MCG_S_CLKST_MASK) >> MCG_S_CLKST_SHIFT) == 0x02 ) && // check CLKS mux has selcted external reference
-             ( !(MCG_S & MCG_S_IREFST_MASK) ) &&                              // check FLL ref is external ref clk
-             (MCG_S & MCG_S_PLLST_MASK) &&                                  // check PLLS mux has selected PLL
-             ( !(MCG_C2 & MCG_C2_LP_MASK) ) )                                  // check MCG_C2[LP] bit is not set
+    else if ( ( ( ( MCG_S & MCG_S_CLKST_MASK ) >> MCG_S_CLKST_SHIFT ) == 0x02 ) && // check CLKS mux has selcted external reference
+             ( !( MCG_S & MCG_S_IREFST_MASK ) ) &&                              // check FLL ref is external ref clk
+             ( MCG_S & MCG_S_PLLST_MASK ) &&                                  // check PLLS mux has selected PLL
+             ( !( MCG_C2 & MCG_C2_LP_MASK ) ) )                                  // check MCG_C2[LP] bit is not set
     {
         return PBE;                                                          // return PBE code
     }
     // Check MCG is in FBE mode
-    else if ( ( ( (MCG_S & MCG_S_CLKST_MASK) >> MCG_S_CLKST_SHIFT) == 0x02 ) && // check CLKS mux has selcted external reference
-             ( !(MCG_S & MCG_S_IREFST_MASK) ) &&                              // check FLL ref is external ref clk
-             ( !(MCG_S & MCG_S_PLLST_MASK) ) &&                               // check PLLS mux has selected FLL
-             ( !(MCG_C2 & MCG_C2_LP_MASK) ) )                                  // check MCG_C2[LP] bit is not set
+    else if ( ( ( ( MCG_S & MCG_S_CLKST_MASK) >> MCG_S_CLKST_SHIFT ) == 0x02 ) && // check CLKS mux has selcted external reference
+             ( !( MCG_S & MCG_S_IREFST_MASK ) ) &&                              // check FLL ref is external ref clk
+             ( !( MCG_S & MCG_S_PLLST_MASK ) ) &&                               // check PLLS mux has selected FLL
+             ( !( MCG_C2 & MCG_C2_LP_MASK ) ) )                                  // check MCG_C2[LP] bit is not set
     {
         return FBE;                                                          // return FBE code
     }
     // Check MCG is in BLPE mode
-    else if ( ( ( (MCG_S & MCG_S_CLKST_MASK) >> MCG_S_CLKST_SHIFT) == 0x02 ) && // check CLKS mux has selcted external reference
-             ( !(MCG_S & MCG_S_IREFST_MASK) ) &&                              // check FLL ref is external ref clk
-             (MCG_C2 & MCG_C2_LP_MASK) )                                     // check MCG_C2[LP] bit is set
+    else if ( ( ( ( MCG_S & MCG_S_CLKST_MASK ) >> MCG_S_CLKST_SHIFT ) == 0x02 ) && // check CLKS mux has selcted external reference
+             ( !( MCG_S & MCG_S_IREFST_MASK ) ) &&                              // check FLL ref is external ref clk
+             ( MCG_C2 & MCG_C2_LP_MASK ) )                                     // check MCG_C2[LP] bit is set
     {
         return BLPE;                                                         // return BLPE code
     }
     // check if in BLPI mode
-    else if ( ( ( (MCG_S & MCG_S_CLKST_MASK) >> MCG_S_CLKST_SHIFT) == 0x01 ) && // check CLKS mux has selcted int ref clk
-             (MCG_S & MCG_S_IREFST_MASK) &&                                 // check FLL ref is internal ref clk
-             ( !(MCG_S & MCG_S_PLLST_MASK) ) &&                               // check PLLS mux has selected FLL
-             (MCG_C2 & MCG_C2_LP_MASK) )                                     // check LP bit is set
+    else if ( ( ( ( MCG_S & MCG_S_CLKST_MASK ) >> MCG_S_CLKST_SHIFT ) == 0x01 ) && // check CLKS mux has selcted int ref clk
+             ( MCG_S & MCG_S_IREFST_MASK ) &&                                 // check FLL ref is internal ref clk
+             ( !( MCG_S & MCG_S_PLLST_MASK ) ) &&                               // check PLLS mux has selected FLL
+             ( MCG_C2 & MCG_C2_LP_MASK ) )                                     // check LP bit is set
     {
         return BLPI;                                                         // return BLPI code
     }
     // check if in FBI mode
-    else if ( ( ( (MCG_S & MCG_S_CLKST_MASK) >> MCG_S_CLKST_SHIFT) == 0x01 ) && // check CLKS mux has selcted int ref clk
-             (MCG_S & MCG_S_IREFST_MASK) &&                                 // check FLL ref is internal ref clk
-             ( !(MCG_S & MCG_S_PLLST_MASK) ) &&                               // check PLLS mux has selected FLL
-             ( !(MCG_C2 & MCG_C2_LP_MASK) ) )                                  // check LP bit is clear
+    else if ( ( ( ( MCG_S & MCG_S_CLKST_MASK ) >> MCG_S_CLKST_SHIFT ) == 0x01 ) && // check CLKS mux has selcted int ref clk
+             ( MCG_S & MCG_S_IREFST_MASK ) &&                                 // check FLL ref is internal ref clk
+             ( !( MCG_S & MCG_S_PLLST_MASK ) ) &&                               // check PLLS mux has selected FLL
+             ( !( MCG_C2 & MCG_C2_LP_MASK ) ) )                                  // check LP bit is clear
     {
         return FBI;                                                          // return FBI code
     }
     // Check MCG is in FEE mode
-    else if ( ( ( (MCG_S & MCG_S_CLKST_MASK) >> MCG_S_CLKST_SHIFT) == 0x00 ) && // check CLKS mux has selcted FLL
-             ( !(MCG_S & MCG_S_IREFST_MASK) ) &&                              // check FLL ref is external ref clk
-             ( !(MCG_S & MCG_S_PLLST_MASK) ) )                                 // check PLLS mux has selected FLL
+    else if ( ( ( ( MCG_S & MCG_S_CLKST_MASK ) >> MCG_S_CLKST_SHIFT ) == 0x00 ) && // check CLKS mux has selcted FLL
+             ( !( MCG_S & MCG_S_IREFST_MASK ) ) &&                              // check FLL ref is external ref clk
+             ( !( MCG_S & MCG_S_PLLST_MASK ) ) )                                 // check PLLS mux has selected FLL
     {
         return FEE;                                                          // return FEE code
     }

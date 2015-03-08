@@ -1,6 +1,6 @@
 /*
  *  mcg.h
- *  Teensy3
+ *  Teensy 3.x/LC
  *
  */
 
@@ -40,16 +40,10 @@ typedef enum {
     _F_CPU                  = F_CPU
 } SPEED;
 
-//typedef struct {
-    //extern uint8_t BLPI_BLPE[4] = {1,1,1,1};//{BLPI, FBI, FBE, BLPE};
-//}mcg_transition_t;
-
 typedef struct {
     SPEED cpu;
     CLOCK_MODE mode;
 }mcg_mask_t;
-
-//extern mcg_mask_t CLK_MODE;
 /********************************************************************/
 #ifdef __cplusplus
 extern "C" {

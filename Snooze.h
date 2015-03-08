@@ -6,7 +6,7 @@
  || @contact    http://forum.pjrc.com/members/25610-duff
  ||
  || @description
- || # Low Power Library for Teensy 3.0/3.1.
+ || # Low Power Library for Teensy 3.x/LC.
  ||
  || @license
  || | Copyright (c) 2014 Colin Duffy

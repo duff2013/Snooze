@@ -1,6 +1,6 @@
 /*
  *  bitband.h
- *  Teensy3
+ *  Teensy 3.x/LC
  *
  */
 

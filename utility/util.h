@@ -1,6 +1,6 @@
 /*******************************************************************************
  *  util.h
- *  Teensy3.x
+ *  Teensy 3.x/LC
  *
  * Purpose: driver utility functions
  *
@@ -21,7 +21,7 @@ extern "C" {
     
     static inline
     void detachInterruptVector(enum IRQ_NUMBER_t irq) {
-        switch (irq) {
+        switch ( irq ) {
             case IRQ_RTC_ALARM:
                 _VectorsRam[irq + 16] = lptmr_isr;
                 break;

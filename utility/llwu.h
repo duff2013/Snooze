@@ -1,6 +1,6 @@
 /*******************************************************************************
  *  llwu.h
- *  Teensy3.x
+ *  Teensy 3.x/LC
  *
  * Purpose: Low Leakage Wakeup Unit
  *
@@ -97,16 +97,16 @@ extern "C" {
     
     static inline
     void llwu_configure_modules_mask( uint8_t module, llwu_mask_t *mask ) {
-         if( module & LLWU_LPTMR_MOD)     mask->ME |= LLWU_ME_WUME0_MASK;
+         if( module & LLWU_LPTMR_MOD )      mask->ME |= LLWU_ME_WUME0_MASK;
 #ifdef KINETISK
-         else if ( module & LLWU_RTCA_MOD) mask->ME |= LLWU_ME_WUME5_MASK;
-         else if ( module & LLWU_RTCS_MOD) mask->ME |= LLWU_ME_WUME7_MASK;
+         else if ( module & LLWU_RTCA_MOD ) mask->ME |= LLWU_ME_WUME5_MASK;
+         else if ( module & LLWU_RTCS_MOD ) mask->ME |= LLWU_ME_WUME7_MASK;
 #endif
-         else if ( module & LLWU_TSI_MOD ) mask->ME |= LLWU_ME_WUME4_MASK;
-         else if ( module & LLWU_CMP0_MOD) mask->ME |= LLWU_ME_WUME1_MASK;
-         else if ( module & LLWU_CMP1_MOD) mask->ME |= LLWU_ME_WUME2_MASK;
+         else if ( module & LLWU_TSI_MOD )  mask->ME |= LLWU_ME_WUME4_MASK;
+         else if ( module & LLWU_CMP0_MOD ) mask->ME |= LLWU_ME_WUME1_MASK;
+         else if ( module & LLWU_CMP1_MOD ) mask->ME |= LLWU_ME_WUME2_MASK;
 #ifdef KINETISK
-         else if( module & LLWU_CMP2_MOD) mask->ME |= LLWU_ME_WUME3_MASK;
+         else if( module & LLWU_CMP2_MOD )  mask->ME |= LLWU_ME_WUME3_MASK;
 #endif
     }
     /*******************************************************************************
@@ -199,20 +199,20 @@ extern "C" {
         else if ( llwuFlag & LLWU_F1_WUF6_MASK ) wakeupSource = 22;
         else if ( llwuFlag & LLWU_F1_WUF7_MASK ) wakeupSource = 9;
         
-        else if ( (llwuFlag>>8) & LLWU_F2_WUF8_MASK  ) wakeupSource = 10;
-        else if ( (llwuFlag>>8) & LLWU_F2_WUF9_MASK  ) wakeupSource = 13;
-        else if ( (llwuFlag>>8) & LLWU_F2_WUF10_MASK ) wakeupSource = 11;
-        else if ( (llwuFlag>>8) & LLWU_F2_WUF11_MASK ) wakeupSource = 30;
-        else if ( (llwuFlag>>8) & LLWU_F2_WUF12_MASK ) wakeupSource = 2;
-        else if ( (llwuFlag>>8) & LLWU_F2_WUF13_MASK ) wakeupSource = 7;
-        else if ( (llwuFlag>>8) & LLWU_F2_WUF14_MASK ) wakeupSource = 6;
-        else if ( (llwuFlag>>8) & LLWU_F2_WUF15_MASK ) wakeupSource = 21;
+        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF8_MASK  ) wakeupSource = 10;
+        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF9_MASK  ) wakeupSource = 13;
+        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF10_MASK ) wakeupSource = 11;
+        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF11_MASK ) wakeupSource = 30;
+        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF12_MASK ) wakeupSource = 2;
+        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF13_MASK ) wakeupSource = 7;
+        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF14_MASK ) wakeupSource = 6;
+        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF15_MASK ) wakeupSource = 21;
         
-        else if ( (llwuFlag>>16) & LLWU_ME_WUME0_MASK ) wakeupSource = 36;
-        else if ( (llwuFlag>>16) & LLWU_ME_WUME1_MASK ) wakeupSource = 34;
-        else if ( (llwuFlag>>16) & LLWU_ME_WUME4_MASK ) wakeupSource = 37;
+        else if ( ( llwuFlag>>16 ) & LLWU_ME_WUME0_MASK ) wakeupSource = 36;
+        else if ( ( llwuFlag>>16 ) & LLWU_ME_WUME1_MASK ) wakeupSource = 34;
+        else if ( ( llwuFlag>>16 ) & LLWU_ME_WUME4_MASK ) wakeupSource = 37;
 #ifdef KINETISK
-        else if ( (llwuFlag>>16) & LLWU_ME_WUME5_MASK ) wakeupSource = 35;
+        else if ( ( llwuFlag>>16 ) & LLWU_ME_WUME5_MASK ) wakeupSource = 35;
 #endif
         llwuFlag = 0;
     }
@@ -235,13 +235,13 @@ extern "C" {
         LLWU_FILT1 = LLWU_FILT1_FILTF_MASK;
         LLWU_FILT2 = LLWU_FILT2_FILTF_MASK;
         
-        if(filter_en == 1) {
+        if( filter_en == 1 ) {
             //clear the flag bit and set the others
-            temp |= (LLWU_FILT1_FILTF_MASK) | (LLWU_FILT1_FILTE(rise_fall) | LLWU_FILT1_FILTSEL(wu_pin_num));
+            temp |= ( LLWU_FILT1_FILTF_MASK ) | ( LLWU_FILT1_FILTE( rise_fall ) | LLWU_FILT1_FILTSEL( wu_pin_num ) );
             LLWU_FILT1 = temp;
-        }else if (filter_en == 2) {
+        }else if ( filter_en == 2 ) {
             //clear the flag bit and set the others
-            temp |= (LLWU_FILT2_FILTF_MASK) | (LLWU_FILT2_FILTE(rise_fall) | LLWU_FILT2_FILTSEL(wu_pin_num));
+            temp |= ( LLWU_FILT2_FILTF_MASK ) | ( LLWU_FILT2_FILTE( rise_fall ) | LLWU_FILT2_FILTSEL( wu_pin_num ) );
             LLWU_FILT2 = temp;
         }else {
             
@@ -266,8 +266,8 @@ extern "C" {
      *
      *******************************************************************************/
 #ifdef KINETISK
-    void startup_early_hook() __attribute__ ((weak));
-    void startup_early_hook() {
+    void startup_early_hook( ) __attribute__ ((weak));
+    void startup_early_hook( ) {
         WDOG_STCTRLH = WDOG_STCTRLH_ALLOWUPDATE;
         
         if ( PMC_REGSC & PMC_REGSC_ACKISO ) {

@@ -2,7 +2,7 @@
 #define _mk20dx128_ext_h_
 /*
  * ###################################################################
- *     Processor:          mk20dx128
+ *     Processor:          Teensy 3.x/LC
  *
  *     Compiler:           Teensduino
  *
@@ -11,7 +11,7 @@
  *
  *     Abstract:
  *         This header file extends the peripheral memory map 
- *         for the mk20dx128 processor.
+ *         for the Teensy 3.x/LC processor.
  * ###################################################################
  */
 
