@@ -29,7 +29,7 @@ extern "C" {
     
     static inline
     void digital_configure_pin_mask( uint8_t pin, uint8_t mode, uint8_t type, digital_mask_t *mask ) {
-        mask->pin  |= ( (uint64_t)0x01 << pin );
+        mask->pin = mask->pin | ( (uint64_t)0x01 << pin );
         mask->mode_irqType[pin] = type;
         mask->mode_irqType[pin] |= mode << 4;
         mask->state = true;
@@ -136,9 +136,13 @@ extern "C" {
             
             volatile uint32_t *config;
             config = portConfigRegister( pin );
+#ifdef KINETISK
             *portModeRegister( pin ) = 0;
+#else
+            *portModeRegister( pin ) &= ~digitalPinToBitMask(pin); // TODO: atomic
+#endif
             if ( mode == 0 ) *config = PORT_PCR_MUX( 1 );
-            else *config = PORT_PCR_MUX( 1 ) | PORT_PCR_PE | PORT_PCR_PS;
+            else *config = PORT_PCR_MUX( 1 ) | PORT_PCR_PE | PORT_PCR_PS;// pullup
 
             if ( enable_periph_irq ) attachInterrupt( pin, digitalISR, type );
             _pin &= ~( ( uint64_t )1<<pin );
