@@ -9,7 +9,6 @@
 #define __LLWU_H__
 /********************************************************************/
 #include "kinetis_ext.h"
-#include "bitband.h"
 /********************************************************************/
 // module_enable defines
 #define LLWU_LPTMR_MOD      0x01

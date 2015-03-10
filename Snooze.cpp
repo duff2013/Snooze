@@ -192,7 +192,6 @@ void SnoozeClass::wakeupISR( void ) {
         rtcISR( );
 #endif
         tsiISR( );
-        
         /************************************
          * back to PEE if in PBE, else it is
          * in either BLPI/BLPE, if so nothing
