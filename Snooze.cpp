@@ -57,8 +57,8 @@ SnoozeClass::SnoozeClass( void ) {
     lptmr_init( );
     clock_mode = mcg_mode( );
 #if defined( USE_HIBERNATE )
-    volatile int n;
-    for (n = 0; n < F_CPU*1000000; n++);
+    //volatile uint32_t n;
+    //for (n = 0; n < F_CPU; n++);
 #endif
 }
 //--------------------------------------source-------------------------------------------
@@ -79,7 +79,6 @@ int SnoozeClass::sleep( SnoozeBlock &configuration ) {
 #ifdef KINETISK
     rtc_alarm_set( &p->rtc_mask );
 #endif
-    
     if ( mcg_mode( ) == BLPI ) {
         peripheral_disable( &p->setPeripheral.periph_off_mask );
         enter_wait( );

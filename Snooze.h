@@ -1,7 +1,7 @@
 /*
  ||
  || @file 		Snooze.h
- || @version 	.3
+ || @version 	.4
  || @author 	duff
  || @contact    http://forum.pjrc.com/members/25610-duff
  ||
@@ -81,7 +81,7 @@ typedef enum {
 class SnoozeBlock {
 private:
     friend class SnoozeClass;
-    typedef void* ISR;
+    typedef void*       ISR;
     digital_mask_t      digital_mask;
     lptmr_mask_t        lptmr_mask;
     llwu_mask_t         llwu_mask;
