@@ -1,5 +1,6 @@
 #Snooze
 >Updated (3/9/15) Fixed setting digital pin for Teensy LC. Also need to set Teensy LC pin 17 to OUTPUT->HIGH.
+
 >Updated for initial TeensyLC support, not all wakeup sources are available, RTC, TSI, CMP and some digital pins are not waking the LC up either.
 
 >This library is the latest revision based on my earlier work on the LowPower_Teensy3. I changed the name to not conflict with the Arduino LowPower library plus I think it sounds cooler.
