@@ -100,7 +100,6 @@ extern "C" {
     static inline
     void detachDigitalInterrupt( uint8_t pin ) {
         volatile uint32_t *config;
-        
         config = portConfigRegister( pin );
         __disable_irq( );
         *config = ( ( *config & ~0x000F0000 ) | 0x01000000 );

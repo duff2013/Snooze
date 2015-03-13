@@ -10,11 +10,11 @@
 /*******************************************************************************/
 #include <utility/util.h>
 
-#define LPTMR_MCGIRCLK       (uint8_t)0x00
-#define LPTMR_LPO            (uint8_t)0x01
-#define LPTMR_ERCLK32K       (uint8_t)0x02
-#define LPTMR_OSCERCLK       (uint8_t)0x03
-#define LPTMR_PRESCALE(n)    (uint8_t)(((n) & 0x0F) << 0x03)
+#define LPTMR_MCGIRCLK       ( uint8_t )0x00
+#define LPTMR_LPO            ( uint8_t )0x01
+#define LPTMR_ERCLK32K       ( uint8_t )0x02
+#define LPTMR_OSCERCLK       ( uint8_t )0x03
+#define LPTMR_PRESCALE(n)    ( uint8_t )(((n) & 0x0F) << 0x03)
 
 typedef struct {
     uint16_t period;
@@ -35,7 +35,7 @@ extern "C" {
     
     static inline
     void lptmr_init( void ) {
-        SIM_SOPT1 |= SIM_SOPT1_OSC32KSEL(3);
+        SIM_SOPT1 |= SIM_SOPT1_OSC32KSEL( 3 );
         SIM_SCGC5 |= SIM_SCGC5_LPTIMER;
         LPTMR0_CSR = LPTMR_CSR_TCF;
         LPTMR0_PSR = LPTMR_PSR_PBYP | LPTMR_LPO;
@@ -66,7 +66,7 @@ extern "C" {
     
     static inline
     void lptmrISR( void ) {
-        if ( !(SIM_SCGC5 & SIM_SCGC5_LPTIMER) ) return;
+        if ( !( SIM_SCGC5 & SIM_SCGC5_LPTIMER ) ) return;
         LPTMR0_CSR = LPTMR_CSR_TCF;
         wakeupSource = 36;
     }
