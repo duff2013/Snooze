@@ -55,6 +55,7 @@ SnoozeClass::SnoozeClass( void ) {
     SIM_SOPT1 &= ~SIM_SOPT1_USBSSTBY_MASK;
     attachInterruptVector( IRQ_LLWU, wakeupISR );
     lptmr_init( );
+    digital_init( );
     clock_mode = mcg_mode( );
 #if defined( USE_HIBERNATE )
     //volatile uint32_t n;
@@ -179,7 +180,6 @@ int SnoozeClass::hibernate( SnoozeBlock &configuration, SLEEP_MODE mode ) {
 #endif
 //----------------------------------------wakeup------------------------------------------
 void SnoozeClass::wakeupISR( void ) {
-    digitalWrite(LED_BUILTIN, HIGH);
     NVIC_DISABLE_IRQ( IRQ_LLWU ); // disable wakeup isr
     if ( sleep_mode == LLS ) {
         __disable_irq( );

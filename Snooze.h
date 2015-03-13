@@ -1,7 +1,7 @@
 /*
  ||
  || @file 		Snooze.h
- || @version 	.4
+ || @version 	.5
  || @author 	duff
  || @contact    http://forum.pjrc.com/members/25610-duff
  ||
@@ -61,7 +61,7 @@
     delay in the constructor to allow a small window
     for reprogramming if you go straight to sleep.
 */
-#define USE_HIBERNATE
+//#define USE_HIBERNATE
 
 /* extended pinMode types */
 typedef enum {
@@ -103,7 +103,11 @@ private:
         void operator = ( const SCGC6_ON_t &rhs  ) { peripheral_configure_scgc6_mask( rhs, &periph_on_mask ); }
     };
 public:
-    SnoozeBlock( void ) { };
+    SnoozeBlock( void ) {
+#if defined(KINETISL)
+        //digital_configure_pin_mask( 17, OUTPUT, LOW, &digital_mask );
+#endif
+    };
     /* GPIO, TSI, COMPARE Config */
     void pinMode ( int pin, int mode, int val );
     void pinMode ( int pin, int mode, int type, double val );
