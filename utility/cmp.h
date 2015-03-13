@@ -79,6 +79,10 @@ extern "C" {
         if ( !(SIM_SCGC4 & SIM_SCGC4_CMP) ) return;
         if ( CMP0_SCR & CMP_SCR_CFF ) CMP0_SCR = CMP_SCR_CFF;
         if ( CMP0_SCR & CMP_SCR_CFR ) CMP0_SCR = CMP_SCR_CFR;
+#if defined(KINETISL)
+        //LPTMR0_CSR = LPTMR_CSR_TCF;
+        //SIM_SCGC5 &= ~SIM_SCGC5_LPTIMER;
+#endif
         wakeupSource = 34;
     }
     /*******************************************************************************
@@ -123,6 +127,9 @@ extern "C" {
         CMP0_DACCR = CMP_DACCR_DACEN | CMP_DACCR_VRSEL | CMP_DACCR_VOSEL( tap );
         if ( enable_periph_irq ) NVIC_ENABLE_IRQ( IRQ_CMP0 );
         CMP0_CR1 = CMP_CR1_EN;
+        //SIM_SCGC5 |= SIM_SCGC5_LPTIMER;
+        //LPTMR0_CMR = 1;
+        //LPTMR0_CSR = LPTMR_CSR_TEN | LPTMR_CSR_TCF;
     }
     /*******************************************************************************
      *
@@ -136,8 +143,10 @@ extern "C" {
     static inline
     void cmp_disable( cmp_mask_t *mask ) {
         if ( mask->state == false ) return;
-        if ( enable_periph_irq ) detachInterruptVector( IRQ_CMP0 );
-        if ( enable_periph_irq ) NVIC_DISABLE_IRQ( IRQ_CMP0 );
+        if ( enable_periph_irq ) {
+            NVIC_DISABLE_IRQ( IRQ_CMP0 );
+            detachInterruptVector( IRQ_CMP0 );
+        }
         CMP0_CR0 = 0x00;
         CMP0_CR1 = 0x00;
         SIM_SCGC4 &= ~SIM_SCGC4_CMP;
