@@ -10,24 +10,56 @@
 #include <utility/util.h>
 /********************************************************************/
 typedef struct {
+#if defined(KINETISK)
     uint64_t pin = 0;
     uint8_t mode_irqType[33];
     bool state = false;
-#if defined(KINETISK)
-    void ( * _porta_irq )( void );
-    void ( * _portb_irq )( void );
-    void ( * _portc_irq )( void );
-    void ( * _portd_irq )( void );
-    void ( * _porte_irq )( void );
 #elif defined(KINETISL)
-    void ( * _porta_irq ) ( void );
-    void ( * _portcd_irq )( void );
+    uint32_t pin = 0;
+    uint8_t mode_irqType[23];
+    bool state = false;
 #endif
 } digital_mask_t;
+
+#if defined(KINETISK)
+    static void ( * return_porta_irq ) ( void );
+    static void ( * return_portb_irq ) ( void );
+    static void ( * return_portc_irq ) ( void );
+    static void ( * return_portd_irq ) ( void );
+    static void ( * return_porte_irq ) ( void );
+#elif defined(KINETISL)
+    static void ( * return_porta_irq ) ( void );
+    static void ( * return_portcd_irq )( void );
+#endif
+
 /********************************************************************/
 #ifdef __cplusplus
 extern "C" {
 #endif
+    /*******************************************************************************
+     *
+     *       digital_init
+     *
+     *******************************************************************************/
+    static inline
+    void digital_init( void )
+    __attribute__((always_inline, unused));
+    
+    static inline
+    void digital_init( void ) {
+        __disable_irq( );
+#if defined(KINETISK)
+        return_porta_irq = _VectorsRam[IRQ_PORTA+16];
+        return_portb_irq = _VectorsRam[IRQ_PORTB+16];
+        return_portc_irq = _VectorsRam[IRQ_PORTC+16];
+        return_portd_irq = _VectorsRam[IRQ_PORTD+16];
+        return_porte_irq = _VectorsRam[IRQ_PORTE+16];
+#elif defined(KINETISL)
+        return_porta_irq  = _VectorsRam[IRQ_PORTA+16];
+        return_portcd_irq = _VectorsRam[IRQ_PORTCD+16];
+#endif
+        __enable_irq( );
+    }
     /*******************************************************************************
      *
      *       digital_configure_pin_mask
@@ -39,20 +71,18 @@ extern "C" {
     
     static inline
     void digital_configure_pin_mask( uint8_t pin, uint8_t mode, uint8_t type, digital_mask_t *mask ) {
+        if ( pin >= CORE_NUM_DIGITAL ) return;
 #if defined(KINETISK)
-        mask->_porta_irq = _VectorsRam[IRQ_PORTA+16];
-        mask->_portb_irq = _VectorsRam[IRQ_PORTB+16];
-        mask->_portc_irq = _VectorsRam[IRQ_PORTC+16];
-        mask->_portd_irq = _VectorsRam[IRQ_PORTD+16];
-        mask->_porte_irq = _VectorsRam[IRQ_PORTE+16];
-#elif defined(KINETISL)
-        mask->_porta_irq  = _VectorsRam[IRQ_PORTA+16];
-        mask->_portcd_irq = _VectorsRam[IRQ_PORTCD+16];
-#endif
         mask->pin = mask->pin | ( ( uint64_t )0x01 << pin );
         mask->mode_irqType[pin] = type;
         mask->mode_irqType[pin] |= mode << 4;
         mask->state = true;
+#elif defined(KINETISL)
+        mask->pin = mask->pin | ( ( uint32_t )0x01 << pin );
+        mask->mode_irqType[pin] = type;
+        mask->mode_irqType[pin] |= mode << 4;
+        mask->state = true;
+#endif
     }
     /*******************************************************************************
      *
@@ -67,7 +97,7 @@ extern "C" {
     void digitalISR( void ) {
         uint32_t isfr_a = PORTA_ISFR;
         PORTA_ISFR = isfr_a;
-#if defined(__MK20DX128__) || defined(__MK20DX256__)
+#if defined(KINETISK)
         uint32_t isfr_b = PORTB_ISFR;
         uint32_t isfr_e = PORTE_ISFR;
         PORTB_ISFR = isfr_b;
@@ -80,7 +110,7 @@ extern "C" {
         
         if ( isfr_a & CORE_PIN3_BITMASK )       { wakeupSource = 3;  return; }
         else if ( isfr_a & CORE_PIN4_BITMASK )  { wakeupSource = 4;  return; }
-#if defined(__MK20DX128__) || defined(__MK20DX256__)
+#if defined(KINETISK)
         else if ( isfr_a & CORE_PIN24_BITMASK ) { wakeupSource = 24; return; }
         else if ( isfr_a & CORE_PIN33_BITMASK ) { wakeupSource = 33; return; }
 
@@ -101,7 +131,7 @@ extern "C" {
         else if ( isfr_c & CORE_PIN15_BITMASK ) { wakeupSource = 15; return; }
         else if ( isfr_c & CORE_PIN22_BITMASK ) { wakeupSource = 22; return; }
         else if ( isfr_c & CORE_PIN23_BITMASK ) { wakeupSource = 23; return; }
-#if defined(__MK20DX128__) || defined(__MK20DX256__)
+#if defined(KINETISK)
         else if ( isfr_c & CORE_PIN27_BITMASK ) { wakeupSource = 27; return; }
         else if ( isfr_c & CORE_PIN28_BITMASK ) { wakeupSource = 28; return; }
         else if ( isfr_c & CORE_PIN29_BITMASK ) { wakeupSource = 29; return; }
@@ -116,7 +146,7 @@ extern "C" {
         else if ( isfr_d & CORE_PIN20_BITMASK ) { wakeupSource = 20; return; }
         else if ( isfr_d & CORE_PIN21_BITMASK ) { wakeupSource = 21; return; }
         
-#if defined(__MK20DX128__) || defined(__MK20DX256__)
+#if defined(KINETISK)
         if ( isfr_e & CORE_PIN26_BITMASK )      { wakeupSource = 26; return; }
         else if ( isfr_e & CORE_PIN31_BITMASK ) { wakeupSource = 31; return; }
 #endif
@@ -135,36 +165,63 @@ extern "C" {
     void digital_set( digital_mask_t *mask ) {
         if ( mask->state == false ) return;
         if ( enable_periph_irq ) {
-#if defined(__MK20DX128__) || defined(__MK20DX256__)
+            __disable_irq( );
+#if defined(KINETISK)
             attachInterruptVector( IRQ_PORTA, digitalISR );
             attachInterruptVector( IRQ_PORTB, digitalISR );
             attachInterruptVector( IRQ_PORTC, digitalISR );
             attachInterruptVector( IRQ_PORTD, digitalISR );
             attachInterruptVector( IRQ_PORTE, digitalISR );
-#elif defined(__MKL26Z64__)
+#elif defined(KINETISL)
             attachInterruptVector( IRQ_PORTA, digitalISR );
             attachInterruptVector( IRQ_PORTCD, digitalISR );
 #endif
+            __enable_irq( );
         }
+        
+#if defined(KINETISK)
         uint64_t _pin = mask->pin;
         while ( __builtin_popcountll( _pin ) ) {
-            int pin  = 63 - __builtin_clzll( _pin );
-            int mode = mask->mode_irqType[pin] >> 4;
-            int type = mask->mode_irqType[pin] & 0x0F;
+            uint32_t pin  = 63 - __builtin_clzll( _pin );
+            uint32_t mode = mask->mode_irqType[pin] >> 4;
+            uint32_t type = mask->mode_irqType[pin] & 0x0F;
             
             volatile uint32_t *config;
             config = portConfigRegister( pin );
-#ifdef KINETISK
-            *portModeRegister( pin ) = 0;
-#else
-            *portModeRegister( pin ) &= ~digitalPinToBitMask( pin ); // TODO: atomic
-#endif
-            if ( mode == 0 ) *config = PORT_PCR_MUX( 1 );
-            else *config = PORT_PCR_MUX( 1 ) | PORT_PCR_PE | PORT_PCR_PS;// pullup
             
-            if ( enable_periph_irq ) attachDigitalInterrupt( pin, type );
+            if ( mode == INPUT || mode == INPUT_PULLUP ) {
+                *portModeRegister( pin ) = 0;
+                if ( mode == INPUT ) *config = PORT_PCR_MUX( 1 );
+                else *config = PORT_PCR_MUX( 1 ) | PORT_PCR_PE | PORT_PCR_PS;// pullup
+                if ( enable_periph_irq ) attachDigitalInterrupt( pin, type );
+            } else {
+                pinMode( pin, mode );
+                digitalWriteFast( pin, type );
+            }
             _pin &= ~( ( uint64_t )1<<pin );
         }
+#elif defined(KINETISL)
+        uint32_t _pin = mask->pin;
+        while ( __builtin_popcount( _pin ) ) {
+            uint32_t pin  = 31 - __builtin_clz( _pin );
+            uint32_t mode = mask->mode_irqType[pin] >> 4;
+            uint32_t type = mask->mode_irqType[pin] & 0x0F;
+            
+            volatile uint32_t *config;
+            config = portConfigRegister( pin );
+            
+            if ( mode == INPUT || mode == INPUT_PULLUP ) {
+                *portModeRegister( pin ) &= ~digitalPinToBitMask( pin ); // TODO: atomic
+                if ( mode == INPUT ) *config = PORT_PCR_MUX( 1 );
+                else *config = PORT_PCR_MUX( 1 ) | PORT_PCR_PE | PORT_PCR_PS;// pullup
+                if ( enable_periph_irq ) attachDigitalInterrupt( pin, type );
+            } else {
+                pinMode( pin, mode );
+                digitalWriteFast( pin, type );
+            }
+            _pin &= ~( ( uint32_t )1<<pin );
+        }
+#endif
     }
     /*******************************************************************************
      *
@@ -179,23 +236,35 @@ extern "C" {
     void digital_disable( digital_mask_t *mask ) {
         if ( mask->state == false ) return;
         if (  enable_periph_irq ) {
-#if defined(__MK20DX128__) || defined(__MK20DX256__)
-            attachInterruptVector( IRQ_PORTA, mask->_porta_irq );
-            attachInterruptVector( IRQ_PORTB, mask->_portb_irq );
-            attachInterruptVector( IRQ_PORTC, mask->_portc_irq );
-            attachInterruptVector( IRQ_PORTD, mask->_portd_irq );
-            attachInterruptVector( IRQ_PORTE, mask->_porte_irq );
-#elif defined(__MKL26Z64__)
-            attachInterruptVector( IRQ_PORTA, mask->_porta_irq );
-            attachInterruptVector( IRQ_PORTCD, mask->_portcd_irq );
+            __disable_irq( );
+#if defined(KINETISK)
+            attachInterruptVector( IRQ_PORTA, return_porta_irq );
+            attachInterruptVector( IRQ_PORTB, return_portb_irq );
+            attachInterruptVector( IRQ_PORTC, return_portc_irq );
+            attachInterruptVector( IRQ_PORTD, return_portd_irq );
+            attachInterruptVector( IRQ_PORTE, return_porte_irq );
+#elif defined(KINETISL)
+            attachInterruptVector( IRQ_PORTA, return_porta_irq );
+            attachInterruptVector( IRQ_PORTCD, return_portcd_irq );
 #endif
+            __enable_irq( );
         }
+        
+#if defined(KINETISK)
         uint64_t _pin = mask->pin;
         while ( __builtin_popcountll( _pin ) ) {
-            int pin = 63 - __builtin_clzll( _pin );
+            uint32_t pin = 63 - __builtin_clzll( _pin );
             if ( enable_periph_irq ) detachDigitalInterrupt( pin );
             _pin &= ~( ( uint64_t )1<<pin );
         }
+#elif defined(KINETISL)
+        uint32_t _pin = mask->pin;
+        while ( __builtin_popcount( _pin ) ) {
+            uint32_t pin = 31 - __builtin_clz( _pin );
+            if ( enable_periph_irq ) detachDigitalInterrupt( pin );
+            _pin &= ~( ( uint32_t )1<<pin );
+        }
+#endif
     }
 #ifdef __cplusplus
 }
