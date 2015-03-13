@@ -80,6 +80,10 @@ int SnoozeClass::sleep( SnoozeBlock &configuration ) {
 #ifdef KINETISK
     rtc_alarm_set( &p->rtc_mask );
 #endif
+#ifdef KINETISL
+    pinMode( 17, OUTPUT );
+    digitalWriteFast( 17, LOW );
+#endif
     if ( mcg_mode( ) == BLPI ) {
         peripheral_disable( &p->setPeripheral.periph_off_mask );
         enter_wait( );
@@ -124,6 +128,10 @@ int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
 #ifdef KINETISK
     rtc_alarm_set( &p->rtc_mask );
 #endif
+#ifdef KINETISL
+    pinMode( 17, OUTPUT );
+    digitalWriteFast( 17, LOW );
+#endif
     tsi_set( &p->tsi_mask );
     llwu_set( &p->llwu_mask );
     if ( mode == LLS )        { enter_lls( ); }
@@ -152,6 +160,10 @@ int SnoozeClass::hibernate( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     lptmr_set( &p->lptmr_mask );
 #ifdef KINETISK
     rtc_alarm_set( &p->rtc_mask );
+#endif
+#ifdef KINETISL
+    pinMode( 17, OUTPUT );
+    digitalWriteFast( 17, LOW );
 #endif
     tsi_set( &p->tsi_mask );
     llwu_set( &p->llwu_mask );
