@@ -1,7 +1,7 @@
 /***************************************
- * This shows all the wakeups
- * for deepSleep & hibernate.
- * expect IDD of around 230uA.
+ * This shows all the wakeups for deepSleep 
+ * Expect IDD of  around 230uA (Teensy 3.x) 
+ * and IDD of around 150uA for (Teensy LC).
  ****************************************/
 #include <Snooze.h>
 
@@ -9,14 +9,15 @@ SnoozeBlock config;
 
 void setup() {
     pinMode(LED_BUILTIN, OUTPUT);
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(1000);
-    digitalWrite(LED_BUILTIN, LOW);
     /********************************************************
      * Define digital pins for waking the teensy up. This
      * combines pinMode and attachInterrupt in one function.
      *
+     * Teensy 3.x
      * Digtal pins: 2,4,6,7,9,10,11,13,16,21,22,26,30,33
+     *
+     * Teensy LC
+     * Digtal pins: 2,6,7,9,10,11,16,21,22
      ********************************************************/
     config.pinMode(21, INPUT_PULLUP, RISING);//pin, mode, type
     config.pinMode(22, INPUT_PULLUP, RISING);//pin, mode, type
@@ -24,49 +25,60 @@ void setup() {
     /********************************************************
      * Set Low Power Timer wake up in milliseconds.
      ********************************************************/
-    //config.setTimer(1000);// milliseconds
+    config.setTimer(5000);// milliseconds
     
     /********************************************************
+     * Teensy 3.x only currently.
+     *
      * Set RTC alarm wake up in (hours, minutes, seconds).
      ********************************************************/
-    config.setAlarm(0, 0, 10);// hour, min, sec
+#ifdef KINETISK
+    //config.setAlarm(0, 0, 10);// hour, min, sec
+#endif
     
     /********************************************************
-     * Values greater or less than threshold will trigger CMP 
-     * wakeup. Threshold value is in volts (0-3.3v) using a 64 
+     * Values greater or less than threshold will trigger CMP
+     * wakeup. Threshold value is in volts (0-3.3v) using a 64
      * tap resistor ladder network at 0.0515625v per tap.
      *
      * parameter "type": LOW & FALLING are the same.
      * parameter "type": HIGH & RISING are the same.
      *
+     * Teensy 3.x/LC
      * Compare pins: 11,12
+     * not quite working right yet!!!
      ********************************************************/
     // trigger at threshold values greater than 1.65v
-    config.pinMode(11, CMP, HIGH, 1.65);//pin, mode, type, threshold(v)
+    //config.pinMode(11, CMP, HIGH, 1.65);//pin, mode, type, threshold(v)
     // trigger at threshold values less than 1.65v
-    //config.pinMode(11, CMP, LOW, 1.65);//pin, mode, type, threshold(v)
+    config.pinMode(11, CMP, LOW, 1.65);//pin, mode, type, threshold(v)
     
     /********************************************************
      * Values greater than threshold will trigger TSI wakeup.
      * Threshold value is in capacitance. Only one pin can be
      * used while sleeping.
      *
+     * Teensy 3.x
      * Touch Sense pins: 0,1,15,16,17,18,19,22,23,25,32,33
+     *
+     * Teensy LC
+     * Touch Sense pins: 0,1,3,4,15,16,17,18,19,22,23
      ********************************************************/
-    config.pinMode(0, TSI, touchRead(0)+250);//pin, mode, threshold
+    config.pinMode(0, TSI, touchRead(0) + 250); // pin, mode, threshold
 }
 
 
 void loop() {
-    /************************
-     * feed the sleep function
-     * its wakeup parameters.
-     *************************/
+    /********************************************************
+     * feed the sleep function its wakeup parameters. Then go 
+     * to deepSleep.
+     ********************************************************/
     Snooze.deepSleep( config );
+    
     int who = Snooze.source( );// get wakeup source
     
-    if(who == 21) {// pin wakeup source is its pin value
-        for(int i = 0; i < 1; i++) {
+    if (who == 21) { // pin wakeup source is its pin value
+        for (int i = 0; i < 1; i++) {
             digitalWrite(LED_BUILTIN, HIGH);
             delay(200);
             digitalWrite(LED_BUILTIN, LOW);
@@ -74,8 +86,8 @@ void loop() {
         }
     }
     
-    if(who == 22) {// pin wakeup source is its pin value
-        for(int i = 0; i < 2; i++) {
+    if (who == 22) { // pin wakeup source is its pin value
+        for (int i = 0; i < 2; i++) {
             digitalWrite(LED_BUILTIN, HIGH);
             delay(200);
             digitalWrite(LED_BUILTIN, LOW);
@@ -83,8 +95,8 @@ void loop() {
         }
     }
     
-    if(who == 34) { // compare wakeup value
-        for(int i = 0; i < 3; i++) {
+    if (who == 34) { // compare wakeup value
+        for (int i = 0; i < 3; i++) {
             digitalWrite(LED_BUILTIN, HIGH);
             delay(200);
             digitalWrite(LED_BUILTIN, LOW);
@@ -92,8 +104,8 @@ void loop() {
         }
     }
     
-    if(who == 35) {// rtc wakeup value
-        for(int i = 0; i < 4; i++) {
+    if (who == 35) { // rtc wakeup value
+        for (int i = 0; i < 4; i++) {
             digitalWrite(LED_BUILTIN, HIGH);
             delay(200);
             digitalWrite(LED_BUILTIN, LOW);
@@ -101,8 +113,8 @@ void loop() {
         }
     }
     
-    if(who == 36) {// lptmr wakeup value
-        for(int i = 0; i < 5; i++) {
+    if (who == 36) { // lptmr wakeup value
+        for (int i = 0; i < 5; i++) {
             digitalWrite(LED_BUILTIN, HIGH);
             delay(200);
             digitalWrite(LED_BUILTIN, LOW);
@@ -110,8 +122,8 @@ void loop() {
         }
     }
     
-    if(who == 37) {// tsi wakeup value
-        for(int i = 0; i < 6; i++) {
+    if (who == 37) { // tsi wakeup value
+        for (int i = 0; i < 6; i++) {
             digitalWrite(LED_BUILTIN, HIGH);
             delay(200);
             digitalWrite(LED_BUILTIN, LOW);
@@ -119,12 +131,3 @@ void loop() {
         }
     }
 }
-
-
-
-
-
-
-
-
-
