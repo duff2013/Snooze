@@ -5,10 +5,10 @@
  * Purpose:     Provides routines to transition from PEE->BLPI, BLPI->PEE, BLPE->PEE,
  *              PEE->BLPE, BLPI->BLPE, BLPE->BLPI and PBE->PEE.
  *
- *              In BLPI the mcu's SIM_CLKDIV1 will be configured as core(2MHZ), 
- *              bus(2MHZ), flash(1MHZ) and the SysTick will be reconfigured to work 
- *              as expected in this mode. This allows the mcu to enter vlpr mode. 
- *              When exiting vlpr the mcu will transition back to PEE or BLPE mode and 
+ *              In BLPI the mcu's SIM_CLKDIV1 will be configured as core(2MHZ),
+ *              bus(2MHZ), flash(1MHZ) and the SysTick will be reconfigured to work
+ *              as expected in this mode. This allows the mcu to enter vlpr mode.
+ *              When exiting vlpr the mcu will transition back to PEE or BLPE mode and
  *              the mcu will be in a normal run state.
  *
  * NOTE:        Moving from PEE to BLPI cause's the USB module not to work so it
@@ -16,8 +16,8 @@
  *******************************************************************************/
 
 #include "mcg.h"
-//#include "bitband.h"
-//#include "Arduino.h"
+#include "bitband.h"
+#include "Arduino.h"
 
 #define MCG_C1_FRDIV4_BIT   0x05
 
@@ -195,18 +195,14 @@ void blpi_blpe( void ) {
     // set CLKS = 2 to select the ext ref clock as clk source
     // it is assumed the oscillator parameters in MCG_C2 have not been changed
     MCG_C1 = MCG_C1_CLKS( 0x02 ) | MCG_C1_FRDIV( 0x04 );
-    
     // wait for the oscillator to initialize again
     while ( !( MCG_S & MCG_S_OSCINIT0 ) ) ;
-    
     // wait for Reference clock to switch to external reference
     while ( MCG_S & MCG_S_IREFST ) ;
-    
     // wait for MCGOUT to switch over to the external reference clock
     while ( ( MCG_S & MCG_S_CLKST_MASK ) != MCG_S_CLKST( 0x02 ) ) ;
     // To move from FBE to BLPE the LP bit must be set
     MCG_C2 |= MCG_C2_LP; // set LP bit
-    
     const uint32_t div = ( 16/( F_CPU/1000000 ) )-1;
     const uint32_t systck = F_CPU - 1;
     mcg_div( div, div, div, systck );
