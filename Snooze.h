@@ -61,7 +61,7 @@
     delay in the constructor to allow a small window
     for reprogramming if you go straight to sleep.
 */
-#define USE_HIBERNATE
+//#define USE_HIBERNATE
 
 /* extended pinMode types */
 typedef enum {
