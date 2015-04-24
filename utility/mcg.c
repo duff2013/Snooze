@@ -2,20 +2,22 @@
  *  mcg.c
  *  Teensy3
  *
- * Purpose:     Provides routines to transition from BLPI->PEE and PEE->BLPI.
+ * Purpose:     Provides routines to transition from PEE->BLPI, BLPI->PEE, BLPE->PEE,
+ *              PEE->BLPE, BLPI->BLPE, BLPE->BLPI and PBE->PEE.
+ *
  *              In BLPI the mcu's SIM_CLKDIV1 will be configured as core(2MHZ), 
  *              bus(2MHZ), flash(1MHZ) and the SysTick will be reconfigured to work 
- *              as expected in this mode. This allows the mcu to enter vlpr run
- *              mode. When exiting vlpr the mcu will transition back to PEE mode
- *              and the mcu will be in a normal run state.
+ *              as expected in this mode. This allows the mcu to enter vlpr mode. 
+ *              When exiting vlpr the mcu will transition back to PEE or BLPE mode and 
+ *              the mcu will be in a normal run state.
  *
  * NOTE:        Moving from PEE to BLPI cause's the USB module not to work so it
  *              must be disabled before moving into this mode.
  *******************************************************************************/
 
 #include "mcg.h"
-#include "bitband.h"
-#include "Arduino.h"
+//#include "bitband.h"
+//#include "Arduino.h"
 
 #define MCG_C1_FRDIV4_BIT   0x05
 
