@@ -61,7 +61,7 @@
     delay in the constructor to allow a small window
     for reprogramming if you go straight to sleep.
 */
-//#define USE_HIBERNATE
+#define USE_HIBERNATE
 
 /* extended pinMode types */
 typedef enum {
@@ -71,6 +71,10 @@ typedef enum {
 
 /* Deep Sleep Modes */
 typedef enum {
+    WAIT,
+    VLPW,
+    STOP,
+    VLPS,
     LLS,
     VLLS3,
     VLLS2,
@@ -81,16 +85,16 @@ typedef enum {
 class SnoozeBlock {
 private:
     friend class SnoozeClass;
-    typedef void*       ISR;
-    digital_mask_t      digital_mask;
-    lptmr_mask_t        lptmr_mask;
-    llwu_mask_t         llwu_mask;
-    tsi_mask_t          tsi_mask;
+    typedef void*   ISR;
+    digital_mask_t  digital_mask;
+    lptmr_mask_t    lptmr_mask;
+    llwu_mask_t     llwu_mask;
+    tsi_mask_t      tsi_mask;
+    cmp_mask_t      cmp_mask;
+    lvd_mask_t      lvd_mask;
 #ifdef KINETISK
-    rtc_mask_t          rtc_mask;
+    rtc_mask_t      rtc_mask;
 #endif
-    cmp_mask_t          cmp_mask;
-    lvd_mask_t          lvd_mask;
     /* Peripherals */
     union periph_t {
         peripheral_mask_t   periph_on_mask;
@@ -103,11 +107,7 @@ private:
         void operator = ( const SCGC6_ON_t &rhs  ) { peripheral_configure_scgc6_mask( rhs, &periph_on_mask ); }
     };
 public:
-    SnoozeBlock( void ) {
-#if defined(KINETISL)
-        //digital_configure_pin_mask( 17, OUTPUT, LOW, &digital_mask );
-#endif
-    };
+    SnoozeBlock( void );
     /* GPIO, TSI, COMPARE Config */
     void pinMode ( int pin, int mode, int val );
     void pinMode ( int pin, int mode, int type, double val );

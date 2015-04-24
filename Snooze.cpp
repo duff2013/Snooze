@@ -11,6 +11,10 @@
 #include "Arduino.h"
 #include "util/atomic.h"
 
+SnoozeBlock::SnoozeBlock( void ) {
+
+}
+
 void SnoozeBlock::pinMode( int pin, int mode, int val ) {
     if ( mode == INPUT ) {
         digital_configure_pin_mask( pin, mode, val, &digital_mask );
@@ -115,7 +119,7 @@ int SnoozeClass::sleep( SnoozeBlock &configuration ) {
     cmp_disable( &p->cmp_mask );
     lptmr_disable( &p->lptmr_mask );
     digital_disable( &p->digital_mask );
-    return 0;
+    return wakeupSource;
 }
 //--------------------------------------DeepSleep----------------------------------------
 int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
@@ -139,6 +143,7 @@ int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     else if ( mode == VLLS2 ) { enter_vlls2( ); }
     else if ( mode == VLLS1 ) { enter_vlls1( ); }
     else if ( mode == VLLS0 ) { enter_vlls0( ); }
+    llwu_disable( );
     tsi_disable( &p->tsi_mask );
 #ifdef KINETISK
     rtc_disable( &p->rtc_mask );
@@ -146,7 +151,7 @@ int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     lptmr_disable( &p->lptmr_mask );
     digital_disable( &p->digital_mask );
     cmp_disable( &p->cmp_mask );
-    return 0;
+    return wakeupSource;
 }
 //--------------------------------------Hibernate----------------------------------------
 #if defined( USE_HIBERNATE )
@@ -173,6 +178,7 @@ int SnoozeClass::hibernate( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     else if ( mode == VLLS1 ) { enter_vlls1( ); }
     else if ( mode == VLLS0 ) { enter_vlls0( ); }
     disableHibernate( );
+    llwu_disable( );
     tsi_disable( &p->tsi_mask );
 #ifdef KINETISK
     rtc_disable( &p->rtc_mask );
@@ -180,7 +186,7 @@ int SnoozeClass::hibernate( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     lptmr_disable( &p->lptmr_mask );
     digital_disable( &p->digital_mask );
     cmp_disable( &p->cmp_mask );
-    return 0;
+    return wakeupSource;
 }
 #endif
 //----------------------------------------wakeup------------------------------------------
@@ -195,7 +201,6 @@ void SnoozeClass::wakeupISR( void ) {
         rtcISR( );
 #endif
         tsiISR( );
-        llwu_disable( );
         /************************************
          * back to PEE if in PBE, else it is
          * in either BLPI/BLPE, if so nothing
