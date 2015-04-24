@@ -62,13 +62,14 @@ extern "C" {
     
     static inline
     void tsiISR( void ) {
-        if( !( SIM_SCGC5 & SIM_SCGC5_TSI ) ) return;
+        if( !( SIM_SCGC5 & SIM_SCGC5_TSI ) || !( irqEnabledFlag & TSI_IRQ_BIT ) ) return;
         TSI0_GENCS = TSI_GENCS_OUTRGF | TSI_GENCS_EOSF;
 #if defined(KINETISL)
         LPTMR0_CSR = LPTMR_CSR_TCF;
         SIM_SCGC5 &= ~SIM_SCGC5_LPTIMER;
 #endif
-        wakeupSource = 35;
+        irqEnabledFlag &= ~TSI_IRQ_BIT;
+        if ( enable_periph_irq ) wakeupSource = 35;
     }
     /*******************************************************************************
      *
@@ -139,7 +140,7 @@ extern "C" {
         LPTMR0_CMR = 1;
         LPTMR0_CSR = LPTMR_CSR_TEN | LPTMR_CSR_TCF;
 #endif
-
+        irqEnabledFlag |= TSI_IRQ_BIT;
     }
     /*******************************************************************************
      *

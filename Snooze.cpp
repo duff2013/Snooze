@@ -139,7 +139,6 @@ int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     else if ( mode == VLLS2 ) { enter_vlls2( ); }
     else if ( mode == VLLS1 ) { enter_vlls1( ); }
     else if ( mode == VLLS0 ) { enter_vlls0( ); }
-    llwu_disable( );
     tsi_disable( &p->tsi_mask );
 #ifdef KINETISK
     rtc_disable( &p->rtc_mask );
@@ -167,19 +166,13 @@ int SnoozeClass::hibernate( SnoozeBlock &configuration, SLEEP_MODE mode ) {
 #endif
     tsi_set( &p->tsi_mask );
     llwu_set( &p->llwu_mask );
-    
-    SIM_SOPT1CFG |= SIM_SOPT1CFG_USSWE_MASK;
-    SIM_SOPT1 |= SIM_SOPT1_USBSSTBY_MASK;
-    uint32_t PCR3 = PORTA_PCR3;
-    PORTA_PCR3 = PORT_PCR_MUX( 0 );
+    enableHibernate( );
     if ( mode == LLS )        { enter_lls( ); }
     else if ( mode == VLLS3 ) { enter_vlls3( ); }
     else if ( mode == VLLS2 ) { enter_vlls2( ); }
     else if ( mode == VLLS1 ) { enter_vlls1( ); }
     else if ( mode == VLLS0 ) { enter_vlls0( ); }
-    PORTA_PCR3 = PCR3;
-    SIM_SOPT1CFG |= SIM_SOPT1CFG_USSWE_MASK;
-    SIM_SOPT1 &= ~SIM_SOPT1_USBSSTBY_MASK;
+    disableHibernate( );
     tsi_disable( &p->tsi_mask );
 #ifdef KINETISK
     rtc_disable( &p->rtc_mask );
@@ -196,19 +189,20 @@ void SnoozeClass::wakeupISR( void ) {
     if ( sleep_mode == LLS ) {
         __disable_irq( );
         llwuFlag = llwu_clear_flags( );// clear flags
-        __enable_irq( );
         lptmrISR( );
         cmp0ISR( );
 #ifdef KINETISK
         rtcISR( );
 #endif
         tsiISR( );
+        llwu_disable( );
         /************************************
          * back to PEE if in PBE, else it is
          * in either BLPI/BLPE, if so nothing
          * to do.
          ************************************/
         pbe_pee( );
+        __enable_irq( );
     }
 }
 /*********************************************************************************************/

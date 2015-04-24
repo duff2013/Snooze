@@ -66,9 +66,10 @@ extern "C" {
     
     static inline
     void lptmrISR( void ) {
-        if ( !( SIM_SCGC5 & SIM_SCGC5_LPTIMER ) ) return;
+        if ( !( SIM_SCGC5 & SIM_SCGC5_LPTIMER ) || !( irqEnabledFlag & LPTMR_IRQ_BIT ) ) return;
         LPTMR0_CSR = LPTMR_CSR_TCF;
-        wakeupSource = 36;
+        irqEnabledFlag &= ~LPTMR_IRQ_BIT;
+        if ( enable_periph_irq ) wakeupSource = 36;
     }
     /*******************************************************************************
      *
@@ -87,6 +88,7 @@ extern "C" {
         if ( enable_periph_irq ) NVIC_ENABLE_IRQ( IRQ_LPTMR );
         LPTMR0_CMR = mask->period;
         LPTMR0_CSR = LPTMR_CSR_TEN | LPTMR_CSR_TIE | LPTMR_CSR_TCF;
+        irqEnabledFlag |= LPTMR_IRQ_BIT;
     }
     /*******************************************************************************
      *

@@ -248,23 +248,23 @@ extern "C" {
             attachInterruptVector( IRQ_PORTCD, return_portcd_irq );
 #endif
             __enable_irq( );
-        }
-        
+            
 #if defined(KINETISK)
-        uint64_t _pin = mask->pin;
-        while ( __builtin_popcountll( _pin ) ) {
-            uint32_t pin = 63 - __builtin_clzll( _pin );
-            if ( enable_periph_irq ) detachDigitalInterrupt( pin );
-            _pin &= ~( ( uint64_t )1<<pin );
-        }
+            uint64_t _pin = mask->pin;
+            while ( __builtin_popcountll( _pin ) ) {
+                uint32_t pin = 63 - __builtin_clzll( _pin );
+                detachDigitalInterrupt( pin );
+                _pin &= ~( ( uint64_t )1<<pin );
+            }
 #elif defined(KINETISL)
-        uint32_t _pin = mask->pin;
-        while ( __builtin_popcount( _pin ) ) {
-            uint32_t pin = 31 - __builtin_clz( _pin );
-            if ( enable_periph_irq ) detachDigitalInterrupt( pin );
-            _pin &= ~( ( uint32_t )1<<pin );
-        }
+            uint32_t _pin = mask->pin;
+            while ( __builtin_popcount( _pin ) ) {
+                uint32_t pin = 31 - __builtin_clz( _pin );
+                detachDigitalInterrupt( pin );
+                _pin &= ~( ( uint32_t )1<<pin );
+            }
 #endif
+        }
     }
 #ifdef __cplusplus
 }
