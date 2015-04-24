@@ -213,7 +213,6 @@ extern "C" {
 #ifdef KINETISK
         else if ( ( llwuFlag>>16 ) & LLWU_ME_WUME5_MASK ) wakeupSource = 35;
 #endif
-        NVIC_DISABLE_IRQ( IRQ_LLWU );
         llwuFlag = 0;
     }
     /*******************************************************************************
