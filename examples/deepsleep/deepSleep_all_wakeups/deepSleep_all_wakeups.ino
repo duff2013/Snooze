@@ -73,9 +73,7 @@ void loop() {
      * feed the sleep function its wakeup parameters. Then go 
      * to deepSleep.
      ********************************************************/
-    Snooze.deepSleep( config );
-    
-    int who = Snooze.source( );// get wakeup source
+    int who = Snooze.deepSleep( config );// return module that woke processor
     
     if (who == 21) { // pin wakeup source is its pin value
         for (int i = 0; i < 1; i++) {
