@@ -1,4 +1,6 @@
-#Snooze V5
+#Snooze v5.1
+>Updated (4/24/15) Fixed bug in Hibernate not giving the right wake up source and stopped setting unused registers in LLWU irq. Compatible with Teensyduino 1.22 also.
+
 >Updated (3/12/15) Fixed again setting digital pin for Teensy-3.x/LC. Teensy LC pin 17 is set automatically to OUTPUT->LOW to reduce power. Now TSI work with Teensy-LC for deepSleep and hibernate. Compare some what works for Teensy-LC but will further modified in next release. Examples now are now Teensy-LC compatible.
 
 >Updated (3/9/15) Fixed setting digital pin for Teensy LC. Also need to set Teensy LC pin 17 to OUTPUT->HIGH.
