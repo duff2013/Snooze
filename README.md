@@ -1,5 +1,5 @@
 #Snooze v5.1
->Updated (4/24/15) Fixed bug in Hibernate not giving the right wake up source and stopped setting unused registers in LLWU irq. Functions sleep, deepSleep and hibernate now return wake source. Code cleanup and various code refacrtoring. Added library properties. Now compatible with Teensyduino 1.22.
+>Updated (4/24/15) Fixed bug in Hibernate not giving the right wake up source and stopped setting unused registers in LLWU irq, Thanks to https://forum.pjrc.com/members/39437-rhubley. Functions sleep, deepSleep and hibernate now return wake source. Code cleanup and various code refacrtoring. Added library properties. Now compatible with Teensyduino 1.22.
 
 >Updated (3/12/15) Fixed again setting digital pin for Teensy-3.x/LC. Teensy LC pin 17 is set automatically to OUTPUT->LOW to reduce power. Now TSI work with Teensy-LC for deepSleep and hibernate. Compare some what works for Teensy-LC but will further modified in next release. Examples now are now Teensy-LC compatible.
 
