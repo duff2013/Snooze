@@ -109,7 +109,7 @@ extern "C" {
         config = portConfigRegister( pin );
         __disable_irq( );
         *config = ( ( *config & ~0x000F0000 ) | 0x01000000 );
-        __enable_irq();
+        __enable_irq( );
     }
     //--------------------------------------------------------//
     static inline

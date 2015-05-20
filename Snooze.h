@@ -1,7 +1,7 @@
 /*
  ||
  || @file 		Snooze.h
- || @version 	5.1
+ || @version 	5.2
  || @author 	duff
  || @contact    http://forum.pjrc.com/members/25610-duff
  ||
@@ -48,28 +48,34 @@
 #include "utility/digital.h"
 #include "utility/peripheral.h"
 
-/*  USE_HIBERNATE is advanced feature that allows
-    the Teensy to achieve 10 uA Sleep. This puts 
-    the USB regulator into a low power state and
-    configures pin PTA3 as TSI. There are times
-    that the mcu will not see any valid reprogram
-    signal from the USB when in this sleep mode.
-    Use this only when you verfied that your
-    program sleep works correctly with deepSleep! 
-    
-    For your Teensy's saftey I choose to add a small
-    delay in the constructor to allow a small window
-    for reprogramming if you go straight to sleep.
-*/
+
+/**
+ USE_HIBERNATE is advanced feature that allows
+ the Teensy to achieve 10 uA Sleep. This puts
+ the USB regulator into a low power state and
+ configures pin PTA3 as TSI. There are times
+ that the mcu will not see any valid reprogram
+ signal from the USB when in this sleep mode.
+ Use this only when you verfied that your
+ program sleep works correctly with deepSleep!
+ 
+ For your Teensy's saftey I choose to add a small
+ delay in the constructor to allow a small window
+ for reprogramming if you go straight to sleep.
+ */
 //#define USE_HIBERNATE
 
-/* extended pinMode types */
+/**
+ extended pinMode types
+ */
 typedef enum {
     TSI          = 3,
     CMP          = 4,
 } PIN_TYPE;
 
-/* Deep Sleep Modes */
+/**
+ Deep Sleep Modes
+ */
 typedef enum {
     WAIT,
     VLPW,
@@ -82,6 +88,9 @@ typedef enum {
     VLLS0
 } SLEEP_MODE;
 /****************************************************************************************/
+/**
+ *  Memory block for wake configurations.
+ */
 class SnoozeBlock {
 private:
     friend class SnoozeClass;
@@ -95,7 +104,6 @@ private:
 #ifdef KINETISK
     rtc_mask_t      rtc_mask;
 #endif
-    /* Peripherals */
     union periph_t {
         peripheral_mask_t   periph_on_mask;
         peripheral_mask_t   periph_off_mask;
@@ -123,6 +131,9 @@ public:
     periph_t setPeripheral;
 };
 /****************************************************************************************/
+/**
+ *  Low Power modes
+ */
 class SnoozeClass {
 private:
     static SLEEP_MODE sleep_mode;

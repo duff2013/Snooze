@@ -1,14 +1,25 @@
-/*******************************************************************************
+/***********************************************************************************
  *  digital.h
  *  Teensy 3.x/LC
  *
  * Purpose: Digital Pins
  *
- *******************************************************************************/
+ ***********************************************************************************/
 #ifndef __DIGITAL_H__
 #define __DIGITAL_H__
 #include <utility/util.h>
-/********************************************************************/
+/***********************************************************************************/
+#if defined(KINETISK)
+static void ( * return_porta_irq ) ( void );
+static void ( * return_portb_irq ) ( void );
+static void ( * return_portc_irq ) ( void );
+static void ( * return_portd_irq ) ( void );
+static void ( * return_porte_irq ) ( void );
+#elif defined(KINETISL)
+static void ( * return_porta_irq ) ( void );
+static void ( * return_portcd_irq )( void );
+#endif
+/***********************************************************************************/
 typedef struct {
 #if defined(KINETISK)
     uint64_t pin = 0;
@@ -20,46 +31,10 @@ typedef struct {
     bool state = false;
 #endif
 } digital_mask_t;
-
-#if defined(KINETISK)
-    static void ( * return_porta_irq ) ( void );
-    static void ( * return_portb_irq ) ( void );
-    static void ( * return_portc_irq ) ( void );
-    static void ( * return_portd_irq ) ( void );
-    static void ( * return_porte_irq ) ( void );
-#elif defined(KINETISL)
-    static void ( * return_porta_irq ) ( void );
-    static void ( * return_portcd_irq )( void );
-#endif
-
-/********************************************************************/
+/***********************************************************************************/
 #ifdef __cplusplus
 extern "C" {
 #endif
-    /*******************************************************************************
-     *
-     *       digital_init
-     *
-     *******************************************************************************/
-    static inline
-    void digital_init( void )
-    __attribute__((always_inline, unused));
-    
-    static inline
-    void digital_init( void ) {
-        __disable_irq( );
-#if defined(KINETISK)
-        return_porta_irq = _VectorsRam[IRQ_PORTA+16];
-        return_portb_irq = _VectorsRam[IRQ_PORTB+16];
-        return_portc_irq = _VectorsRam[IRQ_PORTC+16];
-        return_portd_irq = _VectorsRam[IRQ_PORTD+16];
-        return_porte_irq = _VectorsRam[IRQ_PORTE+16];
-#elif defined(KINETISL)
-        return_porta_irq  = _VectorsRam[IRQ_PORTA+16];
-        return_portcd_irq = _VectorsRam[IRQ_PORTCD+16];
-#endif
-        __enable_irq( );
-    }
     /*******************************************************************************
      *
      *       digital_configure_pin_mask
@@ -73,14 +48,14 @@ extern "C" {
     void digital_configure_pin_mask( uint8_t pin, uint8_t mode, uint8_t type, digital_mask_t *mask ) {
         if ( pin >= CORE_NUM_DIGITAL ) return;
 #if defined(KINETISK)
-        mask->pin = mask->pin | ( ( uint64_t )0x01 << pin );
-        mask->mode_irqType[pin] = type;
-        mask->mode_irqType[pin] |= mode << 4;
+        mask->pin = mask->pin | ( ( uint64_t )0x01 << pin );// save pin
+        mask->mode_irqType[pin] = type;// save type
+        mask->mode_irqType[pin] |= mode << 4;// save mode
         mask->state = true;
 #elif defined(KINETISL)
-        mask->pin = mask->pin | ( ( uint32_t )0x01 << pin );
-        mask->mode_irqType[pin] = type;
-        mask->mode_irqType[pin] |= mode << 4;
+        mask->pin = mask->pin | ( ( uint32_t )0x01 << pin );// save pin
+        mask->mode_irqType[pin] = type;// save type
+        mask->mode_irqType[pin] |= mode << 4;// save mode
         mask->state = true;
 #endif
     }
@@ -88,13 +63,14 @@ extern "C" {
      *
      *       digitalISR
      *
-     *******************************************************************************/    
+     *******************************************************************************/
     static inline
     void digitalISR( void )
     __attribute__((always_inline, unused));
     
     static inline
     void digitalISR( void ) {
+        digitalWrite(LED_BUILTIN, HIGH);
         uint32_t isfr_a = PORTA_ISFR;
         PORTA_ISFR = isfr_a;
 #if defined(KINETISK)
@@ -113,7 +89,7 @@ extern "C" {
 #if defined(KINETISK)
         else if ( isfr_a & CORE_PIN24_BITMASK ) { wakeupSource = 24; return; }
         else if ( isfr_a & CORE_PIN33_BITMASK ) { wakeupSource = 33; return; }
-
+        
         if ( isfr_b & CORE_PIN0_BITMASK )       { wakeupSource = 0;  return; }
         else if ( isfr_b & CORE_PIN1_BITMASK )  { wakeupSource = 1;  return; }
         else if ( isfr_b & CORE_PIN16_BITMASK ) { wakeupSource = 16; return; }
@@ -164,62 +140,121 @@ extern "C" {
     static inline
     void digital_set( digital_mask_t *mask ) {
         if ( mask->state == false ) return;
-        if ( enable_periph_irq ) {
-            __disable_irq( );
-#if defined(KINETISK)
-            attachInterruptVector( IRQ_PORTA, digitalISR );
-            attachInterruptVector( IRQ_PORTB, digitalISR );
-            attachInterruptVector( IRQ_PORTC, digitalISR );
-            attachInterruptVector( IRQ_PORTD, digitalISR );
-            attachInterruptVector( IRQ_PORTE, digitalISR );
-#elif defined(KINETISL)
-            attachInterruptVector( IRQ_PORTA, digitalISR );
-            attachInterruptVector( IRQ_PORTCD, digitalISR );
-#endif
-            __enable_irq( );
-        }
-        
 #if defined(KINETISK)
         uint64_t _pin = mask->pin;
         while ( __builtin_popcountll( _pin ) ) {
-            uint32_t pin  = 63 - __builtin_clzll( _pin );
-            uint32_t mode = mask->mode_irqType[pin] >> 4;
-            uint32_t type = mask->mode_irqType[pin] & 0x0F;
+            uint32_t pin  = 63 - __builtin_clzll( _pin );// get pin
+            uint32_t mode = mask->mode_irqType[pin] >> 4;// get type
+            uint32_t type = mask->mode_irqType[pin] & 0x0F;// get mode
             
             volatile uint32_t *config;
             config = portConfigRegister( pin );
             
-            if ( mode == INPUT || mode == INPUT_PULLUP ) {
+            if ( enable_periph_irq ) {// if using sleep must setup pin interrupt to wake
+                
+                int priority = nvic_execution_priority( );// get current priority
+                // if running from handler set priority higher than current handler
+                priority = ( priority  < 256 ) && ( (priority - 16) > 0 ) ? priority - 16 : 128;
+                
+                if ( pin == 3 || pin == 4 || pin == 24 || pin == 33 ) {
+                    
+                    NVIC_SET_PRIORITY( IRQ_PORTA, priority );//set priority to new level
+                    __disable_irq( );
+                    return_porta_irq = _VectorsRam[IRQ_PORTA+16];// save prev isr
+                    attachInterruptVector( IRQ_PORTA, digitalISR );// set snooze isr
+                    __enable_irq( );
+                }
+                else if ( pin == 0 || pin == 1 || pin == 16 || pin == 17 || pin == 18 || pin == 19 || pin == 25 || pin == 32 ) {
+                    NVIC_SET_PRIORITY( IRQ_PORTB, priority );//set priority to new level
+                    __disable_irq( );
+                    return_portb_irq = _VectorsRam[IRQ_PORTB+16];// save prev isr
+                    attachInterruptVector( IRQ_PORTB, digitalISR );// set snooze isr
+                    __enable_irq( );
+                }
+                else if ( pin == 9 || pin == 10 || pin == 11 || pin == 12 || pin == 13 || pin == 15 || pin == 22 || pin == 23 || pin == 27 || pin == 28 || pin == 29 || pin == 30 ) {
+                    NVIC_SET_PRIORITY( IRQ_PORTC, priority );//set priority to new level
+                    __disable_irq( );
+                    return_portc_irq = _VectorsRam[IRQ_PORTC+16];// save prev isr
+                    attachInterruptVector( IRQ_PORTC, digitalISR );// set snooze isr
+                    __enable_irq( );
+                }
+                else if ( pin == 2 || pin == 5 || pin == 6 || pin == 7 || pin == 8 || pin == 14 || pin == 20 || pin == 21 )  {
+                    NVIC_SET_PRIORITY( IRQ_PORTD, priority );//set priority to new level
+                    __disable_irq( );
+                    return_portd_irq = _VectorsRam[IRQ_PORTD+16];// save prev isr
+                    attachInterruptVector( IRQ_PORTD, digitalISR );// set snooze isr
+                    __enable_irq( );
+                }
+                else if ( pin == 26 || pin == 31 ) {
+                    NVIC_SET_PRIORITY( IRQ_PORTE, priority );//set priority to new level
+                    __disable_irq( );
+                    return_porte_irq = _VectorsRam[IRQ_PORTE+16];// save prev isr
+                    attachInterruptVector( IRQ_PORTE, digitalISR );// set snooze isr
+                    __enable_irq( );
+                }
+            }
+            
+            if ( mode == INPUT || mode == INPUT_PULLUP ) {// setup pin mode/type/interrupt
                 *portModeRegister( pin ) = 0;
                 if ( mode == INPUT ) *config = PORT_PCR_MUX( 1 );
                 else *config = PORT_PCR_MUX( 1 ) | PORT_PCR_PE | PORT_PCR_PS;// pullup
-                if ( enable_periph_irq ) attachDigitalInterrupt( pin, type );
+                if ( enable_periph_irq ) {
+                    attachDigitalInterrupt( pin, type );// set pin interrupt
+                }
             } else {
                 pinMode( pin, mode );
                 digitalWriteFast( pin, type );
             }
-            _pin &= ~( ( uint64_t )1<<pin );
+            
+            _pin &= ~( ( uint64_t )1<<pin );// remove pin from list
+            
         }
 #elif defined(KINETISL)
         uint32_t _pin = mask->pin;
         while ( __builtin_popcount( _pin ) ) {
-            uint32_t pin  = 31 - __builtin_clz( _pin );
-            uint32_t mode = mask->mode_irqType[pin] >> 4;
-            uint32_t type = mask->mode_irqType[pin] & 0x0F;
+            uint32_t pin  = 31 - __builtin_clz( _pin );// get pin
+            uint32_t mode = mask->mode_irqType[pin] >> 4;// get type
+            uint32_t type = mask->mode_irqType[pin] & 0x0F;// get mode
             
             volatile uint32_t *config;
             config = portConfigRegister( pin );
             
-            if ( mode == INPUT || mode == INPUT_PULLUP ) {
+            if ( enable_periph_irq ) {// if using sleep must setup pin interrupt to wake
+                
+                int priority = nvic_execution_priority( );// get current priority
+                // if running from handler set priority higher than current handler
+                priority = ( priority  < 256 ) && ( (priority - 16) > 0 ) ? priority - 16 : 128;
+                
+                if ( pin == 3 || pin == 4 ) {
+                    NVIC_SET_PRIORITY( IRQ_PORTA, priority );//set priority to new level
+                    __disable_irq( );
+                    return_porta_irq = _VectorsRam[IRQ_PORTA+16];// save prev isr
+                    attachInterruptVector( IRQ_PORTA, digitalISR );// set snooze isr
+                    __enable_irq( );
+                }
+                else if ( pin == 2 || pin == 5 || pin == 6 || pin == 7 || pin == 8 || pin == 14 || pin == 20 || pin == 21 || pin == 9 || pin == 10 || pin == 11 || pin == 12 || pin == 13 || pin == 15 || pin == 22 || pin == 23 ) {
+                    NVIC_SET_PRIORITY( IRQ_PORTCD, priority );//set priority to new level
+                    __disable_irq( );
+                    return_portcd_irq = _VectorsRam[IRQ_PORTCD+16];// save prev isr
+                    attachInterruptVector( IRQ_PORTCD, digitalISR );// set snooze isr
+                    __enable_irq( );
+                }
+            }
+            
+            if ( mode == INPUT || mode == INPUT_PULLUP ) {// setup pin mode/type/interrupt
                 *portModeRegister( pin ) &= ~digitalPinToBitMask( pin ); // TODO: atomic
                 if ( mode == INPUT ) *config = PORT_PCR_MUX( 1 );
                 else *config = PORT_PCR_MUX( 1 ) | PORT_PCR_PE | PORT_PCR_PS;// pullup
-                if ( enable_periph_irq ) attachDigitalInterrupt( pin, type );
+                if ( enable_periph_irq ) {
+                    attachDigitalInterrupt( pin, type );// set pin interrupt
+                }
             } else {
                 pinMode( pin, mode );
                 digitalWriteFast( pin, type );
             }
-            _pin &= ~( ( uint32_t )1<<pin );
+            
+            _pin &= ~( ( uint32_t )1<<pin );// remove pin from list
+            
         }
 #endif
     }
@@ -236,32 +271,79 @@ extern "C" {
     void digital_disable( digital_mask_t *mask ) {
         if ( mask->state == false ) return;
         if (  enable_periph_irq ) {
-            __disable_irq( );
-#if defined(KINETISK)
-            attachInterruptVector( IRQ_PORTA, return_porta_irq );
-            attachInterruptVector( IRQ_PORTB, return_portb_irq );
-            attachInterruptVector( IRQ_PORTC, return_portc_irq );
-            attachInterruptVector( IRQ_PORTD, return_portd_irq );
-            attachInterruptVector( IRQ_PORTE, return_porte_irq );
-#elif defined(KINETISL)
-            attachInterruptVector( IRQ_PORTA, return_porta_irq );
-            attachInterruptVector( IRQ_PORTCD, return_portcd_irq );
-#endif
-            __enable_irq( );
-            
 #if defined(KINETISK)
             uint64_t _pin = mask->pin;
             while ( __builtin_popcountll( _pin ) ) {
                 uint32_t pin = 63 - __builtin_clzll( _pin );
-                detachDigitalInterrupt( pin );
-                _pin &= ~( ( uint64_t )1<<pin );
+                
+                if ( enable_periph_irq ) {// if using sleep, give back previous isr
+                    
+                    detachDigitalInterrupt( pin );// remove interrupt
+                    
+                    if ( pin == 3 || pin == 4 || pin == 24 || pin == 33 ) {
+                        NVIC_SET_PRIORITY( IRQ_PORTA, 128 );//return priority to core level
+                        __disable_irq( );
+                        attachInterruptVector( IRQ_PORTA, return_porta_irq );// return prev interrupt
+                        __enable_irq( );
+                    }
+                    else if ( pin == 0 || pin == 1 || pin == 16 || pin == 17 || pin == 18 || pin == 19 || pin == 25 || pin == 32 ) {
+                        NVIC_SET_PRIORITY( IRQ_PORTB, 128 );//return priority to core level
+                        __disable_irq( );
+                        attachInterruptVector( IRQ_PORTB, return_portb_irq );// return prev interrupt
+                        __enable_irq( );
+                    }
+                    else if ( pin == 9 || pin == 10 || pin == 11 || pin == 12 || pin == 13 || pin == 15 || pin == 22 || pin == 23 || pin == 27 || pin == 28 || pin == 29 || pin == 30 ) {
+                        NVIC_SET_PRIORITY( IRQ_PORTC, 128 );//return priority to core level
+                        __disable_irq( );
+                        attachInterruptVector( IRQ_PORTC, return_portc_irq );// return prev interrupt
+                        __enable_irq( );
+                    }
+                    else if ( pin == 2 || pin == 5 || pin == 6 || pin == 7 || pin == 8 || pin == 14 || pin == 20 || pin == 21 ) {
+                        NVIC_SET_PRIORITY( IRQ_PORTD, 128 );//return priority to core level
+                        __disable_irq( );
+                        attachInterruptVector( IRQ_PORTD, return_portd_irq );// return prev interrupt
+                        __enable_irq( );
+                        if (*return_portd_irq != portd_isr) {
+                            //return_portd_irq();
+                        }
+                    }
+                    else if ( pin == 26 || pin == 31 ) {
+                        NVIC_SET_PRIORITY( IRQ_PORTE, 128 );//return priority to core level
+                        __disable_irq( );
+                        attachInterruptVector( IRQ_PORTE, return_porte_irq );// return prev interrupt
+                        __enable_irq( );
+                    }
+                    
+                }
+                
+                _pin &= ~( ( uint64_t )1<<pin );// remove pin from list
+                
             }
 #elif defined(KINETISL)
             uint32_t _pin = mask->pin;
             while ( __builtin_popcount( _pin ) ) {
                 uint32_t pin = 31 - __builtin_clz( _pin );
-                detachDigitalInterrupt( pin );
-                _pin &= ~( ( uint32_t )1<<pin );
+                
+                if ( enable_periph_irq ) {// if using sleep give back previous isr
+                    
+                    detachDigitalInterrupt( pin );// remove interrupt
+                    
+                    if ( pin == 3 || pin == 4 ) {
+                        NVIC_SET_PRIORITY( IRQ_PORTA, 128 );//return priority to core level
+                        __disable_irq( );
+                        attachInterruptVector( IRQ_PORTA, return_porta_irq );// return prev interrupt
+                        __enable_irq( );
+                    }
+                    else if ( pin == 2 || pin == 5 || pin == 6 || pin == 7 || pin == 8 || pin == 14 || pin == 20 || pin == 21 || pin == 9 || pin == 10 || pin == 11 || pin == 12 || pin == 13 || pin == 15 || pin == 22 || pin == 23 ) {
+                        NVIC_SET_PRIORITY( IRQ_PORTCD, 128 );//return priority to core level
+                        __disable_irq( );
+                        attachInterruptVector( IRQ_PORTCD, return_portcd_irq );// return prev interrupt
+                        __enable_irq( );
+                    }
+                }
+                
+                _pin &= ~( ( uint32_t )1<<pin );// remove pin from list
+                
             }
 #endif
         }
@@ -269,5 +351,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-/********************************************************************/
+/***********************************************************************************/
 #endif /* __DIGITAL_H__ */

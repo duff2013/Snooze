@@ -221,7 +221,7 @@ void blpe_blpi( void ) {
     // wait for MCGOUT to switch over to the internal reference clock
     while ( ( MCG_S & MCG_S_CLKST_MASK ) != MCG_S_CLKST( 0x01 ) ) ;
     MCG_C2 = MCG_C2_IRCS;
-    while ( !(MCG_S & MCG_S_IRCST ) ) ;
+    while ( !( MCG_S & MCG_S_IRCST ) ) ;
     // To move from FBI to BLPI the LP bit must be set
     MCG_C2 |= MCG_C2_LP; // set LP bit
     mcg_div( 0x00, 0x00, 0x01, 1999 );

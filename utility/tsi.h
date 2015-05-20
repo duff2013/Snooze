@@ -1,21 +1,23 @@
-/*******************************************************************************
+/***********************************************************************************
  *  tsi.h
  *  Teensy 3.x/LC
  *
  * Purpose: Touch Sense
  *
- *******************************************************************************/
+ ***********************************************************************************/
 #ifndef __TSI_H__
 #define __TSI_H__
-/*******************************************************************************/
+/***********************************************************************************/
 #include <utility/util.h>
-
+/***********************************************************************************/
+static void ( * return_tsi0_irq ) ( void );
+/***********************************************************************************/
 typedef struct {
     uint8_t  pin = 0x03;
     uint16_t threshold;
     bool state = false;
 } tsi_mask_t;
-/********************************************************************/
+/***********************************************************************************/
 #if defined(KINETISK)
 static const uint8_t tsi_pins[] = {
     //0    1    2    3    4    5    6    7    8    9
@@ -69,7 +71,7 @@ extern "C" {
         SIM_SCGC5 &= ~SIM_SCGC5_LPTIMER;
 #endif
         irqEnabledFlag &= ~TSI_IRQ_BIT;
-        if ( enable_periph_irq ) wakeupSource = 35;
+        if ( enable_periph_irq ) wakeupSource = 37;
     }
     /*******************************************************************************
      *
@@ -87,7 +89,16 @@ extern "C" {
         if ( pin >= NUM_DIGITAL_PINS ) return;
         uint16_t threshold = mask->threshold;
         if ( enable_periph_irq ) {
+            
+            int priority = nvic_execution_priority( );// get current priority
+            // if running from handler set priority higher than current handler
+            priority = ( priority  < 256 ) && ( (priority - 16) > 0 ) ? priority - 16 : 128;
+            NVIC_SET_PRIORITY( IRQ_TSI, priority );//set priority to new level
+            
+            __disable_irq( );
+            return_tsi0_irq = _VectorsRam[IRQ_TSI+16];// save prev isr
             attachInterruptVector( IRQ_TSI, tsiISR );
+            __enable_irq( );
             NVIC_ENABLE_IRQ( IRQ_TSI );
         }
         
@@ -156,7 +167,11 @@ extern "C" {
         if ( mask->state == false ) return;
         if ( enable_periph_irq ) {
             NVIC_DISABLE_IRQ( IRQ_TSI );
-            detachInterruptVector( IRQ_TSI );
+            NVIC_SET_PRIORITY( IRQ_TSI, 128 );// return priority core level
+            __disable_irq( );
+            attachInterruptVector( IRQ_TSI, return_tsi0_irq );// return prev interrupt
+            __enable_irq( );
+            //detachInterruptVector( IRQ_TSI );
         }
         TSI0_GENCS = TSI_GENCS_OUTRGF | TSI_GENCS_EOSF;
         TSI0_GENCS &= ~TSI_GENCS_TSIEN;
@@ -165,5 +180,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-/********************************************************************/
+/***********************************************************************************/
 #endif /* __TSI_H__ */

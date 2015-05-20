@@ -1,13 +1,13 @@
-/*******************************************************************************
+ /***********************************************************************************
  *  cmp.h
  *  Teensy 3.x/LC
  *
  * Purpose: Analog Compare
  *
- *******************************************************************************/
+ ***********************************************************************************/
 #ifndef __CMP_H__
 #define __CMP_H__
-/*******************************************************************************/
+/***********************************************************************************/
 #include <utility/util.h>
 
 #define CMP_CR0_HYSTCTR(n)      (uint8_t)(((n) & 0x03) << 0)
@@ -35,7 +35,9 @@
 #define CMP_MUXCR_MSEL(n)       (uint8_t)(((n) & 0x07) << 0)
 #define CMP_MUXCR_PSEL(n)       (uint8_t)(((n) & 0x07) << 3)
 #define CMP_MUXCR_PSTM          (uint8_t)0x40
-
+/***********************************************************************************/
+static void ( * return_cmp0_irq ) ( void );
+/***********************************************************************************/
 typedef struct {
     float threshold_crossing;
     uint8_t pin;
@@ -43,11 +45,29 @@ typedef struct {
     uint8_t type;
     bool state = false;
 } cmp_mask_t;
-/********************************************************************/
+/***********************************************************************************/
 #include "Arduino.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
+    /*******************************************************************************
+     *
+     *       cmp_init
+     *
+     *******************************************************************************/
+    static inline
+    void cmp_init( void )
+    __attribute__((always_inline, unused));
+    
+    static inline
+    void cmp_init( void ) {
+        #if defined(KINETISK)
+        NVIC_SET_PRIORITY( IRQ_CMP0, 64 );
+        NVIC_SET_PRIORITY( IRQ_CMP1, 64 );
+        #elif defined(KINETISL)
+        NVIC_SET_PRIORITY( IRQ_CMP0, 64 );
+        #endif
+    }
     /*******************************************************************************
      *
      *       cmp_configure_pin_mask
@@ -98,7 +118,19 @@ extern "C" {
     static inline
     void cmp_set( cmp_mask_t *mask ) {
         if ( mask->state == false ) return;
-        if ( enable_periph_irq ) attachInterruptVector( IRQ_CMP0, cmp0ISR );
+        if ( enable_periph_irq ) {
+            
+            int priority = nvic_execution_priority( );// get current priority
+            // if running from handler set priority higher than current handler
+            priority = ( priority  < 256 ) && ( (priority - 16) > 0 ) ? priority - 16 : 128;
+            NVIC_SET_PRIORITY( IRQ_CMP0, priority );//set priority to new level
+            
+            __disable_irq( );
+            return_cmp0_irq = _VectorsRam[IRQ_CMP0+16];// save prev isr
+            attachInterruptVector( IRQ_CMP0, cmp0ISR );
+            __enable_irq( );
+            NVIC_ENABLE_IRQ( IRQ_CMP0 );
+        }
         uint8_t _pin;
         SIM_SCGC4 |= SIM_SCGC4_CMP;
         CMP0_CR0 = 0x00;
@@ -147,7 +179,11 @@ extern "C" {
         if ( mask->state == false ) return;
         if ( enable_periph_irq ) {
             NVIC_DISABLE_IRQ( IRQ_CMP0 );
-            detachInterruptVector( IRQ_CMP0 );
+            NVIC_SET_PRIORITY( IRQ_CMP0, 128 );//return priority to core value
+            __disable_irq( );
+            attachInterruptVector( IRQ_CMP0, return_cmp0_irq );// return prev interrupt
+            __enable_irq( );
+            //detachInterruptVector( IRQ_CMP0 );
         }
         CMP0_CR0 = 0x00;
         CMP0_CR1 = 0x00;
@@ -156,5 +192,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-/********************************************************************/
+/***********************************************************************************/
 #endif /* __CMP_H__ */
