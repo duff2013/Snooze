@@ -1,40 +1,30 @@
->Updated (5/19/15 v5.2)
-    * Better documentation now but still needs work.
-    * Fixed TSI wakeup number for sleep interrupts.
-    * Digital Pins configurations only now change interrupt vector for the selected pin for the
-        sleep function. This was do to Adafruit_nRF8001 library needing to keep its interrupt
-        config intact. Possible problems still exists if a SnoozeBlock pin shares the same
-        vector as the library or user code, not really sure how to handle that.
-    * Fixed LPTMR not resseting its compare time if other wakeup interrupt came before it. This
-        would make the LPTMR not wait the full param time to fire its interrupt in next sleep
-        mode.
-    * All library interrupts priorities raised to (current - 16) and LLWU priority raised to 32
-        because calling a function from an isr will block a lower priority interrupt.
+><b>Updated (5/19/15 v5.2)</b><br>
+* Better documentation now but still needs work.<br>
+* Fixed TSI wakeup number for sleep interrupts.<br>
+* Digital Pins configurations only now change interrupt vector for the selected pin for the sleep function. This was do to Adafruit_nRF8001 library needing to keep its interrupt config intact. Possible problems still exists if a SnoozeBlock pin shares the same vector as the library or user code, not really sure how to handle that.
+* Fixed LPTMR not resseting its compare time if other wakeup interrupt came before it. This would make the LPTMR not wait the full param time to fire its interrupt in next sleep mode.
+* All library interrupts priorities raised to (current - 16) and LLWU priority raised to 32 because calling a function from an isr will block a lower priority interrupt.
 
->Updated (4/24/15 v5.1)
-    * Fixed bug in Hibernate not giving the right wake up source and stopped setting unused
-        registers in LLWU irq, Thanks to https://forum.pjrc.com/members/39437-rhubley.
-    * Functions sleep, deepSleep and hibernate now return wake source.
-    * Code cleanup and various code refactoring.
-    * Added library properties.
-    * Now compatible with Teensyduino 1.22.
+><b>Updated (4/24/15 v5.1)</b><br>
+* Fixed bug in Hibernate not giving the right wake up source and stopped setting unused registers in LLWU irq, Thanks to https://forum.pjrc.com/members/39437-rhubley.
+* Functions sleep, deepSleep and hibernate now return wake source.
+* Code cleanup and various code refactoring.
+* Added library properties.
+* Now compatible with Teensyduino 1.22.
 
->Updated (3/12/15)
-    * Fixed again setting digital pin for Teensy-3.x/LC.
-    * Teensy LC pin 17 is set automatically to OUTPUT->LOW to reduce power.
-    * Now TSI work with Teensy-LC for deepSleep and hibernate.
-    * Compare some what works for Teensy-LC but will further modified in next release.
-    * Examples now are now Teensy-LC compatible.
+><b>Updated (3/12/15)</b><br>
+* Fixed again setting digital pin for Teensy-3.x/LC.
+* Teensy LC pin 17 is set automatically to OUTPUT->LOW to reduce power.
+* Now TSI work with Teensy-LC for deepSleep and hibernate.
+* Compare some what works for Teensy-LC but will further modified in next release.
+* Examples now are now Teensy-LC compatible.
 
->Updated (3/9/15)
-    * Fixed setting digital pin for Teensy LC.
-    * Also need to set Teensy LC pin 17 to OUTPUT->HIGH.
+><b>Updated (3/9/15)</b><br>
+* Fixed setting digital pin for Teensy LC.
+* Also need to set Teensy LC pin 17 to OUTPUT->HIGH.
 
->Updated
-    * Initial TeensyLC support, not all wakeup sources are available, RTC, TSI, CMP and some
-        digital pins are not waking the LC up either.
-
->This library is the latest revision based on my earlier work on the LowPower_Teensy3. I changed the name to not conflict with the Arduino LowPower library plus I think it sounds cooler.
+><b>Updated</b><br>
+* Initial TeensyLC support, not all wakeup sources are available, RTC, TSI, CMP and some digital pins are not waking the LC up either.
 
 <h3>Initial Release:</h3>
 1.  Trimmed down and simplified, tried to mimic standard Arduino conventions for setting wakeup pins etc..<br>
