@@ -145,7 +145,8 @@ ___
 */
 int SnoozeClass::hibernate( SnoozeBlock &configuration, SLEEP_MODE mode );
 ```
-
+___
+<h5>setPeripheral: </h5>
 ```c
 /**
 *  Allows you to turn off/on clocks for different hardware on teensy.
