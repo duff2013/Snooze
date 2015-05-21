@@ -1,7 +1,4 @@
 #Snooze v5.2
->This library is the latest revision based on my earlier work on the LowPower_Teensy3. I changed the name to not conflict with the Arduino LowPower library plus I think it sounds cooler.
-
-<h4>Compatible with Teensyduino 1.23, older versions might not work.</h4> 
 
 <h1>General Usage</h1>
 
