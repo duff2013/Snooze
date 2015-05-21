@@ -40,7 +40,7 @@ ___
 *  @param val  - threshold capacitance value, greater than this value wakes.
 *
 *  Teensy LC (digital pin)
-*  @param pin  - sleep pins(1-33), deepSleep, hibernate pins (2,4,6,7,9,10,11,13,16,21,22,26)
+*  @param pin  - sleep pins(1-23), deepSleep, hibernate pins (2,4,6,7,9,10,11,13,16,21,22)
 *  @param mode - |INPUT|INPUT_PULLUP|OUTPUT|
 *  @param val  - |HIGH|LOW|RISING|FALLING|CHANGE|
 *
@@ -72,7 +72,7 @@ ___
 *
 *  @param period 1ms to 65535ms
 */
-void SnoozeBlock::setTimer( uint32_t period );
+void SnoozeBlock::setTimer( uint16_t period );
 ```
 ___
 <h5>setAlarm: RTC</h5>
