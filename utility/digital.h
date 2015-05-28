@@ -70,7 +70,6 @@ extern "C" {
     
     static inline
     void digitalISR( void ) {
-        digitalWrite(LED_BUILTIN, HIGH);
         uint32_t isfr_a = PORTA_ISFR;
         PORTA_ISFR = isfr_a;
 #if defined(KINETISK)

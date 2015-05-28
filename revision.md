@@ -1,3 +1,6 @@
+><b>Updated (5/28/15 v5.2.1)</b><br>
+* Remove debug stuff.<br>
+
 ><b>Updated (5/19/15 v5.2)</b><br>
 * Better documentation now but still needs work.<br>
 * Fixed TSI wakeup number for sleep interrupts.<br>
