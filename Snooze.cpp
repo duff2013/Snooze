@@ -112,7 +112,6 @@ SnoozeClass::SnoozeClass( void ) {
     SIM_SOPT1 &= ~SIM_SOPT1_USBSSTBY_MASK;
     attachInterruptVector( IRQ_LLWU, wakeupISR );
     NVIC_SET_PRIORITY( IRQ_LLWU, 32 );
-    //lptmr_init( );
     //cmp_init( );
     clock_mode = mcg_mode( );
 #if defined( USE_HIBERNATE )
@@ -144,15 +143,15 @@ void SnoozeClass::idle( void ) {
  *
  *  @return wakeup source
  */
-int SnoozeClass::sleep( SnoozeBlock &configuration ) {
+int SnoozeClass::sleep( SnoozeBlock &configuration ) { 
     SnoozeBlock *p = &configuration;
     enable_periph_irq = true;
     cmp_set( &p->cmp_mask );
-    digital_set( &p->digital_mask );
     lptmr_set( &p->lptmr_mask );
 #ifdef KINETISK
     rtc_alarm_set( &p->rtc_mask );
 #endif
+    digital_set( &p->digital_mask );
 #ifdef KINETISL
     pinMode( 17, OUTPUT );
     digitalWriteFast( 17, LOW );
@@ -182,12 +181,12 @@ int SnoozeClass::sleep( SnoozeBlock &configuration ) {
         usbEnable (   );
         peripheral_set( &p->setPeripheral.periph_off_mask );
     }
+    digital_disable( &p->digital_mask );
 #ifdef KINETISK
     rtc_disable( &p->rtc_mask );
 #endif
-    cmp_disable( &p->cmp_mask );
     lptmr_disable( &p->lptmr_mask );
-    digital_disable( &p->digital_mask );
+    cmp_disable( &p->cmp_mask );
     return wakeupSource;
 }
 //--------------------------------------DeepSleep----------------------------------------
@@ -204,7 +203,6 @@ int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     enable_periph_irq = false;
     sleep_mode = mode;
     cmp_set( &p->cmp_mask );
-    digital_set( &p->digital_mask );
     lptmr_set( &p->lptmr_mask );
 #ifdef KINETISK
     rtc_alarm_set( &p->rtc_mask );
@@ -214,6 +212,7 @@ int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     digitalWriteFast( 17, LOW );
 #endif
     tsi_set( &p->tsi_mask );
+    digital_set( &p->digital_mask );
     llwu_set( &p->llwu_mask );
     if ( mode == LLS )        { enter_lls( ); }
     else if ( mode == VLLS3 ) { enter_vlls3( ); }

@@ -80,7 +80,7 @@ extern "C" {
             
             int priority = nvic_execution_priority( );// get current priority
             // if running from handler set priority higher than current handler
-            priority = ( priority  < 256 ) && ( (priority - 16) > 0 ) ? priority - 16 : 128;
+            priority = ( priority  < 256 ) && ( ( priority - 16 ) > 0 ) ? priority - 16 : 128;
             NVIC_SET_PRIORITY( IRQ_RTC_ALARM, priority );//set priority to new level
             
             __disable_irq( );

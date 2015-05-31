@@ -1,3 +1,7 @@
+><b>Updated (5/31/15 v5.3)</b><br>
+* Fixed sleep function low power timer.<br>
+* Fixed digital pin wake on LOW or HIGH interrupt type, now if pin interrupt type is configured LOW and the pin is LOW when going into sleep it will wake immediately, the same goes for if it is HIGH interrupt type.<br>
+
 ><b>Updated (5/28/15 v5.2.1)</b><br>
 * Remove debug stuff.<br>
 

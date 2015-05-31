@@ -39,9 +39,9 @@ extern "C" {
     void lptmr_init( void ) {
         SIM_SOPT1 |= SIM_SOPT1_OSC32KSEL( 3 );
         SIM_SCGC5 |= SIM_SCGC5_LPTIMER;
-        LPTMR0_CSR = LPTMR_CSR_TCF;
         LPTMR0_PSR = LPTMR_PSR_PBYP | LPTMR_LPO;
-        SIM_SCGC5 &= ~SIM_SCGC5_LPTIMER;
+        LPTMR0_CSR = LPTMR_CSR_TCF;
+        //SIM_SCGC5 &= ~SIM_SCGC5_LPTIMER;
     }
     /*******************************************************************************
      *
@@ -68,7 +68,9 @@ extern "C" {
     
     static inline
     void lptmrISR( void ) {
+       
         if ( !( SIM_SCGC5 & SIM_SCGC5_LPTIMER ) || !( irqEnabledFlag & LPTMR_IRQ_BIT ) ) return;
+        digitalWrite(14, !digitalReadFast(14));
         LPTMR0_CSR = LPTMR_CSR_TCF;
         irqEnabledFlag &= ~LPTMR_IRQ_BIT;
         if ( enable_periph_irq ) wakeupSource = 36;
@@ -86,25 +88,18 @@ extern "C" {
     void lptmr_set( lptmr_mask_t *mask ) {
         if ( mask->state == false ) return;
         if ( enable_periph_irq ) {
-            
             int priority = nvic_execution_priority( );// get current priority
             // if running from handler set priority higher than current handler
-            priority = ( priority  < 256 ) && ( (priority - 16) > 0 ) ? priority - 16 : 128;
+            priority = ( priority  < 256 ) && ( ( priority - 16 ) > 0 ) ? priority - 16 : 128;
             NVIC_SET_PRIORITY( IRQ_LPTMR, priority );//set priority to new level
-            
             __disable_irq( );
             return_lptmr_irq = _VectorsRam[IRQ_LPTMR+16];// save prev isr
             attachInterruptVector( IRQ_LPTMR, lptmrISR );
             __enable_irq( );
-            
-            delay(100);
-            NVIC_ENABLE_IRQ( IRQ_LPTMR );
         }
-        SIM_SOPT1 |= SIM_SOPT1_OSC32KSEL( 3 );
-        SIM_SCGC5 |= SIM_SCGC5_LPTIMER;
-        LPTMR0_CSR = LPTMR_CSR_TCF;
-        LPTMR0_PSR = LPTMR_PSR_PBYP | LPTMR_LPO;
+        lptmr_init( );
         LPTMR0_CMR = mask->period;
+        if( enable_periph_irq ) NVIC_ENABLE_IRQ( IRQ_LPTMR );
         LPTMR0_CSR = LPTMR_CSR_TEN | LPTMR_CSR_TIE | LPTMR_CSR_TCF;
         irqEnabledFlag |= LPTMR_IRQ_BIT;
     }
@@ -128,7 +123,6 @@ extern "C" {
             __disable_irq( );
             attachInterruptVector( IRQ_LPTMR, return_lptmr_irq );// return prev interrupt
             __enable_irq( );
-            //detachInterruptVector( IRQ_LPTMR );
         }
     }
 #ifdef __cplusplus

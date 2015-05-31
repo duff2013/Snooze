@@ -16,6 +16,11 @@ static DMAMEM volatile uint8_t irqEnabledFlag = 0;
 #define RTC_IRQ_BIT         0x02
 #define LPTMR_IRQ_BIT       0x04
 #define TSI_IRQ_BIT         0x08
+#define DIGITALA_IRQ_BIT    0x10
+#define DIGITALB_IRQ_BIT    0x20
+#define DIGITALC_IRQ_BIT    0x40
+#define DIGITALD_IRQ_BIT    0x80
+#define DIGITALE_IRQ_BIT    0x100
 static volatile uint32_t PCR3;
 /*******************************************************************************/
 #ifdef __cplusplus
@@ -90,13 +95,11 @@ extern "C" {
         }
         mask = ( mask << 16 ) | 0x01000000;
         config = portConfigRegister( pin );
-        __disable_irq( );
         cfg = *config;
         cfg &= ~0x000F0000;		// disable any previous interrupt
         *config = cfg;
         cfg |= mask;
         *config = cfg;			// enable the new interrupt
-        __enable_irq( );
     }
     //--------------------------------------------------------//
     static inline
@@ -107,9 +110,7 @@ extern "C" {
     void detachDigitalInterrupt( uint8_t pin ) {
         volatile uint32_t *config;
         config = portConfigRegister( pin );
-        __disable_irq( );
         *config = ( ( *config & ~0x000F0000 ) | 0x01000000 );
-        __enable_irq( );
     }
     //--------------------------------------------------------//
     static inline
