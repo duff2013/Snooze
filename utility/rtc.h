@@ -111,7 +111,6 @@ extern "C" {
             NVIC_DISABLE_IRQ( IRQ_RTC_ALARM );
             NVIC_SET_PRIORITY( IRQ_RTC_ALARM, 128 );//return priority to core value
             __disable_irq( );
-            //detachInterruptVector( IRQ_RTC_ALARM );
             attachInterruptVector( IRQ_RTC_ALARM, return_rtc_irq );// return prev interrupt
             __enable_irq( );
         }

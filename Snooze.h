@@ -1,7 +1,7 @@
 /*
  ||
  || @file 		Snooze.h
- || @version 	5.3
+ || @version 	5.4
  || @author 	duff
  || @contact    http://forum.pjrc.com/members/25610-duff
  ||
@@ -29,7 +29,7 @@
 #ifndef Snooze_h
 #define Snooze_h
 
-#if(!defined(__arm__) && defined(TEENSYDUINO))
+#if( !defined( __arm__ ) && defined( TEENSYDUINO ) )
 #error Teensy 3.x and TeensyLC only.
 #endif
 
@@ -58,10 +58,6 @@
  signal from the USB when in this sleep mode.
  Use this only when you verfied that your
  program sleep works correctly with deepSleep!
- 
- For your Teensy's saftey I choose to add a small
- delay in the constructor to allow a small window
- for reprogramming if you go straight to sleep.
  */
 //#define USE_HIBERNATE
 
@@ -120,7 +116,7 @@ public:
     void pinMode ( int pin, int mode, int val );
     void pinMode ( int pin, int mode, int type, double val );
     /* LPTMR Config */
-    void setTimer( uint32_t period );
+    void setTimer( uint16_t period );
 #ifdef KINETISK
     /* RTC Config */
     void setAlarm( uint8_t hours, uint8_t minutes, uint8_t seconds );

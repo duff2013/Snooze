@@ -92,7 +92,7 @@ extern "C" {
             
             int priority = nvic_execution_priority( );// get current priority
             // if running from handler set priority higher than current handler
-            priority = ( priority  < 256 ) && ( ( priority - 16 ) > 0 ) ? priority - 16 : 128;
+            priority = ( priority  < 256 ) && ( (priority - 16) > 0 ) ? priority - 16 : 128;
             NVIC_SET_PRIORITY( IRQ_TSI, priority );//set priority to new level
             
             __disable_irq( );
@@ -140,14 +140,15 @@ extern "C" {
                       ( TSI_GENCS_REFCHRG( 4 ) ) |
                       ( TSI_GENCS_EXTCHRG( 3 ) ) |
                       ( TSI_GENCS_TSIIEN )       |
-                      ( TSI_GENCS_DVOLT( 0 ) )   |
-                      //TSI_GENCS_ESOR             |
                       ( TSI_GENCS_STM )          |
                       ( TSI_GENCS_OUTRGF )       |
                       ( TSI_GENCS_EOSF )         |
                       ( TSI_GENCS_TSIEN )
                       );
+        
+        SIM_SOPT1 |= SIM_SOPT1_OSC32KSEL( 3 );
         SIM_SCGC5 |= SIM_SCGC5_LPTIMER;
+        LPTMR0_PSR = LPTMR_PSR_PBYP | LPTMR_PSR_PCS(1);// LPO Clock
         LPTMR0_CMR = 1;
         LPTMR0_CSR = LPTMR_CSR_TEN | LPTMR_CSR_TCF;
 #endif
@@ -171,11 +172,8 @@ extern "C" {
             __disable_irq( );
             attachInterruptVector( IRQ_TSI, return_tsi0_irq );// return prev interrupt
             __enable_irq( );
-            //detachInterruptVector( IRQ_TSI );
         }
-        TSI0_GENCS = TSI_GENCS_OUTRGF | TSI_GENCS_EOSF;
         TSI0_GENCS &= ~TSI_GENCS_TSIEN;
-        SIM_SCGC5 &= ~SIM_SCGC5_TSI;
     }
 #ifdef __cplusplus
 }

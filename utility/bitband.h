@@ -1,9 +1,9 @@
 /*
  *  bitband.h
- *  Teensy 3.x/LC
+ *  Teensy 3.x
  *
  */
-
+#ifdef KINETISK
 #ifndef __BITBAND_H__
 #define __BITBAND_H__
 
@@ -12,3 +12,4 @@
 #define BITBAND_U8(reg, bit) (*(volatile uint8_t *)BITBAND_ADDR((reg), (bit)))
 
 #endif
+#endif// KINETISK

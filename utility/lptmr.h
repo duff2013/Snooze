@@ -9,12 +9,6 @@
 #define __LPTMR_H__
 /***********************************************************************************/
 #include <utility/util.h>
-
-#define LPTMR_MCGIRCLK       ( uint8_t )0x00
-#define LPTMR_LPO            ( uint8_t )0x01
-#define LPTMR_ERCLK32K       ( uint8_t )0x02
-#define LPTMR_OSCERCLK       ( uint8_t )0x03
-#define LPTMR_PRESCALE(n)    ( uint8_t )(((n) & 0x0F) << 0x03)
 /***********************************************************************************/
 static void ( * return_lptmr_irq ) ( void );
 /***********************************************************************************/
@@ -39,7 +33,7 @@ extern "C" {
     void lptmr_init( void ) {
         SIM_SOPT1 |= SIM_SOPT1_OSC32KSEL( 3 );
         SIM_SCGC5 |= SIM_SCGC5_LPTIMER;
-        LPTMR0_PSR = LPTMR_PSR_PBYP | LPTMR_LPO;
+        LPTMR0_PSR = LPTMR_PSR_PBYP | LPTMR_PSR_PCS(1);//LPO Clock
         LPTMR0_CSR = LPTMR_CSR_TCF;
         //SIM_SCGC5 &= ~SIM_SCGC5_LPTIMER;
     }
@@ -89,8 +83,8 @@ extern "C" {
         if ( mask->state == false ) return;
         if ( enable_periph_irq ) {
             int priority = nvic_execution_priority( );// get current priority
-            // if running from handler set priority higher than current handler
-            priority = ( priority  < 256 ) && ( ( priority - 16 ) > 0 ) ? priority - 16 : 128;
+            // if running from handler mode set priority higher than current handler
+            priority = ( priority < 256 ) && ( ( priority - 16 ) > 0 ) ? priority - 16 : 128;
             NVIC_SET_PRIORITY( IRQ_LPTMR, priority );//set priority to new level
             __disable_irq( );
             return_lptmr_irq = _VectorsRam[IRQ_LPTMR+16];// save prev isr

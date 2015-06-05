@@ -35,7 +35,7 @@ void blpe_pee( void ) {
     MCG_C5 = MCG_C5_PRDIV0( 0x03 );
     MCG_C6 =  MCG_C6_PLLS | MCG_C6_VDIV0( 0x00 ); // update MCG_C6
     // Now that PLL is configured, LP is cleared to enable the PLL
-    MCG_C2 &= ~MCG_C2_LP_MASK;
+    MCG_C2 &= ~MCG_C2_LP;
     // wait for PLLST status bit to set
     while ( !(MCG_S & MCG_S_PLLST) ) ;
     while ( !(MCG_S & MCG_S_LOCK0) ) ;
@@ -240,68 +240,68 @@ void pbe_pee( void ) {
 
 CLOCK_MODE mcg_mode( void ) {
     // check if in FEI mode
-    if ( ( ( ( MCG_S & MCG_S_CLKST_MASK ) >> MCG_S_CLKST_SHIFT ) == 0x00 ) &&     // check CLKS mux has selcted FLL output
-        ( MCG_S & MCG_S_IREFST_MASK ) &&                                     // check FLL ref is internal ref clk
-        ( !(  MCG_S & MCG_S_PLLST_MASK) ) )                                     // check PLLS mux has selected FLL
+    if ( ( ( ( MCG_S & MCG_S_CLKST_MASK ) >> MCG_S_CLKST_SHIFT ) == 0x00 ) &&   // check CLKS mux has selcted FLL output
+        ( MCG_S & MCG_S_IREFST ) &&                                             // check FLL ref is internal ref clk
+        ( !(  MCG_S & MCG_S_PLLST ) ) )                                         // check PLLS mux has selected FLL
     {
-        return FEI;                                                          // return FEI code
+        return FEI;                                                             // return FEI code
     }
     // Check MCG is in PEE mode
-    else if ( ( ( ( MCG_S & MCG_S_CLKST_MASK ) >> MCG_S_CLKST_SHIFT ) == 0x03 ) && // check CLKS mux has selcted PLL output
-             ( !( MCG_S & MCG_S_IREFST_MASK ) ) &&                              // check FLL ref is external ref clk
-             ( MCG_S & MCG_S_PLLST_MASK ) )                                    // check PLLS mux has selected PLL
+    else if ( ( ( ( MCG_S & MCG_S_CLKST_MASK ) >> MCG_S_CLKST_SHIFT ) == 0x03 ) &&  // check CLKS mux has selcted PLL output
+             ( !( MCG_S & MCG_S_IREFST ) ) &&                                       // check FLL ref is external ref clk
+             ( MCG_S & MCG_S_PLLST ) )                                              // check PLLS mux has selected PLL
     {
-        return PEE;                                                          // return PEE code
+        return PEE;                                                                 // return PEE code
     }
     // Check MCG is in PBE mode
-    else if ( ( ( ( MCG_S & MCG_S_CLKST_MASK ) >> MCG_S_CLKST_SHIFT ) == 0x02 ) && // check CLKS mux has selcted external reference
-             ( !( MCG_S & MCG_S_IREFST_MASK ) ) &&                              // check FLL ref is external ref clk
-             ( MCG_S & MCG_S_PLLST_MASK ) &&                                  // check PLLS mux has selected PLL
-             ( !( MCG_C2 & MCG_C2_LP_MASK ) ) )                                  // check MCG_C2[LP] bit is not set
+    else if ( ( ( ( MCG_S & MCG_S_CLKST_MASK ) >> MCG_S_CLKST_SHIFT ) == 0x02 ) &&  // check CLKS mux has selcted external reference
+             ( !( MCG_S & MCG_S_IREFST ) ) &&                                       // check FLL ref is external ref clk
+             ( MCG_S & MCG_S_PLLST ) &&                                             // check PLLS mux has selected PLL
+             ( !( MCG_C2 & MCG_C2_LP ) ) )                                          // check MCG_C2[LP] bit is not set
     {
-        return PBE;                                                          // return PBE code
+        return PBE;                                                                 // return PBE code
     }
     // Check MCG is in FBE mode
-    else if ( ( ( ( MCG_S & MCG_S_CLKST_MASK) >> MCG_S_CLKST_SHIFT ) == 0x02 ) && // check CLKS mux has selcted external reference
-             ( !( MCG_S & MCG_S_IREFST_MASK ) ) &&                              // check FLL ref is external ref clk
-             ( !( MCG_S & MCG_S_PLLST_MASK ) ) &&                               // check PLLS mux has selected FLL
-             ( !( MCG_C2 & MCG_C2_LP_MASK ) ) )                                  // check MCG_C2[LP] bit is not set
+    else if ( ( ( ( MCG_S & MCG_S_CLKST_MASK) >> MCG_S_CLKST_SHIFT ) == 0x02 ) &&   // check CLKS mux has selcted external reference
+             ( !( MCG_S & MCG_S_IREFST ) ) &&                                       // check FLL ref is external ref clk
+             ( !( MCG_S & MCG_S_PLLST ) ) &&                                        // check PLLS mux has selected FLL
+             ( !( MCG_C2 & MCG_C2_LP ) ) )                                          // check MCG_C2[LP] bit is not set
     {
-        return FBE;                                                          // return FBE code
+        return FBE;                                                                 // return FBE code
     }
     // Check MCG is in BLPE mode
-    else if ( ( ( ( MCG_S & MCG_S_CLKST_MASK ) >> MCG_S_CLKST_SHIFT ) == 0x02 ) && // check CLKS mux has selcted external reference
-             ( !( MCG_S & MCG_S_IREFST_MASK ) ) &&                              // check FLL ref is external ref clk
-             ( MCG_C2 & MCG_C2_LP_MASK ) )                                     // check MCG_C2[LP] bit is set
+    else if ( ( ( ( MCG_S & MCG_S_CLKST_MASK ) >> MCG_S_CLKST_SHIFT ) == 0x02 ) &&  // check CLKS mux has selcted external reference
+             ( !( MCG_S & MCG_S_IREFST ) ) &&                                       // check FLL ref is external ref clk
+             ( MCG_C2 & MCG_C2_LP ) )                                               // check MCG_C2[LP] bit is set
     {
-        return BLPE;                                                         // return BLPE code
+        return BLPE;                                                                // return BLPE code
     }
     // check if in BLPI mode
-    else if ( ( ( ( MCG_S & MCG_S_CLKST_MASK ) >> MCG_S_CLKST_SHIFT ) == 0x01 ) && // check CLKS mux has selcted int ref clk
-             ( MCG_S & MCG_S_IREFST_MASK ) &&                                 // check FLL ref is internal ref clk
-             ( !( MCG_S & MCG_S_PLLST_MASK ) ) &&                               // check PLLS mux has selected FLL
-             ( MCG_C2 & MCG_C2_LP_MASK ) )                                     // check LP bit is set
+    else if ( ( ( ( MCG_S & MCG_S_CLKST_MASK ) >> MCG_S_CLKST_SHIFT ) == 0x01 ) &&  // check CLKS mux has selcted int ref clk
+             ( MCG_S & MCG_S_IREFST ) &&                                            // check FLL ref is internal ref clk
+             ( !( MCG_S & MCG_S_PLLST ) ) &&                                        // check PLLS mux has selected FLL
+             ( MCG_C2 & MCG_C2_LP ) )                                               // check LP bit is set
     {
-        return BLPI;                                                         // return BLPI code
+        return BLPI;                                                                // return BLPI code
     }
     // check if in FBI mode
-    else if ( ( ( ( MCG_S & MCG_S_CLKST_MASK ) >> MCG_S_CLKST_SHIFT ) == 0x01 ) && // check CLKS mux has selcted int ref clk
-             ( MCG_S & MCG_S_IREFST_MASK ) &&                                 // check FLL ref is internal ref clk
-             ( !( MCG_S & MCG_S_PLLST_MASK ) ) &&                               // check PLLS mux has selected FLL
-             ( !( MCG_C2 & MCG_C2_LP_MASK ) ) )                                  // check LP bit is clear
+    else if ( ( ( ( MCG_S & MCG_S_CLKST_MASK ) >> MCG_S_CLKST_SHIFT ) == 0x01 ) &&  // check CLKS mux has selcted int ref clk
+             ( MCG_S & MCG_S_IREFST ) &&                                            // check FLL ref is internal ref clk
+             ( !( MCG_S & MCG_S_PLLST ) ) &&                                        // check PLLS mux has selected FLL
+             ( !( MCG_C2 & MCG_C2_LP ) ) )                                          // check LP bit is clear
     {
-        return FBI;                                                          // return FBI code
+        return FBI;                                                                 // return FBI code
     }
     // Check MCG is in FEE mode
-    else if ( ( ( ( MCG_S & MCG_S_CLKST_MASK ) >> MCG_S_CLKST_SHIFT ) == 0x00 ) && // check CLKS mux has selcted FLL
-             ( !( MCG_S & MCG_S_IREFST_MASK ) ) &&                              // check FLL ref is external ref clk
-             ( !( MCG_S & MCG_S_PLLST_MASK ) ) )                                 // check PLLS mux has selected FLL
+    else if ( ( ( ( MCG_S & MCG_S_CLKST_MASK ) >> MCG_S_CLKST_SHIFT ) == 0x00 ) &&  // check CLKS mux has selcted FLL
+             ( !( MCG_S & MCG_S_IREFST ) ) &&                                       // check FLL ref is external ref clk
+             ( !( MCG_S & MCG_S_PLLST ) ) )                                         // check PLLS mux has selected FLL
     {
-        return FEE;                                                          // return FEE code
+        return FEE;                                                                 // return FEE code
     }
     else
     {
-        return 0;                                                            // error condition
+        return 0;                                                                   // error condition
     }
 }
 

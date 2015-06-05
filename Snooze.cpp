@@ -76,7 +76,7 @@ void SnoozeBlock::pinMode( int pin, int mode, int type, double val ) {
  *
  *  @param period 1ms to 65535ms
  */
-void SnoozeBlock::setTimer( uint32_t period ) {
+void SnoozeBlock::setTimer( uint16_t period ) {
     lptmr_configure_period_mask( period, &lptmr_mask );
     llwu_configure_modules_mask( LLWU_LPTMR_MOD, &llwu_mask );
 }
@@ -104,6 +104,7 @@ void SnoozeBlock::setLowVoltage( double threshold ) {
 /*********************************************************************************************/
 DMAMEM SLEEP_MODE SnoozeClass::sleep_mode;
 CLOCK_MODE SnoozeClass::clock_mode;
+
 /**
  *  SnoozeClass Constructor
  */
@@ -112,14 +113,8 @@ SnoozeClass::SnoozeClass( void ) {
     SIM_SOPT1 &= ~SIM_SOPT1_USBSSTBY_MASK;
     attachInterruptVector( IRQ_LLWU, wakeupISR );
     NVIC_SET_PRIORITY( IRQ_LLWU, 32 );
-    //cmp_init( );
     clock_mode = mcg_mode( );
-#if defined( USE_HIBERNATE )
-    //volatile uint32_t n;
-    //for (n = 0; n < F_CPU; n++);
-#endif
 }
-//--------------------------------------source-------------------------------------------
 /**
  *  source - returns the wakeup source.
  *
@@ -128,14 +123,14 @@ SnoozeClass::SnoozeClass( void ) {
 int SnoozeClass::source( void ) {
     return wakeupSource;
 }
-//---------------------------------------idle--------------------------------------------
+
 /**
  *  idle - puts processor into wait mode until next interrupt typically systick.
  */
 void SnoozeClass::idle( void ) {
     enter_wait( );
 }
-//---------------------------------------Sleep-------------------------------------------
+
 /**
  *  sleep - most versatile sleep mode. SnoozeBlock configuration or any interrupt can wake the processor.
  *
@@ -146,6 +141,9 @@ void SnoozeClass::idle( void ) {
 int SnoozeClass::sleep( SnoozeBlock &configuration ) { 
     SnoozeBlock *p = &configuration;
     enable_periph_irq = true;
+#ifdef KINETISL
+    tsi_set( &p->tsi_mask );
+#endif
     cmp_set( &p->cmp_mask );
     lptmr_set( &p->lptmr_mask );
 #ifdef KINETISK
@@ -187,9 +185,12 @@ int SnoozeClass::sleep( SnoozeBlock &configuration ) {
 #endif
     lptmr_disable( &p->lptmr_mask );
     cmp_disable( &p->cmp_mask );
+#ifdef KINETISL
+    tsi_disable( &p->tsi_mask );
+#endif
     return wakeupSource;
 }
-//--------------------------------------DeepSleep----------------------------------------
+
 /**
  *  deepSleep - LLWU is used to handle interrupts that wake. USB regulator is enabled and 3.3V output pin can supply full current (100mA MAX).
  *
@@ -203,6 +204,7 @@ int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     enable_periph_irq = false;
     sleep_mode = mode;
     cmp_set( &p->cmp_mask );
+    digital_set( &p->digital_mask );
     lptmr_set( &p->lptmr_mask );
 #ifdef KINETISK
     rtc_alarm_set( &p->rtc_mask );
@@ -212,7 +214,6 @@ int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     digitalWriteFast( 17, LOW );
 #endif
     tsi_set( &p->tsi_mask );
-    digital_set( &p->digital_mask );
     llwu_set( &p->llwu_mask );
     if ( mode == LLS )        { enter_lls( ); }
     else if ( mode == VLLS3 ) { enter_vlls3( ); }
@@ -228,7 +229,7 @@ int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     cmp_disable( &p->cmp_mask );
     return wakeupSource;
 }
-//--------------------------------------Hibernate----------------------------------------
+
 #if defined( USE_HIBERNATE )
 
 /**
@@ -272,7 +273,7 @@ int SnoozeClass::hibernate( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     return wakeupSource;
 }
 #endif
-//----------------------------------------wakeup------------------------------------------
+
 /**
  *  wakeupISR - handle LLWU interrupts after wakeup.
  */

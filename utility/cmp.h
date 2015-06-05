@@ -62,10 +62,10 @@ extern "C" {
     static inline
     void cmp_init( void ) {
         #if defined(KINETISK)
-        NVIC_SET_PRIORITY( IRQ_CMP0, 64 );
-        NVIC_SET_PRIORITY( IRQ_CMP1, 64 );
+        //NVIC_SET_PRIORITY( IRQ_CMP0, 64 );
+        //NVIC_SET_PRIORITY( IRQ_CMP1, 64 );
         #elif defined(KINETISL)
-        NVIC_SET_PRIORITY( IRQ_CMP0, 64 );
+        //NVIC_SET_PRIORITY( IRQ_CMP0, 64 );
         #endif
     }
     /*******************************************************************************
@@ -183,7 +183,6 @@ extern "C" {
             __disable_irq( );
             attachInterruptVector( IRQ_CMP0, return_cmp0_irq );// return prev interrupt
             __enable_irq( );
-            //detachInterruptVector( IRQ_CMP0 );
         }
         CMP0_CR0 = 0x00;
         CMP0_CR1 = 0x00;

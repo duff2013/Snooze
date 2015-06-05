@@ -579,12 +579,12 @@ define I2S_RCR2_DIV_MASK                        0xFFu
  */
 
 /* C1 Bit Fields */
-#define MCG_C1_IREFSTEN_MASK                     0x1u
-#define MCG_C1_IREFSTEN_SHIFT                    0
-#define MCG_C1_IRCLKEN_MASK                      0x2u
-#define MCG_C1_IRCLKEN_SHIFT                     1
-#define MCG_C1_IREFS_MASK                        0x4u
-#define MCG_C1_IREFS_SHIFT                       2
+//#define MCG_C1_IREFSTEN_MASK                     0x1u
+//#define MCG_C1_IREFSTEN_SHIFT                    0
+//#define MCG_C1_IRCLKEN_MASK                      0x2u
+//#define MCG_C1_IRCLKEN_SHIFT                     1
+//#define MCG_C1_IREFS_MASK                        0x4u
+//#define MCG_C1_IREFS_SHIFT                       2
 #define MCG_C1_FRDIV_MASK                        0x38u
 //#define MCG_C1_FRDIV_SHIFT                       3
 //#define MCG_C1_FRDIV(x)                          (((uint8_t)(((uint8_t)(x))<<MCG_C1_FRDIV_SHIFT))&MCG_C1_FRDIV_MASK)
@@ -592,19 +592,19 @@ define I2S_RCR2_DIV_MASK                        0xFFu
 //#define MCG_C1_CLKS_SHIFT                        6
 //#define MCG_C1_CLKS(x)                           (((uint8_t)(((uint8_t)(x))<<MCG_C1_CLKS_SHIFT))&MCG_C1_CLKS_MASK)
 /* C2 Bit Fields */
-#define MCG_C2_IRCS_MASK                         0x1u
-#define MCG_C2_IRCS_SHIFT                        0
-#define MCG_C2_LP_MASK                           0x2u
-#define MCG_C2_LP_SHIFT                          1
-#define MCG_C2_EREFS0_MASK                       0x4u
-#define MCG_C2_EREFS0_SHIFT                      2
-#define MCG_C2_HGO0_MASK                         0x8u
-#define MCG_C2_HGO0_SHIFT                        3
+//#define MCG_C2_IRCS_MASK                         0x1u
+//#define MCG_C2_IRCS_SHIFT                        0
+//#define MCG_C2_LP_MASK                           0x2u
+//#define MCG_C2_LP_SHIFT                          1
+//#define MCG_C2_EREFS0_MASK                       0x4u
+//#define MCG_C2_EREFS0_SHIFT                      2
+//#define MCG_C2_HGO0_MASK                         0x8u
+//#define MCG_C2_HGO0_SHIFT                        3
 //#define MCG_C2_RANGE0_MASK                       0x30u
 //#define MCG_C2_RANGE0_SHIFT                      4
 //#define MCG_C2_RANGE0(x)                         (((uint8_t)(((uint8_t)(x))<<MCG_C2_RANGE0_SHIFT))&MCG_C2_RANGE0_MASK)
-#define MCG_C2_LOCRE0_MASK                       0x80u
-#define MCG_C2_LOCRE0_SHIFT                      7
+//#define MCG_C2_LOCRE0_MASK                       0x80u
+//#define MCG_C2_LOCRE0_SHIFT                      7
 /* C3 Bit Fields */
 //#define MCG_C3_SCTRIM_MASK                       0xFFu
 //#define MCG_C3_SCTRIM_SHIFT                      0
@@ -1117,10 +1117,13 @@ define I2S_RCR2_DIV_MASK                        0xFFu
 #define TSI_PEN_LPSP_MASK                        0xF0000u
 #define TSI_PEN_LPSP_SHIFT                       16
 #define TSI_PEN_LPSP(x)                          (((uint32_t)(((uint32_t)(x))<<TSI_PEN_LPSP_SHIFT))&TSI_PEN_LPSP_MASK)
+
 /* WUCNTR Bit Fields */
+/*
 #define TSI_WUCNTR_WUCNT_MASK                    0xFFFFu
 #define TSI_WUCNTR_WUCNT_SHIFT                   0
 #define TSI_WUCNTR_WUCNT(x)                      (((uint32_t)(((uint32_t)(x))<<TSI_WUCNTR_WUCNT_SHIFT))&TSI_WUCNTR_WUCNT_MASK)
+ */
 /* CNTR1 Bit Fields */
 /*
 #define TSI_CNTR1_CTN1_MASK                      0xFFFFu

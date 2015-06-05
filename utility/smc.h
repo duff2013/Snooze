@@ -33,10 +33,10 @@ extern "C" {
      * WAIT mode is exited using any enabled interrupt or RESET, so no
      * exit_wait routine is needed.
      *
-     * If in VLPW mode, the statue of the SMC_PMCTRL[LPWUI] bit determines if
+     * If in VLPW mode, the status of the SMC_PMCTRL[LPWUI] bit determines if
      * the processor exits to VLPR (LPWUI cleared) or normal run mode (LPWUI
-     * set). The enable_lpwui() and disable_lpwui()functions can be used to set
-     * this bit to the desired option prior to calling enter_wait().
+     * set). The enable_lpwui() and disable_lpwui() functions can be used to
+     * set this bit to the desired option prior to calling enter_wait().
      *
      * NOTE:    Some modules include a programmable option to disable them in
      *          wait mode. If those modules are programmed to disable in wait
@@ -520,10 +520,7 @@ extern "C" {
         SCB_SCR &= ~SCB_SCR_SLEEPDEEP_MASK; // Clear the SLEEPDEEP bit to make sure we go into WAIT (sleep) mode instead of deep sleep.
         
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { asm volatile( "wfi" ); }// WFI instruction will start entry into WAIT mode
-        //asm volatile( "wfi" );
-        
         SYST_CSR |= SYST_CSR_TICKINT;       // renable systick timer interrupt
-        
     }
 
 #ifdef __cplusplus
