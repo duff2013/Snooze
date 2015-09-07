@@ -64,7 +64,6 @@ extern "C" {
     void lptmrISR( void ) {
        
         if ( !( SIM_SCGC5 & SIM_SCGC5_LPTIMER ) || !( irqEnabledFlag & LPTMR_IRQ_BIT ) ) return;
-        digitalWrite(14, !digitalReadFast(14));
         LPTMR0_CSR = LPTMR_CSR_TCF;
         irqEnabledFlag &= ~LPTMR_IRQ_BIT;
         if ( enable_periph_irq ) wakeupSource = 36;

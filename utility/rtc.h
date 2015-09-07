@@ -59,7 +59,6 @@ extern "C" {
     static inline
     void rtcISR( void ) {
         if ( !(SIM_SCGC6 & SIM_SCGC6_RTC) || !( irqEnabledFlag & RTC_IRQ_BIT ) ) return;
-        digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
         RTC_TAR = RTC_TSR+1;
         irqEnabledFlag &= ~RTC_IRQ_BIT;
         if ( enable_periph_irq ) wakeupSource = 35;

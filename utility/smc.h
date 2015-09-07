@@ -518,7 +518,6 @@ extern "C" {
     void wait( void ) {
         SYST_CSR &= ~SYST_CSR_TICKINT;      // disable systick timer interrupt
         SCB_SCR &= ~SCB_SCR_SLEEPDEEP_MASK; // Clear the SLEEPDEEP bit to make sure we go into WAIT (sleep) mode instead of deep sleep.
-        
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { asm volatile( "wfi" ); }// WFI instruction will start entry into WAIT mode
         SYST_CSR |= SYST_CSR_TICKINT;       // renable systick timer interrupt
     }

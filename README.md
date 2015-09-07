@@ -1,4 +1,4 @@
-#Snooze v5.4
+#Snooze v5.4.1
 
 <h1>General Usage</h1>
 
