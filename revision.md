@@ -1,5 +1,6 @@
 ><b>Updated (9/7/15 v5.4.1)</b><br>
 * Removed debug stuff.<br>
+* Fixed Properites Catagory warning.<br>
 
 ><b>Updated (6/4/15 v5.4)</b><br>
 * Made setTimer "time" param uint16_t.<br>
