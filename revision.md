@@ -1,3 +1,7 @@
+><b>Updated (9/30/15 v5.4.2)</b><br>
+* Fixed Compiling TeensyLC PDB register in peripheral.h.<br>
+* Fixed TeensyLC warnings.<br>
+
 ><b>Updated (9/7/15 v5.4.1)</b><br>
 * Removed debug stuff.<br>
 * Fixed Properites Catagory warning.<br>

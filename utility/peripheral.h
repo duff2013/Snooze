@@ -61,11 +61,11 @@ typedef enum {
 typedef enum {
     ADC_OFF      = SIM_SCGC6_ADC0,
     I2S_OFF      = SIM_SCGC6_I2S,
+#if defined(KINETISK)
     PDB_OFF      = SIM_SCGC6_PDB,
-#if defined(__MK20DX128__) || defined(__MK20DX256__)
     SPI0_OFF     = SIM_SCGC6_SPI0,
     SPI1_OFF     = SIM_SCGC6_SPI1,
-#elif defined(__MKL26Z64__)
+#elif defined(KINETISL)
     
 #endif
     RTC_OFF      = SIM_SCGC6_RTC,
@@ -74,11 +74,11 @@ typedef enum {
 typedef enum {
     ADC_ON      = SIM_SCGC6_ADC0,
     I2S_ON      = SIM_SCGC6_I2S,
+#if defined(KINETISK)
     PDB_ON      = SIM_SCGC6_PDB,
-#if defined(__MK20DX128__) || defined(__MK20DX256__)
     SPI0_ON     = SIM_SCGC6_SPI0,
     SPI1_ON     = SIM_SCGC6_SPI1,
-#elif defined(__MKL26Z64__)
+#elif defined(KINETISL)
     
 #endif
     RTC_ON      = SIM_SCGC6_RTC,
@@ -330,12 +330,14 @@ extern "C" {
      *******************************************************************************/
     static inline void pdbEnable( void ) __attribute__((always_inline, unused));
     static inline void pdbEnable( void ) {
+#if defined(KINETISK)
         if ((SIM_SCGC6 & SIM_SCGC6_PDB) == 0x00) {
         //if ((BITBAND_U32(SIM_SCGC6, SIM_SCGC6_PDB_BIT)) == 0x00) {
             //BITBAND_U32(SIM_SCGC6, SIM_SCGC6_PDB_BIT) = 0x01;
             SIM_SCGC6 |= SIM_SCGC6_PDB;// enable PDB clock
             PDB0_SC |= PDB_SC_PDBEN;// enable PDB
         }
+#endif
     }
     /*******************************************************************************
      *
@@ -344,12 +346,14 @@ extern "C" {
      *******************************************************************************/
     static inline void pdbDisable( void ) __attribute__((always_inline, unused));
     static inline void pdbDisable( void ) {
+#if defined(KINETISK)
         if (SIM_SCGC6 & SIM_SCGC6_PDB) {
         //if ((BITBAND_U32(SIM_SCGC6, SIM_SCGC6_PDB_BIT)) == 0x01) {
             PDB0_SC &= ~PDB_SC_PDBEN;// disable PDB
             //BITBAND_U32(SIM_SCGC6, SIM_SCGC6_PDB_BIT) = 0x00;
             SIM_SCGC6 &= ~SIM_SCGC6_PDB;// disable PDB clock
         }
+#endif
     }
     /*******************************************************************************
      *
