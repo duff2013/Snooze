@@ -6,8 +6,6 @@
  ****************************************/
 #include <Snooze.h>
 
-SnoozeBlock config;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -26,6 +24,9 @@ void loop() {
     /*
      * code inside this macro
      * will run at 2 MHz.
+     * code outside will run
+     * at whatever F_CPU you
+     * compiled at.
      */
     REDUCED_CPU_BLOCK() {
         SOS_LP();// 2 MHz
