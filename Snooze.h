@@ -1,7 +1,7 @@
 /*
  ||
  || @file 		Snooze.h
- || @version 	5.4.2
+ || @version 	5.5.0
  || @author 	duff
  || @contact    http://forum.pjrc.com/members/25610-duff
  ||
@@ -40,6 +40,7 @@
 #ifdef KINETISK
 #include "utility/rtc.h"
 #endif
+#include "utility/cpu.h"
 #include "utility/tsi.h"
 #include "utility/cmp.h"
 #include "utility/util.h"
@@ -136,16 +137,17 @@ private:
     static CLOCK_MODE clock_mode;
     static void wakeupISR( void );
 public:
-    SnoozeClass  ( void );
+    SnoozeClass     ( void );
     /* helpers functions */
-    void debug   ( Stream *port );
-    int source   ( void );
+    void debug      ( Stream *port );
+    int  source     ( void );
     /* sleep functions */
-    void idle    ( void );
-    int sleep    ( SnoozeBlock &configuration );
-    int deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode = LLS );
+    void idle       ( void );
+    int  sleep      ( SnoozeBlock &configuration );
+    int  deepSleep  ( SnoozeBlock &configuration, SLEEP_MODE mode = LLS );
+    //bool reduceCpuSpeed( uint32_t freq ) {}
 #if defined( USE_HIBERNATE )
-    int hibernate( SnoozeBlock &configuration, SLEEP_MODE mode = LLS );
+    int  hibernate  ( SnoozeBlock &configuration, SLEEP_MODE mode = LLS );
 #endif
 };
 

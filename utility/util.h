@@ -87,6 +87,8 @@ extern "C" {
         SIM_SOPT1 &= ~SIM_SOPT1_USBSSTBY_MASK;
         PORTA_PCR3 = PCR3;
     }
+    //--------------------------------------------------------//
+
 #ifdef __cplusplus
 }
 #endif

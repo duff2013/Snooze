@@ -37,13 +37,13 @@ typedef enum {
     HUNDRED_FORTY_FOUR_MHZ  = 144000000,
     HUNDRED_SIXTY_EIGHT_MHZ = 168000000,
 #endif
-    _F_CPU                  = F_CPU
+    //F_CPU                  = F_CPU
 } SPEED;
 
-typedef struct {
+/*typedef struct {
     SPEED cpu;
     CLOCK_MODE mode;
-}mcg_mask_t;
+}mcg_mask_t;*/
 /********************************************************************/
 #ifdef __cplusplus
 extern "C" {

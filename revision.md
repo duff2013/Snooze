@@ -1,3 +1,7 @@
+><b>Updated (10/27/15 v5.0.0)</b><br>
+* Now CPU Scaling is supported by the REDUCED_CPU_BLOCK macro.<br>
+* Reset systick when cpu goes to 2 MHz.<br>
+
 ><b>Updated (9/30/15 v5.4.2)</b><br>
 * Fixed Compiling TeensyLC PDB register in peripheral.h.<br>
 * Fixed TeensyLC warnings.<br>
