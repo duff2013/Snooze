@@ -71,8 +71,8 @@ extern "C" {
     
     static inline
     void enableHibernate( void ) {
-        SIM_SOPT1CFG |= SIM_SOPT1CFG_USSWE_MASK;
-        SIM_SOPT1 |= SIM_SOPT1_USBSSTBY_MASK;
+        SIM_SOPT1CFG |= SIM_SOPT1CFG_USSWE;
+        SIM_SOPT1 |= SIM_SOPT1_USBSSTBY;
         PCR3 = PORTA_PCR3;
         PORTA_PCR3 = PORT_PCR_MUX( 0 );
     }
@@ -83,8 +83,8 @@ extern "C" {
     
     static inline
     void disableHibernate( void ) {
-        SIM_SOPT1CFG |= SIM_SOPT1CFG_USSWE_MASK;
-        SIM_SOPT1 &= ~SIM_SOPT1_USBSSTBY_MASK;
+        SIM_SOPT1CFG |= SIM_SOPT1CFG_USSWE;
+        SIM_SOPT1 &= ~SIM_SOPT1_USBSSTBY;
         PORTA_PCR3 = PCR3;
     }
     //--------------------------------------------------------//

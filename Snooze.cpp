@@ -109,8 +109,8 @@ CLOCK_MODE SnoozeClass::clock_mode;
  *  SnoozeClass Constructor
  */
 SnoozeClass::SnoozeClass( void ) {
-    SIM_SOPT1CFG |= SIM_SOPT1CFG_USSWE_MASK;
-    SIM_SOPT1 &= ~SIM_SOPT1_USBSSTBY_MASK;
+    SIM_SOPT1CFG |= SIM_SOPT1CFG_USSWE;
+    SIM_SOPT1 &= ~SIM_SOPT1_USBSSTBY;
     attachInterruptVector( IRQ_LLWU, wakeupISR );
     NVIC_SET_PRIORITY( IRQ_LLWU, 32 );
     clock_mode = mcg_mode( );

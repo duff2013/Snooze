@@ -1,3 +1,6 @@
+><b>Updated (1/12/16 v5.0.1)</b><br>
+* Fix for new Teensy Reg Defs.<br>
+
 ><b>Updated (10/27/15 v5.0.0)</b><br>
 * Now CPU Scaling is supported by the REDUCED_CPU_BLOCK macro.<br>
 * Reset systick when cpu goes to 2 MHz.<br>
