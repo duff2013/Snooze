@@ -1,7 +1,7 @@
 #Snooze v5.5.1
 
 <h1>General Usage</h1>
-
+<h4>Teensyduino 1.27 and above only!!!</h4>
 <h3>SnoozeBlock -</h3>
 ```SnoozeBlock class is used to configure what wakeups you want. You can define many SnoozeBlocks classes for different configurations.```
 
