@@ -1,7 +1,11 @@
-><b>Updated (1/12/16 v5.0.1)</b><br>
+><b>Updated (2/16/16 v5.5.2)</b><br>
+* Fix Teensy LC using VLLSx modes, Disable WatchDog was not being called from startup_early_hook.<br>
+* Fix REDUCED_CPU_BLOCK example c linkage error.<br>
+
+><b>Updated (1/12/16 v5.5.1)</b><br>
 * Fix for new Teensy Reg Defs.<br>
 
-><b>Updated (10/27/15 v5.0.0)</b><br>
+><b>Updated (10/27/15 v5.5.0)</b><br>
 * Now CPU Scaling is supported by the REDUCED_CPU_BLOCK macro.<br>
 * Reset systick when cpu goes to 2 MHz.<br>
 

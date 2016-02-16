@@ -1,7 +1,7 @@
 /*
  ||
  || @file 		Snooze.h
- || @version 	5.5.1
+ || @version 	5.5.2
  || @author 	duff
  || @contact    http://forum.pjrc.com/members/25610-duff
  ||

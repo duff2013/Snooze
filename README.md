@@ -1,4 +1,4 @@
-#Snooze v5.5.1
+#Snooze v5.5.2
 
 <h1>General Usage</h1>
 <h4>Teensyduino 1.27 and above only!!!</h4>

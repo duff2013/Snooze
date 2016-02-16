@@ -264,17 +264,18 @@ extern "C" {
      *       startup_early_hook -
      *
      *******************************************************************************/
-#ifdef KINETISK
     void startup_early_hook( ) __attribute__ ((weak));
     void startup_early_hook( ) {
+#if defined(KINETISK)
         WDOG_STCTRLH = WDOG_STCTRLH_ALLOWUPDATE;
-        
+#elif defined(KINETISL)
+        SIM_COPC = 0;  // disable the watchdog
+#endif
         if ( PMC_REGSC & PMC_REGSC_ACKISO ) {
             llwuFlag = llwu_clear_flags( );// clear flags
             llwu_disable( );
         }
     }
-#endif
 #ifdef __cplusplus
 }
 #endif
