@@ -1,7 +1,7 @@
-#Snooze v5.5.2
+#Snooze v5.5.3
 
 <h1>General Usage</h1>
-<h4>Teensyduino 1.27 and above only!!!</h4>
+<h4>Teensyduino 1.29 beta3 and above only. This will be the last v5 update, [Version 6] will be actively developed for now on and will be merged into this branch when not beta.</h4>
 <h3>SnoozeBlock -</h3>
 ```SnoozeBlock class is used to configure what wakeups you want. You can define many SnoozeBlocks classes for different configurations.```
 
@@ -150,3 +150,4 @@ ___
 */
 periph_t setPeripheral;
 ```
+[Version 6]:https://github.com/duff2013/Snooze_V6_Beta

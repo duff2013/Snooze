@@ -206,9 +206,9 @@ int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     cmp_set( &p->cmp_mask );
     digital_set( &p->digital_mask );
     lptmr_set( &p->lptmr_mask );
-#ifdef KINETISK
+//#ifdef KINETISK
     rtc_alarm_set( &p->rtc_mask );
-#endif
+//#endif
 #ifdef KINETISL
     pinMode( 17, OUTPUT );
     digitalWriteFast( 17, LOW );
@@ -222,9 +222,9 @@ int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     else if ( mode == VLLS0 ) { enter_vlls0( ); }
     llwu_disable( );
     tsi_disable( &p->tsi_mask );
-#ifdef KINETISK
+//#ifdef KINETISK
     rtc_disable( &p->rtc_mask );
-#endif
+//#endif
     lptmr_disable( &p->lptmr_mask );
     cmp_disable( &p->cmp_mask );
     return wakeupSource;

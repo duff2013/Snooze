@@ -1,7 +1,7 @@
 /*
  ||
  || @file 		Snooze.h
- || @version 	5.5.2
+ || @version 	5.5.3
  || @author 	duff
  || @contact    http://forum.pjrc.com/members/25610-duff
  ||
@@ -48,20 +48,6 @@
 #include "utility/lptmr.h"
 #include "utility/digital.h"
 #include "utility/peripheral.h"
-
-
-/**
- USE_HIBERNATE is advanced feature that allows
- the Teensy to achieve 10 uA Sleep. This puts
- the USB regulator into a low power state and
- configures pin PTA3 as TSI. There are times
- that the mcu will not see any valid reprogram
- signal from the USB when in this sleep mode.
- Use this only when you verfied that your
- program sleep works correctly with deepSleep!
- */
-//#define USE_HIBERNATE
-
 /**
  extended pinMode types
  */
@@ -145,10 +131,7 @@ public:
     void idle       ( void );
     int  sleep      ( SnoozeBlock &configuration );
     int  deepSleep  ( SnoozeBlock &configuration, SLEEP_MODE mode = LLS );
-    //bool reduceCpuSpeed( uint32_t freq ) {}
-#if defined( USE_HIBERNATE )
     int  hibernate  ( SnoozeBlock &configuration, SLEEP_MODE mode = LLS );
-#endif
 };
 
 extern SnoozeClass Snooze;

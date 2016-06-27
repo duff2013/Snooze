@@ -1,3 +1,7 @@
+><b>Updated (5/25/16 v5.5.3)</b><br>
+* Added support for Teensy 3.5.<br>
+* Removed USE_HIBERNATE criteria.<br>
+
 ><b>Updated (2/16/16 v5.5.2)</b><br>
 * Fix Teensy LC using VLLSx modes, Disable WatchDog was not being called from startup_early_hook.<br>
 * Fix REDUCED_CPU_BLOCK example c linkage error.<br>

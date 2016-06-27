@@ -391,7 +391,7 @@ define I2S_RCR2_DIV_MASK                        0xFFu
  */
 
 /* PE1 Bit Fields */
-#define LLWU_PE1_WUPE0_MASK                      0x3u
+/*#define LLWU_PE1_WUPE0_MASK                      0x3u
 #define LLWU_PE1_WUPE0_SHIFT                     0
 #define LLWU_PE1_WUPE0(x)                        ((uint8_t)(((uint8_t)(x))<<LLWU_PE1_WUPE0_SHIFT))
 #define LLWU_PE1_WUPE1_MASK                      0xCu
@@ -402,9 +402,9 @@ define I2S_RCR2_DIV_MASK                        0xFFu
 #define LLWU_PE1_WUPE2(x)                        ((uint8_t)(((uint8_t)(x))<<LLWU_PE1_WUPE2_SHIFT))
 #define LLWU_PE1_WUPE3_MASK                      0xC0u
 #define LLWU_PE1_WUPE3_SHIFT                     6
-#define LLWU_PE1_WUPE3(x)                        ((uint8_t)(((uint8_t)(x))<<LLWU_PE1_WUPE3_SHIFT))
+#define LLWU_PE1_WUPE3(x)                        ((uint8_t)(((uint8_t)(x))<<LLWU_PE1_WUPE3_SHIFT))*/
 /* PE2 Bit Fields */
-#define LLWU_PE2_WUPE4_MASK                      0x3u
+/*#define LLWU_PE2_WUPE4_MASK                      0x3u
 #define LLWU_PE2_WUPE4_SHIFT                     0
 #define LLWU_PE2_WUPE4(x)                        ((uint8_t)(((uint8_t)(x))<<LLWU_PE2_WUPE4_SHIFT))
 #define LLWU_PE2_WUPE5_MASK                      0xCu
@@ -415,9 +415,9 @@ define I2S_RCR2_DIV_MASK                        0xFFu
 #define LLWU_PE2_WUPE6(x)                        ((uint8_t)(((uint8_t)(x))<<LLWU_PE2_WUPE6_SHIFT))
 #define LLWU_PE2_WUPE7_MASK                      0xC0u
 #define LLWU_PE2_WUPE7_SHIFT                     6
-#define LLWU_PE2_WUPE7(x)                        ((uint8_t)(((uint8_t)(x))<<LLWU_PE2_WUPE7_SHIFT))
+#define LLWU_PE2_WUPE7(x)                        ((uint8_t)(((uint8_t)(x))<<LLWU_PE2_WUPE7_SHIFT))*/
 /* PE3 Bit Fields */
-#define LLWU_PE3_WUPE8_MASK                      0x3u
+/*#define LLWU_PE3_WUPE8_MASK                      0x3u
 #define LLWU_PE3_WUPE8_SHIFT                     0
 #define LLWU_PE3_WUPE8(x)                        ((uint8_t)(((uint8_t)(x))<<LLWU_PE3_WUPE8_SHIFT))
 #define LLWU_PE3_WUPE9_MASK                      0xCu
@@ -428,9 +428,9 @@ define I2S_RCR2_DIV_MASK                        0xFFu
 #define LLWU_PE3_WUPE10(x)                       ((uint8_t)(((uint8_t)(x))<<LLWU_PE3_WUPE10_SHIFT))
 #define LLWU_PE3_WUPE11_MASK                     0xC0u
 #define LLWU_PE3_WUPE11_SHIFT                    6
-#define LLWU_PE3_WUPE11(x)                       ((uint8_t)(((uint8_t)(x))<<LLWU_PE3_WUPE11_SHIFT))
+#define LLWU_PE3_WUPE11(x)                       ((uint8_t)(((uint8_t)(x))<<LLWU_PE3_WUPE11_SHIFT))*/
 /* PE4 Bit Fields */
-#define LLWU_PE4_WUPE12_MASK                     0x3u
+/*#define LLWU_PE4_WUPE12_MASK                     0x3u
 #define LLWU_PE4_WUPE12_SHIFT                    0
 #define LLWU_PE4_WUPE12(x)                       ((uint8_t)(((uint8_t)(x))<<LLWU_PE4_WUPE12_SHIFT))
 #define LLWU_PE4_WUPE13_MASK                     0xCu
@@ -441,9 +441,9 @@ define I2S_RCR2_DIV_MASK                        0xFFu
 #define LLWU_PE4_WUPE14(x)                       ((uint8_t)(((uint8_t)(x))<<LLWU_PE4_WUPE14_SHIFT))
 #define LLWU_PE4_WUPE15_MASK                     0xC0u
 #define LLWU_PE4_WUPE15_SHIFT                    6
-#define LLWU_PE4_WUPE15(x)                       ((uint8_t)(((uint8_t)(x))<<LLWU_PE4_WUPE15_SHIFT))
+#define LLWU_PE4_WUPE15(x)                       ((uint8_t)(((uint8_t)(x))<<LLWU_PE4_WUPE15_SHIFT))*/
 /* ME Bit Fields */
-#define LLWU_ME_WUME0_MASK                       0x1u
+/*#define LLWU_ME_WUME0_MASK                       0x1u
 #define LLWU_ME_WUME0_SHIFT                      0
 #define LLWU_ME_WUME1_MASK                       0x2u
 #define LLWU_ME_WUME1_SHIFT                      1
@@ -458,9 +458,9 @@ define I2S_RCR2_DIV_MASK                        0xFFu
 #define LLWU_ME_WUME6_MASK                       0x40u
 #define LLWU_ME_WUME6_SHIFT                      6
 #define LLWU_ME_WUME7_MASK                       0x80u
-#define LLWU_ME_WUME7_SHIFT                      7
+#define LLWU_ME_WUME7_SHIFT                      7*/
 /* F1 Bit Fields */
-#define LLWU_F1_WUF0_MASK                        0x1u
+/*#define LLWU_F1_WUF0_MASK                        0x1u
 #define LLWU_F1_WUF0_SHIFT                       0
 #define LLWU_F1_WUF1_MASK                        0x2u
 #define LLWU_F1_WUF1_SHIFT                       1
@@ -475,9 +475,9 @@ define I2S_RCR2_DIV_MASK                        0xFFu
 #define LLWU_F1_WUF6_MASK                        0x40u
 #define LLWU_F1_WUF6_SHIFT                       6
 #define LLWU_F1_WUF7_MASK                        0x80u
-#define LLWU_F1_WUF7_SHIFT                       7
+#define LLWU_F1_WUF7_SHIFT                       7*/
 /* F2 Bit Fields */
-#define LLWU_F2_WUF8_MASK                        0x1u
+/*#define LLWU_F2_WUF8_MASK                        0x1u
 #define LLWU_F2_WUF8_SHIFT                       0
 #define LLWU_F2_WUF9_MASK                        0x2u
 #define LLWU_F2_WUF9_SHIFT                       1
@@ -492,9 +492,9 @@ define I2S_RCR2_DIV_MASK                        0xFFu
 #define LLWU_F2_WUF14_MASK                       0x40u
 #define LLWU_F2_WUF14_SHIFT                      6
 #define LLWU_F2_WUF15_MASK                       0x80u
-#define LLWU_F2_WUF15_SHIFT                      7
+#define LLWU_F2_WUF15_SHIFT                      7*/
 /* F3 Bit Fields */
-#define LLWU_F3_MWUF0_MASK                       0x1u
+/*#define LLWU_F3_MWUF0_MASK                       0x1u
 #define LLWU_F3_MWUF0_SHIFT                      0
 #define LLWU_F3_MWUF1_MASK                       0x2u
 #define LLWU_F3_MWUF1_SHIFT                      1
@@ -509,25 +509,25 @@ define I2S_RCR2_DIV_MASK                        0xFFu
 #define LLWU_F3_MWUF6_MASK                       0x40u
 #define LLWU_F3_MWUF6_SHIFT                      6
 #define LLWU_F3_MWUF7_MASK                       0x80u
-#define LLWU_F3_MWUF7_SHIFT                      7
+#define LLWU_F3_MWUF7_SHIFT                      7*/
 /* FILT1 Bit Fields */
-#define LLWU_FILT1_FILTSEL_MASK                  0xFu
+/*#define LLWU_FILT1_FILTSEL_MASK                  0xFu
 #define LLWU_FILT1_FILTSEL_SHIFT                 0
 #define LLWU_FILT1_FILTSEL(x)                    (((uint8_t)(((uint8_t)(x))<<LLWU_FILT1_FILTSEL_SHIFT))&LLWU_FILT1_FILTSEL_MASK)
 #define LLWU_FILT1_FILTE_MASK                    0x60u
 #define LLWU_FILT1_FILTE_SHIFT                   5
 #define LLWU_FILT1_FILTE(x)                      (((uint8_t)(((uint8_t)(x))<<LLWU_FILT1_FILTE_SHIFT))&LLWU_FILT1_FILTE_MASK)
 #define LLWU_FILT1_FILTF_MASK                    0x80u
-#define LLWU_FILT1_FILTF_SHIFT                   7
+#define LLWU_FILT1_FILTF_SHIFT                   7*/
 /* FILT2 Bit Fields */
-#define LLWU_FILT2_FILTSEL_MASK                  0xFu
+/*#define LLWU_FILT2_FILTSEL_MASK                  0xFu
 #define LLWU_FILT2_FILTSEL_SHIFT                 0
 #define LLWU_FILT2_FILTSEL(x)                    (((uint8_t)(((uint8_t)(x))<<LLWU_FILT2_FILTSEL_SHIFT))&LLWU_FILT2_FILTSEL_MASK)
 #define LLWU_FILT2_FILTE_MASK                    0x60u
 #define LLWU_FILT2_FILTE_SHIFT                   5
 #define LLWU_FILT2_FILTE(x)                      (((uint8_t)(((uint8_t)(x))<<LLWU_FILT2_FILTE_SHIFT))&LLWU_FILT2_FILTE_MASK)
 #define LLWU_FILT2_FILTF_MASK                    0x80u
-#define LLWU_FILT2_FILTF_SHIFT                   7
+#define LLWU_FILT2_FILTF_SHIFT                   7*/
 
 
 /* ----------------------------------------------------------------------------

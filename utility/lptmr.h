@@ -66,7 +66,11 @@ extern "C" {
         if ( !( SIM_SCGC5 & SIM_SCGC5_LPTIMER ) || !( irqEnabledFlag & LPTMR_IRQ_BIT ) ) return;
         LPTMR0_CSR = LPTMR_CSR_TCF;
         irqEnabledFlag &= ~LPTMR_IRQ_BIT;
+#if defined(HAS_KINETIS_LLWU_32CH)
+        wakeupSource = 36;
+#elif defined(HAS_KINETIS_LLWU_16CH)
         if ( enable_periph_irq ) wakeupSource = 36;
+#endif
     }
     /*******************************************************************************
      *

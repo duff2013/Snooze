@@ -61,7 +61,11 @@ extern "C" {
         if ( !(SIM_SCGC6 & SIM_SCGC6_RTC) || !( irqEnabledFlag & RTC_IRQ_BIT ) ) return;
         RTC_TAR = RTC_TSR+1;
         irqEnabledFlag &= ~RTC_IRQ_BIT;
+#if defined(HAS_KINETIS_LLWU_32CH)
+        wakeupSource = 35;
+#elif defined(HAS_KINETIS_LLWU_16CH)
         if ( enable_periph_irq ) wakeupSource = 35;
+#endif
     }
     /*******************************************************************************
      *

@@ -84,6 +84,8 @@ extern "C" {
         else if ( pin == 26 ) mask->PE1 |= LLWU_PE1_WUPE0 ( detect_type );
         else if ( pin == 30 ) mask->PE3 |= LLWU_PE3_WUPE11( detect_type );
         else if ( pin == 33 ) mask->PE1 |= LLWU_PE1_WUPE3 ( detect_type );
+
+
     }
     /*******************************************************************************
      *
@@ -96,16 +98,16 @@ extern "C" {
     
     static inline
     void llwu_configure_modules_mask( uint8_t module, llwu_mask_t *mask ) {
-         if( module & LLWU_LPTMR_MOD )      mask->ME |= LLWU_ME_WUME0_MASK;
+         if( module & LLWU_LPTMR_MOD )      mask->ME |= LLWU_ME_WUME0;
 #ifdef KINETISK
-         else if ( module & LLWU_RTCA_MOD ) mask->ME |= LLWU_ME_WUME5_MASK;
-         else if ( module & LLWU_RTCS_MOD ) mask->ME |= LLWU_ME_WUME7_MASK;
+         else if ( module & LLWU_RTCA_MOD ) mask->ME |= LLWU_ME_WUME5;
+         else if ( module & LLWU_RTCS_MOD ) mask->ME |= LLWU_ME_WUME7;
 #endif
-         else if ( module & LLWU_TSI_MOD )  mask->ME |= LLWU_ME_WUME4_MASK;
-         else if ( module & LLWU_CMP0_MOD ) mask->ME |= LLWU_ME_WUME1_MASK;
-         else if ( module & LLWU_CMP1_MOD ) mask->ME |= LLWU_ME_WUME2_MASK;
+         else if ( module & LLWU_TSI_MOD )  mask->ME |= LLWU_ME_WUME4;
+         else if ( module & LLWU_CMP0_MOD ) mask->ME |= LLWU_ME_WUME1;
+         else if ( module & LLWU_CMP1_MOD ) mask->ME |= LLWU_ME_WUME2;
 #ifdef KINETISK
-         else if( module & LLWU_CMP2_MOD )  mask->ME |= LLWU_ME_WUME3_MASK;
+         else if( module & LLWU_CMP2_MOD )  mask->ME |= LLWU_ME_WUME3;
 #endif
     }
     /*******************************************************************************
@@ -167,6 +169,17 @@ extern "C" {
     
     static inline
     uint32_t llwu_clear_flags( void ) {
+#if defined(HAS_KINETIS_LLWU_32CH)
+        uint32_t flag = ( LLWU_PF1 | LLWU_PF2<<8 | LLWU_PF3<<16 | LLWU_MF5<<24 );
+        LLWU_PF1 = 0xFF;
+        LLWU_PF2 = 0xFF;
+        LLWU_PF3 = 0xFF;
+        LLWU_PF4 = 0xFF;
+        LLWU_MF5 = 0xFF;
+        LLWU_FILT1 = 0x80;
+        LLWU_FILT2 = 0x80;
+        return flag;
+#elif defined(HAS_KINETIS_LLWU_16CH)
         uint32_t flag = ( LLWU_F1 | LLWU_F2<<8 | LLWU_F3<<16 );
         LLWU_F1 = 0xFF;
         LLWU_F2 = 0xFF;
@@ -174,6 +187,7 @@ extern "C" {
         LLWU_FILT1 = 0x80;
         LLWU_FILT2 = 0x80;
         return flag;
+#endif
     }
     /*******************************************************************************
      *
@@ -190,28 +204,58 @@ extern "C" {
         LLWU_PE2 = 0;
         LLWU_PE3 = 0;
         LLWU_PE4 = 0;
+#if defined(HAS_KINETIS_LLWU_32CH)
+        LLWU_PE4 = 0;
+        LLWU_PE5 = 0;
+        LLWU_PE6 = 0;
+        LLWU_PE7 = 0;
+        LLWU_PE8 = 0;
+#endif
         LLWU_ME  = 0;
-        if      ( llwuFlag & LLWU_F1_WUF0_MASK ) wakeupSource = 26;
-        else if ( llwuFlag & LLWU_F1_WUF3_MASK ) wakeupSource = 33;
-        else if ( llwuFlag & LLWU_F1_WUF4_MASK ) wakeupSource = 4;
-        else if ( llwuFlag & LLWU_F1_WUF5_MASK ) wakeupSource = 16;
-        else if ( llwuFlag & LLWU_F1_WUF6_MASK ) wakeupSource = 22;
-        else if ( llwuFlag & LLWU_F1_WUF7_MASK ) wakeupSource = 9;
+#if defined(HAS_KINETIS_LLWU_32CH)
+        if      ( llwuFlag & LLWU_PF1_WUF0 ) wakeupSource = 26;
+        else if ( llwuFlag & LLWU_PF1_WUF3 ) wakeupSource = 33;
+        else if ( llwuFlag & LLWU_PF1_WUF4 ) wakeupSource = 4;
+        else if ( llwuFlag & LLWU_PF1_WUF5 ) wakeupSource = 16;
+        else if ( llwuFlag & LLWU_PF1_WUF6 ) wakeupSource = 22;
+        else if ( llwuFlag & LLWU_PF1_WUF7 ) wakeupSource = 9;
         
-        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF8_MASK  ) wakeupSource = 10;
-        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF9_MASK  ) wakeupSource = 13;
-        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF10_MASK ) wakeupSource = 11;
-        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF11_MASK ) wakeupSource = 30;
-        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF12_MASK ) wakeupSource = 2;
-        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF13_MASK ) wakeupSource = 7;
-        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF14_MASK ) wakeupSource = 6;
-        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF15_MASK ) wakeupSource = 21;
+        else if ( ( llwuFlag>>8 ) & LLWU_PF2_WUF8  ) wakeupSource = 10;
+        else if ( ( llwuFlag>>8 ) & LLWU_PF2_WUF9  ) wakeupSource = 13;
+        else if ( ( llwuFlag>>8 ) & LLWU_PF2_WUF10 ) wakeupSource = 11;
+        else if ( ( llwuFlag>>8 ) & LLWU_PF2_WUF11 ) wakeupSource = 30;
+        else if ( ( llwuFlag>>8 ) & LLWU_PF2_WUF12 ) wakeupSource = 2;
+        else if ( ( llwuFlag>>8 ) & LLWU_PF2_WUF13 ) wakeupSource = 7;
+        else if ( ( llwuFlag>>8 ) & LLWU_PF2_WUF14 ) wakeupSource = 6;
+        else if ( ( llwuFlag>>8 ) & LLWU_PF2_WUF15 ) wakeupSource = 21;
         
-        else if ( ( llwuFlag>>16 ) & LLWU_ME_WUME0_MASK ) wakeupSource = 36;
-        else if ( ( llwuFlag>>16 ) & LLWU_ME_WUME1_MASK ) wakeupSource = 34;
-        else if ( ( llwuFlag>>16 ) & LLWU_ME_WUME4_MASK ) wakeupSource = 37;
+        else if ( ( llwuFlag>>16 ) & LLWU_ME_WUME0 ) wakeupSource = 36;
+        else if ( ( llwuFlag>>16 ) & LLWU_ME_WUME1 ) wakeupSource = 34;
+        else if ( ( llwuFlag>>16 ) & LLWU_ME_WUME4 ) wakeupSource = 37;
+        else if ( ( llwuFlag>>16 ) & LLWU_ME_WUME5 ) wakeupSource = 35;
+#elif defined(HAS_KINETIS_LLWU_16CH)
+        if      ( llwuFlag & LLWU_F1_WUF0 ) wakeupSource = 26;
+        else if ( llwuFlag & LLWU_F1_WUF3 ) wakeupSource = 33;
+        else if ( llwuFlag & LLWU_F1_WUF4 ) wakeupSource = 4;
+        else if ( llwuFlag & LLWU_F1_WUF5 ) wakeupSource = 16;
+        else if ( llwuFlag & LLWU_F1_WUF6 ) wakeupSource = 22;
+        else if ( llwuFlag & LLWU_F1_WUF7 ) wakeupSource = 9;
+        
+        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF8  ) wakeupSource = 10;
+        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF9  ) wakeupSource = 13;
+        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF10 ) wakeupSource = 11;
+        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF11 ) wakeupSource = 30;
+        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF12 ) wakeupSource = 2;
+        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF13 ) wakeupSource = 7;
+        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF14 ) wakeupSource = 6;
+        else if ( ( llwuFlag>>8 ) & LLWU_F2_WUF15 ) wakeupSource = 21;
+        
+        else if ( ( llwuFlag>>16 ) & LLWU_ME_WUME0 ) wakeupSource = 36;
+        else if ( ( llwuFlag>>16 ) & LLWU_ME_WUME1 ) wakeupSource = 34;
+        else if ( ( llwuFlag>>16 ) & LLWU_ME_WUME4 ) wakeupSource = 37;
 #ifdef KINETISK
-        else if ( ( llwuFlag>>16 ) & LLWU_ME_WUME5_MASK ) wakeupSource = 35;
+        else if ( ( llwuFlag>>16 ) & LLWU_ME_WUME5 ) wakeupSource = 35;
+#endif
 #endif
         llwuFlag = 0;
     }
@@ -231,20 +275,26 @@ extern "C" {
         
         temp = 0;
         //first clear filter values and clear flag by writing a 1
-        LLWU_FILT1 = LLWU_FILT1_FILTF_MASK;
-        LLWU_FILT2 = LLWU_FILT2_FILTF_MASK;
-        
-        if( filter_en == 1 ) {
+#if defined(HAS_KINETIS_LLWU_32CH)
+        //LLWU_FILT1 = LLWU_FILT1_FILTF;
+        //LLWU_FILT2 = LLWU_FILT2_FILTF;
+        //LLWU_FILT3 = LLWU_FILT2_FILTF;
+        //LLWU_FILT4 = LLWU_FILT2_FILTF;
+#elif defined(HAS_KINETIS_LLWU_16CH)
+        //LLWU_FILT1 = LLWU_FILT1_FILTF;
+        //LLWU_FILT2 = LLWU_FILT2_FILTF;
+#endif
+        /*if( filter_en == 1 ) {
             //clear the flag bit and set the others
-            temp |= ( LLWU_FILT1_FILTF_MASK ) | ( LLWU_FILT1_FILTE( rise_fall ) | LLWU_FILT1_FILTSEL( wu_pin_num ) );
+            temp |= ( LLWU_FILT1_FILTF ) | ( LLWU_FILT1_FILTE( rise_fall ) | LLWU_FILT1_FILTSEL( wu_pin_num ) );
             LLWU_FILT1 = temp;
         }else if ( filter_en == 2 ) {
             //clear the flag bit and set the others
-            temp |= ( LLWU_FILT2_FILTF_MASK ) | ( LLWU_FILT2_FILTE( rise_fall ) | LLWU_FILT2_FILTSEL( wu_pin_num ) );
+            temp |= ( LLWU_FILT2_FILTF ) | ( LLWU_FILT2_FILTE( rise_fall ) | LLWU_FILT2_FILTSEL( wu_pin_num ) );
             LLWU_FILT2 = temp;
         }else {
             
-        }
+        }*/
     }
     /*******************************************************************************
      *
@@ -257,7 +307,7 @@ extern "C" {
     
     static inline
     void llwu_reset_enable( void ) {
-        LLWU_RST = 0x02;//LLWU_RST_LLRSTE_MASK;
+        //LLWU_RST = 0x02;//LLWU_RST_LLRSTE_MASK;
     }
     /*******************************************************************************
      *

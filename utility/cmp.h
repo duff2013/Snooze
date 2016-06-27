@@ -104,7 +104,11 @@ extern "C" {
         //SIM_SCGC5 &= ~SIM_SCGC5_LPTIMER;
 #endif
         irqEnabledFlag &= ~CMP_IRQ_BIT;
+#if defined(HAS_KINETIS_LLWU_32CH)
+        wakeupSource = 34;
+#elif defined(HAS_KINETIS_LLWU_16CH)
         if ( enable_periph_irq ) wakeupSource = 34;
+#endif
     }
     /*******************************************************************************
      *

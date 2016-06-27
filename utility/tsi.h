@@ -33,6 +33,14 @@ static const uint8_t tsi_pins[] = {
     255, 255, 255, 255, 255,  13,   0,   6,   8,   7,
     255, 255,  14,  15, 255, 255, 255
 };
+#elif defined(__MK66FX1M0__)
+static const uint8_t tsi_pins[] = {
+    //0    1    2    3    4    5    6    7    8    9
+    9,  10, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255,  13,   0,   6,   8,   7,
+    255, 255,  14,  15, 255, 255, 255, 255, 255,  11,
+    12, 255, 255, 255, 255, 255, 255, 255, 255, 255
+};
 #endif
 
 #ifdef __cplusplus
@@ -66,12 +74,16 @@ extern "C" {
     void tsiISR( void ) {
         if( !( SIM_SCGC5 & SIM_SCGC5_TSI ) || !( irqEnabledFlag & TSI_IRQ_BIT ) ) return;
         TSI0_GENCS = TSI_GENCS_OUTRGF | TSI_GENCS_EOSF;
-#if defined(KINETISL)
+#if defined(HAS_KINETIS_TSI_LITE)
         LPTMR0_CSR = LPTMR_CSR_TCF;
         SIM_SCGC5 &= ~SIM_SCGC5_LPTIMER;
 #endif
         irqEnabledFlag &= ~TSI_IRQ_BIT;
+#if defined(HAS_KINETIS_LLWU_32CH)
+        wakeupSource = 37;
+#elif defined(HAS_KINETIS_LLWU_16CH)
         if ( enable_periph_irq ) wakeupSource = 37;
+#endif
     }
     /*******************************************************************************
      *
@@ -111,7 +123,7 @@ extern "C" {
         SIM_SCGC5 |= SIM_SCGC5_TSI;
         
         TSI0_GENCS = 0;
-#if defined(KINETISK)
+#if defined(HAS_KINETIS_TSI)
         TSI0_THRESHOLD = threshold;
         TSI0_SCANC =  (
                       ( TSI_SCANC_EXTCHRG( 2 ) ) |
@@ -130,7 +142,7 @@ extern "C" {
                       ( TSI_GENCS_EOSF )          |
                       ( TSI_GENCS_TSIEN )
                       );
-#elif defined(KINETISL)
+#elif defined(HAS_KINETIS_TSI_LITE)
         TSI0_TSHD = ( threshold << 16) & 0xFFFF0000;
         TSI0_DATA = TSI_DATA_TSICH( ch );
         TSI0_GENCS = (

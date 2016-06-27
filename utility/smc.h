@@ -226,10 +226,17 @@ extern "C" {
     
     static inline
     void enter_lls( void ) {
-        //LLS low power mode
-        // Set the LPLLSM field to 0b011 for LLS mode
+#if defined(__MK66FX1M0__)
+        #if F_CPU > 120000000
+            SMC_PMCTRL = SMC_PMCTRL_RUNM( 0x03 ) | SMC_PMCTRL_STOPM( 0x03 );
+        #else
+            SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x03 ) ;
+            ( void ) SMC_PMCTRL;
+        #endif
+#else
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x03 ) ;
         ( void ) SMC_PMCTRL;
+#endif
         // Now execute the stop instruction to go into LLS
         stop( );
     }
@@ -256,26 +263,19 @@ extern "C" {
     
     static inline
     void enter_vlls3( void ) {
-        //LLS low power mode
-        // Set the LPLLSM field to 0b011 for LLS mode
-        SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x03 ) ;
-        // Set the VLLSM field to 0b100 for VLLS3 mode - Need to retain
-        // state of LPWUI bit 8
-//#if defined(__MK20DX128__)
-        SMC_PMCTRL = ( SMC_PMCTRL & ( SMC_PMCTRL_RUNM_MASK | SMC_PMCTRL_LPWUI ) ) |
-        SMC_PMCTRL_STOPM( 0x04 ) ; // retain LPWUI
-/*#else
-        SMC_PMCTRL = ( SMC_PMCTRL & ( SMC_PMCTRL_RUNM_MASK ) ) |
-        SMC_PMCTRL_STOPM( 0x04 ) ; // retain LPWUI
-#endif*/
-        
-//#if defined(KINETISK)
+#if defined(__MK66FX1M0__)
+#if F_CPU > 120000000
+        SMC_PMCTRL = SMC_PMCTRL_RUNM( 0x03 ) | SMC_PMCTRL_STOPM( 0x04 );
+#else
+        SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x04 ) ;
+        ( void ) SMC_PMCTRL;
+#endif
+#else
+        SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x04 ) ;
+        ( void ) SMC_PMCTRL;
+#endif
         SMC_VLLSCTRL =  SMC_VLLSCTRL_VLLSM( 0x03 );// set VLLSM = 0b11
         ( void ) SMC_VLLSCTRL;
-/*#elif defined(KINETISL)
-        SMC_STOPCTRL =  SMC_STOPCTRL_VLLSM( 0x03 );// set VLLSM = 0b11
-        ( void ) SMC_STOPCTRL;
-#endif*/
         // Now execute the stop instruction to go into VLLS3
         stop( );
     }
@@ -302,23 +302,19 @@ extern "C" {
     
     static inline
     void enter_vlls2( void ) {
-        // Set the VLLSM field to 0b100 for VLLS2 mode - Need to retain
-        // state of LPWUI bit 8
-//#if defined(__MK20DX128__)
-        SMC_PMCTRL = ( SMC_PMCTRL & ( SMC_PMCTRL_RUNM_MASK | SMC_PMCTRL_LPWUI ) ) |
-        SMC_PMCTRL_STOPM( 0x04 ) ; // retain LPWUI
-/*#else
-        SMC_PMCTRL = ( SMC_PMCTRL & ( SMC_PMCTRL_RUNM_MASK ) ) |
-        SMC_PMCTRL_STOPM( 0x04 ) ; // retain LPWUI
-#endif*/
-        
-//#if defined(KINETISK)
+#if defined(__MK66FX1M0__)
+#if F_CPU > 120000000
+        SMC_PMCTRL = SMC_PMCTRL_RUNM( 0x03 ) | SMC_PMCTRL_STOPM( 0x04 );
+#else
+        SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x04 ) ;
+        ( void ) SMC_PMCTRL;
+#endif
+#else
+        SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x04 ) ;
+        ( void ) SMC_PMCTRL;
+#endif
         SMC_VLLSCTRL =  SMC_VLLSCTRL_VLLSM( 0x02 );// set VLLSM = 0b11
         ( void ) SMC_VLLSCTRL;
-/*#elif defined(KINETISL)
-        SMC_STOPCTRL =  SMC_STOPCTRL_VLLSM( 0x02 );// set VLLSM = 0b11
-        ( void ) SMC_STOPCTRL;
-#endif*/
         // Now execute the stop instruction to go into VLLS2
         stop( );
     }
@@ -345,25 +341,19 @@ extern "C" {
     
     static inline
     void enter_vlls1( void ) {
-        // Write to PMPROT to allow all possible power modes.
-        // Set the VLLSM field to 0b100 for VLLS1 mode - Need to retain
-        // state of LPWUI bit 8
-//#if defined(__MK20DX128__)
-        SMC_PMCTRL = ( SMC_PMCTRL & ( SMC_PMCTRL_RUNM_MASK | SMC_PMCTRL_LPWUI ) ) |
-        SMC_PMCTRL_STOPM( 0x04 ) ; // retain LPWUI
-/*#else
-        SMC_PMCTRL = ( SMC_PMCTRL & ( SMC_PMCTRL_RUNM_MASK ) ) |
-        SMC_PMCTRL_STOPM( 0x04 ) ; // retain LPWUI
-#endif*/
-        
-        
-//#if defined(KINETISK)
+#if defined(__MK66FX1M0__)
+#if F_CPU > 120000000
+        SMC_PMCTRL = SMC_PMCTRL_RUNM( 0x03 ) | SMC_PMCTRL_STOPM( 0x04 );
+#else
+        SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x04 ) ;
+        ( void ) SMC_PMCTRL;
+#endif
+#else
+        SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x04 ) ;
+        ( void ) SMC_PMCTRL;
+#endif
         SMC_VLLSCTRL =  SMC_VLLSCTRL_VLLSM( 0x01 );// set VLLSM = 0b11
         ( void ) SMC_VLLSCTRL;
-/*#elif defined(KINETISL)
-        SMC_STOPCTRL =  SMC_STOPCTRL_VLLSM( 0x01 );// set VLLSM = 0b11
-        ( void ) SMC_STOPCTRL;
-#endif*/
         // Now execute the stop instruction to go into VLLS1
         stop( );
     }
@@ -390,24 +380,19 @@ extern "C" {
     
     static inline
     void enter_vlls0( void ) {
-        // Write to PMPROT to allow all possible power modes.
-        // Set the VLLSM field to 0b100 for VLLS1 mode - Need to retain
-        // state of LPWUI bit 8
-//#if defined(__MK20DX128__)
-        SMC_PMCTRL = ( SMC_PMCTRL & ( SMC_PMCTRL_RUNM_MASK | SMC_PMCTRL_LPWUI ) ) |
-        SMC_PMCTRL_STOPM( 0x04 ) ; // retain LPWUI
-/*#else
-        SMC_PMCTRL = ( SMC_PMCTRL & ( SMC_PMCTRL_RUNM_MASK ) ) |
-        SMC_PMCTRL_STOPM( 0x04 ) ; // retain LPWUI
-#endif*/
-        
-//#if defined(KINETISK)
+#if defined(__MK66FX1M0__)
+#if F_CPU > 120000000
+        SMC_PMCTRL = SMC_PMCTRL_RUNM( 0x03 ) | SMC_PMCTRL_STOPM( 0x04 );
+#else
+        SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x03 ) ;
+        ( void ) SMC_PMCTRL;
+#endif
+#else
+        SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x03 ) ;
+        ( void ) SMC_PMCTRL;
+#endif
         SMC_VLLSCTRL =  SMC_VLLSCTRL_VLLSM( 0x00 );// set VLLSM = 0b11
         ( void ) SMC_VLLSCTRL;
-/*#elif defined(KINETISL)
-        SMC_STOPCTRL =  SMC_STOPCTRL_VLLSM( 0x00 );// set VLLSM = 0b11
-        ( void ) SMC_STOPCTRL;
-#endif*/
         // Now execute the stop instruction to go into VLLS1
         stop();
     }
@@ -434,20 +419,7 @@ extern "C" {
     
     static inline
     void enter_vlls0_nopor( void ) {
-        // Write to PMPROT to allow all possible power modes
-        // Set the VLLSM field to 0b100 for VLLS1 mode - Need to retain state of LPWUI bit 8
-        SMC_PMCTRL = ( SMC_PMCTRL & ( SMC_PMCTRL_RUNM_MASK | SMC_PMCTRL ) ) |
-        SMC_PMCTRL_STOPM(0x04);// retain LPWUI
-        
-//#if defined(KINETISK)
-        SMC_VLLSCTRL =  SMC_VLLSCTRL_VLLSM( 0x00 ) | SMC_VLLSCTRL_PORPO;// set PORPO = 0b01
-        ( void ) SMC_VLLSCTRL;
-/*#elif defined(KINETISL)
-        SMC_STOPCTRL =  SMC_STOPCTRL_VLLSM( 0x00 ) | SMC_STOPCTRL_PORPO;// set PORPO = 0b01
-        ( void ) SMC_STOPCTRL;
-#endif*/
-        // Now execute the stop instruction to go into VLLS1
-        stop( );
+        // Not implemented
     }
     
     /*******************************************************************************
@@ -464,7 +436,7 @@ extern "C" {
     
     static inline
     void enable_lpwui( void ) {
-        SMC_PMCTRL |= SMC_PMCTRL_LPWUI_MASK;
+        SMC_PMCTRL |= SMC_PMCTRL_LPWUI;
     }
     
     /*******************************************************************************
