@@ -151,4 +151,4 @@ ___
 periph_t setPeripheral;
 ```
 <br>
-[Version 6]:https://github.com/duff2013/Snooze_V6_Beta
+[Version 6](https://github.com/duff2013/Snooze_V6_Beta)

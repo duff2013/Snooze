@@ -230,8 +230,6 @@ int SnoozeClass::deepSleep( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     return wakeupSource;
 }
 
-#if defined( USE_HIBERNATE )
-
 /**
  *  hibernate - LLWU is used to handle interrupts that wake. USB regulator is disabled and 3.3V output pin can only supply limited current and voltage drops to ~2.7V.
  *
@@ -272,7 +270,6 @@ int SnoozeClass::hibernate( SnoozeBlock &configuration, SLEEP_MODE mode ) {
     cmp_disable( &p->cmp_mask );
     return wakeupSource;
 }
-#endif
 
 /**
  *  wakeupISR - handle LLWU interrupts after wakeup.
