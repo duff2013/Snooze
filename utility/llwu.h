@@ -229,10 +229,10 @@ extern "C" {
         else if ( ( llwuFlag>>8 ) & LLWU_PF2_WUF14 ) wakeupSource = 6;
         else if ( ( llwuFlag>>8 ) & LLWU_PF2_WUF15 ) wakeupSource = 21;
         
-        else if ( ( llwuFlag>>16 ) & LLWU_ME_WUME0 ) wakeupSource = 36;
-        else if ( ( llwuFlag>>16 ) & LLWU_ME_WUME1 ) wakeupSource = 34;
-        else if ( ( llwuFlag>>16 ) & LLWU_ME_WUME4 ) wakeupSource = 37;
-        else if ( ( llwuFlag>>16 ) & LLWU_ME_WUME5 ) wakeupSource = 35;
+        else if ( ( llwuFlag>24 ) & LLWU_ME_WUME0 ) wakeupSource = 36;
+        else if ( ( llwuFlag>>24 ) & LLWU_ME_WUME1 ) wakeupSource = 34;
+        else if ( ( llwuFlag>>24 ) & LLWU_ME_WUME4 ) wakeupSource = 37;
+        else if ( ( llwuFlag>>24 ) & LLWU_ME_WUME5 ) wakeupSource = 35;
 #elif defined(HAS_KINETIS_LLWU_16CH)
         if      ( llwuFlag & LLWU_F1_WUF0 ) wakeupSource = 26;
         else if ( llwuFlag & LLWU_F1_WUF3 ) wakeupSource = 33;
