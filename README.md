@@ -1,9 +1,9 @@
 #Snooze v5.5.3
 
 <h1>General Usage</h1>
-####This going to be replaced with a new [Version 6](https://github.com/duff2013/Snooze_V6_Beta), this is still is beta but should be mostly fully functional now. While the API has changed somewhat refer to readme for the changes.</h4> 
+####This going to be replaced with a new [Version 6](https://github.com/duff2013/Snooze_V6_Beta), this is still is beta but should be mostly fully functional now. While the API has changed somewhat refer to readme for the changes.
 
-<h4>Teensyduino 1.29 beta3 and above only. This will be the last v5 update, [Version 6] will be actively developed for now on and will be merged into this branch when not beta.</h4>
+####Teensyduino 1.29 [beta4](https://forum.pjrc.com/threads/35315-Teensyduino-1-29-Beta-4-Available) and above only. This will be the last v5 update, [Version 6] will be actively developed for now on and will be merged into this branch when not beta.
 <h3>SnoozeBlock -</h3>
 ```SnoozeBlock class is used to configure what wakeups you want. You can define many SnoozeBlocks classes for different configurations.```
 
