@@ -1,4 +1,4 @@
-/******************************************************************************
+/***********************************************************************************
  * Low Power Library for Teensy LC/3.x
  * Copyright (c) 2016, Colin Duffy https://github.com/duff2013
  *
@@ -19,39 +19,39 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- ******************************************************************************
- *  Snooze.cpp
+ ************************************************************************************
+ *  SnoozeAlarm.h
  *  Teensy 3.x/LC
  *
- * Purpose:    Provides routines for configuring the Teensy for low power.
+ * Purpose: RTC Driver
  *
- * NOTE:       None
- *******************************************************************************/
-#ifndef Snooze_h
-#define Snooze_h
+ ***********************************************************************************/
+#ifndef SnoozeAlarm_h
+#define SnoozeAlarm_h
 
-/***************************************************************************/
 #include "Arduino.h"
 #include "SnoozeBlock.h"
-#include "utility/SnoozeTimer.h"
-#include "utility/SnoozeAlarm.h"
-#include "utility/SnoozeTouch.h"
-#include "utility/SnoozeCompare.h"
-#include "utility/SnoozeDigital.h"
-#include "utility/SnoozeAudio.h"
-/***************************************************************************/
-class SnoozeClass {
+
+class SnoozeAlarm : public SnoozeBlock {
 private:
-    static volatile uint32_t PCR3;
+    virtual void disableDriver( void );
+    virtual void enableDriver( void );
+    virtual void clearIsrFlags( void );
+    static void isr( void );
+    //time_t rtc_set_sync_provider( void );
+    void ( * return_rtc_irq ) ( void );
+    time_t alarm;
+    uint8_t return_priority;
+    uint8_t return_isr_enabled;
+    uint32_t TAR;
+    uint32_t IER;
+    bool SIM_SCGC6_clock_active;
 public:
-    SnoozeClass( void );
-    static void idle ( SNOOZE_BLOCK );
-    static int source( SNOOZE_BLOCK );
-    /* sleep functions */
-    static int sleep    ( SNOOZE_BLOCK );
-    static int deepSleep( SNOOZE_BLOCK, SLEEP_MODE mode = LLS );
-    static int hibernate( SNOOZE_BLOCK,  SLEEP_MODE mode = LLS );
+    SnoozeAlarm( void ) : TAR( false ), IER( false ),
+                        SIM_SCGC6_clock_active( false )
+    {
+        isDriver = true;
+    }
+    void setAlarm( uint8_t hours, uint8_t minutes, uint8_t seconds );
 };
-extern SnoozeClass Snooze;
-/***************************************************************************/
-#endif /* defined(Snooze_h) */
+#endif /* defined(SnoozeAlarm_h) */

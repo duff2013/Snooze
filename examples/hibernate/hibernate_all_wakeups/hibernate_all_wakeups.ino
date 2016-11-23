@@ -1,8 +1,12 @@
 /***************************************
- This shows all the wakeups for deepSleep
- Expect IDD of  around 230uA (Teensy 3.x)
- and IDD of around 150uA for (Teensy LC).
- Teensy 3.5/3.6 are yet to be determined.
+ * This shows all the wakeups for hibernate
+ * Expect IDD of  around 15uA (Teensy 3.x)
+ * and IDD of around 6uA for (Teensy LC).
+ *
+ * Hibernate puts the USB regualtor into
+ * a low power state which will effect
+ * Teensy 3.0/3.1/LC 3.3v output or
+ * anything that uses the regualtor.
  ****************************************/
 #include <Snooze.h>
 // Load drivers
@@ -96,13 +100,13 @@ void loop() {
      to deepSleep.
      ********************************************************/
 #if defined(__MK66FX1M0__)
-    who = Snooze.deepSleep( config_teensy36 );// return module that woke processor
+    who = Snooze.hibernate( config_teensy36 );// return module that woke processor
 #elif defined(__MK64FX512__)
-    who = Snooze.deepSleep( config_teensy35 );// return module that woke processor
+    who = Snooze.hibernate( config_teensy35 );// return module that woke processor
 #elif defined(__MK20DX256__)
-    who = Snooze.deepSleep( config_teensy32 );// return module that woke processor
+    who = Snooze.hibernate( config_teensy32 );// return module that woke processor
 #elif defined(__MKL26Z64__)
-    who = Snooze.deepSleep( config_teensyLC );// return module that woke processor
+    who = Snooze.hibernate( config_teensyLC );// return module that woke processor
 #endif
     
     if (who == 21) { // pin wakeup source is its pin value

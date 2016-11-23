@@ -1,15 +1,42 @@
-><b>Updated (5/25/16 v5.5.3)</b><br>
-* Added support for Teensy 3.5.<br>
-* Removed USE_HIBERNATE criteria.<br>
+><b>Updated (10/18/16 v6.2.3)</b><br>
+* Temp fix for Teensy LC Timer driver below 50ms.<br>
 
-><b>Updated (2/16/16 v5.5.2)</b><br>
-* Fix Teensy LC using VLLSx modes, Disable WatchDog was not being called from startup_early_hook.<br>
-* Fix REDUCED_CPU_BLOCK example c linkage error.<br>
+><b>Updated (10/18/16 v6.2.2)</b><br>
+* Temp fix for Teensy error when not using RTC Library.<br>
+* Now hibernate and deepsleep work from a isr.<br>
+* Fix warnings from SnoozeCompare driver.<br>
 
-><b>Updated (1/12/16 v5.5.1)</b><br>
+><b>Updated (9/19/16 v6.2.1)</b><br>
+* Merge fix for core Digital wakeup from Github user jymoulin.<br>
+
+><b>Updated (9/6/16 v6.2.0)</b><br>
+* Teensy35/36 now complies, need more testing for actual usage.<br>
+
+><b>Updated (8/31/16 v6.1.1)</b><br>
+* Fixed skelton class example.<br>
+
+><b>Updated (8/30/16 v6.1.0)</b><br>
+* Add INPUT_PULLDOWN code.<br>
+
+><b>Updated (7/12/16 v6.0.3)</b><br>
+* Update License.<br>
+* Fix core millis count for low power timer wakeup.<br>
+* Add driver for Audio Library.<br>
+
+><b>Updated (7/11/16 v6.0.2)</b><br>
+* Teensy LC now compiles.<br>
+
+><b>Updated (6/29/16 v6.0.1)</b><br>
+* Initial Teensy 3.5 support.<br>
+* Fixed Touch and Compare modules for Teensy LC.<br>
+
+><b>Updated (4/20/16 v6.0.0)</b><br>
+* New API.<br>
+
+><b>Updated (1/12/16 v5.0.1)</b><br>
 * Fix for new Teensy Reg Defs.<br>
 
-><b>Updated (10/27/15 v5.5.0)</b><br>
+><b>Updated (10/27/15 v5.0.0)</b><br>
 * Now CPU Scaling is supported by the REDUCED_CPU_BLOCK macro.<br>
 * Reset systick when cpu goes to 2 MHz.<br>
 
