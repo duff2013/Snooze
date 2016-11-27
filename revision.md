@@ -1,3 +1,7 @@
+><b>Updated (10/18/16 v6.2.4)</b><br>
+* Fix bug with Teensy LC digital driver.<br>
+* Update README.md links.<br>
+
 ><b>Updated (10/18/16 v6.2.3)</b><br>
 * Temp fix for Teensy LC Timer driver below 50ms.<br>
 

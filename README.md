@@ -1,8 +1,8 @@
-# Snooze v6.2.3
+# Snooze v6.2.4
 
 ---
 For those using v5 of Snooze the reason for the change is that new Teensy's are in the pipeline and updating this fairly extensive library became to difficult because each new processor introduced has its own set of Low Power functionality. Now the library is divided into three classes:<br>
-![alt text](https://github.com/duff2013/Snooze_V6_Beta/blob/master/images/Snooze_Class_Layout/Slide1.png "Snooze Class Layout")<br>
+![alt text](https://github.com/duff2013/Snooze/blob/master/images/Snooze_Class_Layout/Slide1.png "Snooze Class Layout")<br>
 As you can see the Drivers are now separated from the SnoozeBlock Class. Before these drivers where part of the SnoozeBlock which made it difficult to add new functionalities. Each Teensy can now have driver classes designed specifically for them. Users can install their own drivers also if they wish also, see the skeltonClass example. Snooze uses something similar to the Audio library's conventions for adding drivers. As an added benefit, only the drivers that are installed are called, before all drivers where called just not used if not configured, this should add some performance benefits.
 
 Here are some new features and enhancments over Version 5:
@@ -98,7 +98,7 @@ Snooze.hibernate( config );
 <br>
 ---
 Now that was easy enough lets take deeper look at the library structure.<br>
-![alt text](https://github.com/duff2013/Snooze_V6_Beta/blob/master/images/Snooze_Class_Layout/Slide3.png "Snooze Library Layout")
+![alt text](https://github.com/duff2013/Snooze/blob/master/images/Snooze_Class_Layout/Slide3.png "Snooze Library Layout")
 <br>
 As you can see Snooze library has only one Snooze Class but can have mulitple SnoozeBlocks which have mulitiple Drivers. Refferring to the first graphic Snooze is 3 Tier Class structure:
 1. Snooze Class
@@ -114,11 +114,11 @@ As you can see Snooze library has only one Snooze Class but can have mulitple Sn
 
 ---
 <br>
-![alt text](https://github.com/duff2013/Snooze_V6_Beta/blob/master/images/Snooze_Class_Layout/Slide4.png "Snooze Library Layout")
+![alt text](https://github.com/duff2013/Snooze/blob/master/images/Snooze_Class_Layout/Slide4.png "Snooze Library Layout")
 <br>
-![alt text](https://github.com/duff2013/Snooze_V6_Beta/blob/master/images/Snooze_Class_Layout/Slide5.png "Snooze Library Layout")
+![alt text](https://github.com/duff2013/Snooze/blob/master/images/Snooze_Class_Layout/Slide5.png "Snooze Library Layout")
 <br>
-![alt text](https://github.com/duff2013/Snooze_V6_Beta/blob/master/images/Snooze_Class_Layout/Slide6.png "Snooze Library Layout")
+![alt text](https://github.com/duff2013/Snooze/blob/master/images/Snooze_Class_Layout/Slide6.png "Snooze Library Layout")
 <br>
-![alt text](https://github.com/duff2013/Snooze_V6_Beta/blob/master/images/Snooze_Class_Layout/Slide7.png "Snooze Library Layout")
+![alt text](https://github.com/duff2013/Snooze/blob/master/images/Snooze_Class_Layout/Slide7.png "Snooze Library Layout")
 <br>
