@@ -39,6 +39,7 @@
 #include "utility/SnoozeCompare.h"
 #include "utility/SnoozeDigital.h"
 #include "utility/SnoozeAudio.h"
+#include "utility/SnoozeUSBSerial.h"
 /***************************************************************************/
 class SnoozeClass {
 private:

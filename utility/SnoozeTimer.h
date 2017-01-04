@@ -42,12 +42,12 @@ private:
     virtual void clearIsrFlags( void );
     static void isr( void );
     uint16_t period;
-    static volatile uint16_t lptmrUpdateSystick;
     uint32_t PSR;
     uint32_t CMR;
     uint32_t CSR;
     bool SIM_SCGC5_clock_active;
     bool OSC_clock_active;
+    static volatile uint16_t lptmrUpdateSystick;
 public:
     SnoozeTimer( void ) : PSR( 0 ), CMR( 0 ), CSR( 0 ),
                   SIM_SCGC5_clock_active(false ),
@@ -55,6 +55,7 @@ public:
     {
         lptmrUpdateSystick = 0;
         isDriver = true;
+        period = 0;
     }
     void setTimer( uint16_t newPeriod );
 };

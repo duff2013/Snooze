@@ -1,5 +1,5 @@
 /***********************************************************************************
- *  SnoozeTimer.h
+ *  SnoozeTouch.h
  *  Teensy 3.x/LC
  *
  * Purpose: Touch (TSI) Driver
@@ -56,7 +56,7 @@ void SnoozeTouch::pinMode( int _pin, int thresh ) {
  *  <#Description#>
  *******************************************************************************/
 void SnoozeTouch::disableDriver( void ) {
-    if ( mode == RUN_LP || mode == VLPW || mode == RUN_LP ) return;
+    if ( mode == RUN_LP || mode == VLPW ) return;
     uint8_t _pin = pin;
     
 #if defined(HAS_KINETIS_TSI_LITE)

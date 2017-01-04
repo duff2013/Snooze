@@ -1,4 +1,4 @@
-# Snooze v6.2.4
+# Snooze v6.2.5
 
 ---
 For those using v5 of Snooze the reason for the change is that new Teensy's are in the pipeline and updating this fairly extensive library became to difficult because each new processor introduced has its own set of Low Power functionality. Now the library is divided into three classes:<br>
@@ -101,9 +101,10 @@ Now that was easy enough lets take deeper look at the library structure.<br>
 ![alt text](https://github.com/duff2013/Snooze/blob/master/images/Snooze_Class_Layout/Slide3.png "Snooze Library Layout")
 <br>
 As you can see Snooze library has only one Snooze Class but can have mulitple SnoozeBlocks which have mulitiple Drivers. Refferring to the first graphic Snooze is 3 Tier Class structure:
-1. Snooze Class
-2. SnoozeBlock Class
-3. Drivers
+
+1. Snooze Class<br>
+2. SnoozeBlock Class<br>
+3. Drivers Classes<br>
 
 <h4> Snooze Class:</h4>
 ...

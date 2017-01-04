@@ -1,3 +1,7 @@
+><b>Updated (1/4/17 v6.2.5)</b><br>
+* Added Serial USB Driver.<br>
+* Added PWM Sleep Driver example.<br>
+
 ><b>Updated (10/18/16 v6.2.4)</b><br>
 * Fix bug with Teensy LC digital driver.<br>
 * Update README.md links.<br>

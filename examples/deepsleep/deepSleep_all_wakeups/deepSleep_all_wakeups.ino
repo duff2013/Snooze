@@ -54,6 +54,7 @@ void setup() {
      Set RTC alarm wake up in (hours, minutes, seconds).
      ********************************************************/
     alarm.setAlarm(0, 0, 10);// hour, min, sec
+    
     /********************************************************
      Set Low Power Timer wake up in milliseconds.
      ********************************************************/

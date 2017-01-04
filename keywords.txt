@@ -16,6 +16,7 @@ SnoozeTimer	KEYWORD2
 SnoozeTouch	KEYWORD2
 SnoozeAlarm	KEYWORD2
 SnoozeAudio	KEYWORD2
+SnoozeUSBSerial	KEYWORD2
 idle	KEYWORD2
 sleep	KEYWORD2
 deepSleep	KEYWORD2

@@ -80,7 +80,7 @@ void SnoozeCompare::enableDriver( void ) {
         
         __disable_irq( );
         return_cmp0_irq = _VectorsRam[IRQ_CMP0+16];// save prev isr
-        attachInterruptVector( IRQ_CMP0, isr );
+        attachInterruptVector( IRQ_CMP0, wakeupIsr );
         __enable_irq( );
         NVIC_ENABLE_IRQ( IRQ_CMP0 );
     }

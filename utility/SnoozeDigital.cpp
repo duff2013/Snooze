@@ -92,11 +92,11 @@ void SnoozeDigital::enableDriver( void ) {
         return_portc_irq = _VectorsRam[IRQ_PORTC+16];// save prev isr handler
         return_portd_irq = _VectorsRam[IRQ_PORTD+16];// save prev isr handler
         return_porte_irq = _VectorsRam[IRQ_PORTE+16];// save prev isr handler
-        attachInterruptVector( IRQ_PORTA, isr );// set snooze digA isr
-        attachInterruptVector( IRQ_PORTB, isr );// set snooze digB isr
-        attachInterruptVector( IRQ_PORTC, isr );// set snooze digC isr
-        attachInterruptVector( IRQ_PORTD, isr );// set snooze digD isr
-        attachInterruptVector( IRQ_PORTE, isr );// set snooze digE isr
+        attachInterruptVector( IRQ_PORTA, wakeupIsr );// set snooze digA isr
+        attachInterruptVector( IRQ_PORTB, wakeupIsr );// set snooze digB isr
+        attachInterruptVector( IRQ_PORTC, wakeupIsr );// set snooze digC isr
+        attachInterruptVector( IRQ_PORTD, wakeupIsr );// set snooze digD isr
+        attachInterruptVector( IRQ_PORTE, wakeupIsr );// set snooze digE isr
         __enable_irq( );
         
         NVIC_ENABLE_IRQ( IRQ_PORTA );

@@ -1,4 +1,4 @@
-/*
+/*************************************************
  This example is used when you want to simulate a
  button being held for certian amount of time
  before waking your Teensy from deepSleep sleep.
@@ -7,7 +7,7 @@
  the button is still pressed for 3 seconds after
  waking up from low power mode. If it released
  before the 3 seconds are up, go back to sleep.
- */
+ *************************************************/
 
 #include <Snooze.h>
 #include <Bounce.h>
@@ -59,7 +59,7 @@ SLEEP:
     if (!awake) goto SLEEP;
     
     // the button was held for at least 3 seconds if
-    //you get here do some stuff for 7 seconds then
+    // you get here do some stuff for 7 seconds then
     // go to sleep.
     elapsedMillis time = 0;
     

@@ -40,7 +40,6 @@ void SnoozeTimer::disableDriver( void ) {
         attachInterruptVector( IRQ_LPTMR, return_lptmr_irq );// return prev interrupt
         __enable_irq( );
     }
-    systick_millis_count += period;
     LPTMR0_PSR = PSR;
     LPTMR0_CMR = CMR;
     LPTMR0_CSR = CSR;
@@ -61,7 +60,7 @@ void SnoozeTimer::enableDriver( void ) {
         NVIC_SET_PRIORITY( IRQ_LPTMR, priority );//set priority to new level
         __disable_irq( );
         return_lptmr_irq = _VectorsRam[IRQ_LPTMR+16];// save prev isr
-        attachInterruptVector( IRQ_LPTMR, isr );
+        attachInterruptVector( IRQ_LPTMR, wakeupIsr );
         __enable_irq( );
     }
     
@@ -117,6 +116,7 @@ void SnoozeTimer::clearIsrFlags( void ) {
  *******************************************************************************/
 void SnoozeTimer::isr( void ) {
     if ( !( SIM_SCGC5 & SIM_SCGC5_LPTIMER ) ) return;
+    systick_millis_count += lptmrUpdateSystick;
     LPTMR0_CSR = LPTMR_CSR_TCF;
     if ( mode == VLPW || mode == VLPS ) source = 36;
 }
