@@ -79,21 +79,21 @@ void SnoozeTimer::enableDriver( void ) {
     LPTMR0_CMR = period;
     
     /*if ( period <= 50 ) {
-#if defined(KINETISK)
-        OSC_clock_active = true;
-        if ( !( OSC0_CR & OSC_ERCLKEN ) ) {
-            OSC_clock_active = false;
-            OSC0_CR |= OSC_EREFSTEN | OSC_ERCLKEN;
-            while ( ( MCG_S & MCG_S_OSCINIT0 ) == 0 );
-        }
-#endif
-        LPTMR0_PSR = LPTMR_PSR_PCS( LPTMR_OSCERCLK ) | LPTMR_PSR_PRESCALE( 8 );
-        LPTMR0_CMR = (period*31.24);
-        
-    } else {
-        LPTMR0_PSR = LPTMR_PSR_PBYP | LPTMR_PSR_PCS( LPTMR_LPO );//LPO Clock
-        LPTMR0_CMR = period;
-    }*/
+     #if defined(KINETISK)
+     OSC_clock_active = true;
+     if ( !( OSC0_CR & OSC_ERCLKEN ) ) {
+     OSC_clock_active = false;
+     OSC0_CR |= OSC_EREFSTEN | OSC_ERCLKEN;
+     while ( ( MCG_S & MCG_S_OSCINIT0 ) == 0 );
+     }
+     #endif
+     LPTMR0_PSR = LPTMR_PSR_PCS( LPTMR_OSCERCLK ) | LPTMR_PSR_PRESCALE( 8 );
+     LPTMR0_CMR = (period*31.24);
+     
+     } else {
+     LPTMR0_PSR = LPTMR_PSR_PBYP | LPTMR_PSR_PCS( LPTMR_LPO );//LPO Clock
+     LPTMR0_CMR = period;
+     }*/
     
     if ( mode == VLPW || mode == VLPS ) {
         return_isr_enabled = NVIC_IS_ENABLED( IRQ_LPTMR );

@@ -1,5 +1,5 @@
 /***********************************************************************************
- Low Power Library for Teensy LC/3.x
+ * Low Power Library for Teensy LC/3.x
  * Copyright (c) 2014, Colin Duffy https://github.com/duff2013
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,7 +23,7 @@
  *  wakeup.h
  *  Teensy 3.x/LC
  *
- * Purpose: Wake up controll
+ * Purpose: Wake up control
  *
  ***********************************************************************************/
 #ifndef wakeup_h
@@ -150,16 +150,16 @@ extern "C" {
     void llwu_configure_modules_mask( uint8_t module ) {
         llwu_mask_t *mask = &llwuMask;
         if( module & LLWU_LPTMR_MOD )      mask->ME |= LLWU_ME_WUME0;
-//#ifdef KINETISK
         else if ( module & LLWU_RTCA_MOD ) mask->ME |= LLWU_ME_WUME5;
         else if ( module & LLWU_RTCS_MOD ) mask->ME |= LLWU_ME_WUME7;
-//#endif
         else if ( module & LLWU_TSI_MOD )  mask->ME |= LLWU_ME_WUME4;
         else if ( module & LLWU_CMP0_MOD ) mask->ME |= LLWU_ME_WUME1;
         else if ( module & LLWU_CMP1_MOD ) mask->ME |= LLWU_ME_WUME2;
 #ifdef KINETISK
         else if( module & LLWU_CMP2_MOD )  mask->ME |= LLWU_ME_WUME3;
 #endif
+        //Serial.printf("mask->ME: %X\n", mask->ME);
+        
     }
     /*******************************************************************************
      *
@@ -220,6 +220,8 @@ extern "C" {
         LLWU_PE8 = mask->PE8;
 #endif
         LLWU_ME  = mask->ME;
+        //Serial.printf("LLWU: %X | mask->ME: %X\n", LLWU_ME, mask->ME);
+        //delay(1000);
     }
     /*******************************************************************************
      *
@@ -263,7 +265,7 @@ extern "C" {
     
     static inline
     int llwu_disable( void ) {
-        llwu_mask_t *mask = &llwuMask;
+        volatile llwu_mask_t *mask = &llwuMask;
 #if defined(HAS_KINETIS_LLWU_32CH)
         if      ( mask->llwuFlag & LLWU_PF1_WUF0 ) mask->wakeupSource = 26;
         else if ( mask->llwuFlag & LLWU_PF1_WUF3 ) mask->wakeupSource = 33;

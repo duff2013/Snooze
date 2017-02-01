@@ -20,8 +20,6 @@ SnoozeSleepPWM  pwm;// 'sleep' mode pwm driver
 SnoozeBlock config(timer, pwm);
 
 void setup() {
-  pinMode(0, OUTPUT);
-  pinMode(3, OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
   timer.setTimer(30);
   delay(300);

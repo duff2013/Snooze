@@ -20,6 +20,9 @@ void SnoozeUSBSerial::disableDriver( void ) {
         USB0_USBCTRL &= ~USB_USBCTRL_SUSP;// suspended State
         USB0_CTL |= USB_CTL_USBENSOFEN;// enable USB
         while ( ( USB0_CTL & USB_CTL_USBENSOFEN ) != 0x01 ) ;
+#if defined(__MK66FX1M0__) && ((F_CPU == 180000000) || (F_CPU == 216000000))
+        SIM_SOPT2 |= SIM_SOPT2_IRC48SEL;
+#endif
     }
     usb_configuration = 0;
     usb_cdc_line_rtsdtr = 0;
@@ -30,13 +33,15 @@ void SnoozeUSBSerial::disableDriver( void ) {
  *  Turns off usb clock if using 'sleep'.
  *******************************************************************************/
 void SnoozeUSBSerial::enableDriver( void ) {
-    
 #if (F_CPU > 16000000)
     if ( mode == RUN_LP ) return;
     if ( mode == VLPW ) {
         USB0_USBCTRL |= USB_USBCTRL_SUSP;// suspended State
         USB0_CTL &= ~USB_CTL_USBENSOFEN;// disable USB
         while ( ( USB0_CTL & USB_CTL_USBENSOFEN ) != 0x00 ) ;
+#if defined(__MK66FX1M0__) && ((F_CPU == 180000000) || (F_CPU == 216000000))
+        SIM_SOPT2 &= ~SIM_SOPT2_IRC48SEL;
+#endif
         SIM_SCGC4 &= ~SIM_SCGC4_USBOTG;// disable USB clock
     }
 #endif

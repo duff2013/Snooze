@@ -1,3 +1,7 @@
+><b>Updated (1/31/17 v6.2.6)</b><br>
+* Fixed T3.6 High Speed Run deepSleep and hibernate.<br>
+* Timer driver only uses the LPO clock.<br>
+
 ><b>Updated (1/4/17 v6.2.5)</b><br>
 * Added Serial USB Driver.<br>
 * Added PWM Sleep Driver example.<br>

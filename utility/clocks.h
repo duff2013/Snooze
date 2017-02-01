@@ -42,11 +42,11 @@
 #include "Arduino.h"
 /********************************************************************/
 // MCG_S Bit Fields
-#define MCG_S_CLKST_SHIFT    ( uint8_t )0x2
-#define LPTMR_MCGIRCLK       ( uint8_t )0x0
-#define LPTMR_LPO            ( uint8_t )0x1
-#define LPTMR_ERCLK32K       ( uint8_t )0x2
-#define LPTMR_OSCERCLK       ( uint8_t )0x3
+#define MCG_S_CLKST_SHIFT    ( uint8_t )0x02
+#define LPTMR_MCGIRCLK       ( uint8_t )0x00
+#define LPTMR_LPO            ( uint8_t )0x01
+#define LPTMR_ERCLK32K       ( uint8_t )0x02
+#define LPTMR_OSCERCLK       ( uint8_t )0x03
 #define MCG_C1_FRDIV4_BIT    ( uint8_t )0x05
 /********************************************************************/
 
