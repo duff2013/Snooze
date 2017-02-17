@@ -1,4 +1,4 @@
-/***************************************
+, lc5vBuffer/***************************************
   This shows the use of the Snooze 
   USB Serial driver when using sleep. 
   This USB Serial driver does not wake 
@@ -21,7 +21,7 @@ SnoozeBlock config_teensy35(usb, timer;
 #elif defined(__MK20DX256__)
 SnoozeBlock config_teensy32(usb, timer);
 #elif defined(__MKL26Z64__)
-SnoozeBlock config_teensyLC(usb, timer);
+SnoozeBlock config_teensyLC(usb, timer, lc5vBuffer);
 #endif
 
 int idx;

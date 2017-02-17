@@ -1,3 +1,9 @@
+><b>Updated (2/16/17 v6.2.7)</b><br>
+* Fixed sleep functions not returning right wakeup values.<br>
+* Updated examples.<br>
+* Added Teensy LC LED buffer driver.<br>
+* Usb works better now not perfect though.<br>
+
 ><b>Updated (1/31/17 v6.2.6)</b><br>
 * Fixed T3.6 High Speed Run deepSleep and hibernate.<br>
 * Timer driver only uses the LPO clock.<br>

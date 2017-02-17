@@ -20,27 +20,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  ************************************************************************************
- *  SnoozeUSBSerial.h
+ *  Snoozelc5vBuffer.h
  *  Teensy 3.x/LC
  *
- * Purpose: Low Power USB Serial Driver
+ * Purpose: Teensy LC LED 5v Buffer Driver
  *
  ***********************************************************************************/
-#ifndef SnoozeUSBSerial_h
-#define SnoozeUSBSerial_h
+#ifndef Snoozelc5vBuffer_h
+#define Snoozelc5vBuffer_h
 
 #include "SnoozeBlock.h"
 
-class SnoozeUSBSerial : public SnoozeBlock {
+class Snoozelc5vBuffer : public SnoozeBlock {
 private:
     virtual void enableDriver( void );
     virtual void disableDriver( void );
     virtual void clearIsrFlags( void );
     static void isr( void );
+    volatile uint32_t return_core_pin_config;
 public:
-    SnoozeUSBSerial( void ) {
+    Snoozelc5vBuffer( void ) {
         isDriver = true;
         isUsed = true;
     }
 };
-#endif /* defined(SnoozeUSBSerial_h) */
+#endif /* defined(Snoozelc5vBuffer_h) */

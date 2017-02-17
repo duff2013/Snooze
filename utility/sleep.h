@@ -153,7 +153,7 @@ extern "C" {
     
     static inline
     void exit_vlpr( void ) {
-        /* check to make sure in VLPR before exiting    */
+        // check to make sure in VLPR before exiting
         if  ( !( SMC_PMSTAT & SMC_PMSTAT_VLPR ) ) return;
         // Clear RUNM
         
@@ -216,12 +216,12 @@ extern "C" {
     static inline
     void vlps( void ) {
 #if defined(__MK66FX1M0__)
-#if F_CPU > 120000000
+    #if F_CPU > 120000000
         SMC_PMCTRL = SMC_PMCTRL_RUNM( 0x03 ) | SMC_PMCTRL_STOPM( 0x03 );
-#else
+    #else
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x03 ) ;
         ( void ) SMC_PMCTRL;
-#endif
+    #endif
 #else
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x03 ) ;
         ( void ) SMC_PMCTRL;
@@ -253,14 +253,14 @@ extern "C" {
     static inline
     void lls( void ) {
 #if defined(__MK66FX1M0__)
- #if F_CPU > 120000000
+    #if F_CPU > 120000000
         kinetis_hsrun_disable( );
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x03 );
         ( void ) SMC_PMCTRL;
- #else
+    #else
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x03 ) ;
         ( void ) SMC_PMCTRL;
- #endif
+    #endif
 #else
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x03 ) ;
         ( void ) SMC_PMCTRL;
@@ -295,14 +295,14 @@ extern "C" {
     static inline
     void vlls3( void ) {
 #if defined(__MK66FX1M0__)
- #if F_CPU > 120000000
+    #if F_CPU > 120000000
         kinetis_hsrun_disable( );
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x04 );
         ( void ) SMC_PMCTRL;
- #else
+    #else
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x04 ) ;
         ( void ) SMC_PMCTRL;
- #endif
+    #endif
 #else
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x04 ) ;
         ( void ) SMC_PMCTRL;
@@ -311,6 +311,9 @@ extern "C" {
         ( void ) SMC_VLLSCTRL;
         // Now execute the stop instruction to go into VLLS3
         stop( );
+#if defined(__MK66FX1M0__)
+        kinetis_hsrun_enable( );
+#endif
     }
     
     /*******************************************************************************
@@ -336,14 +339,14 @@ extern "C" {
     static inline
     void vlls2( void ) {
 #if defined(__MK66FX1M0__)
-#if F_CPU > 120000000
+    #if F_CPU > 120000000
         kinetis_hsrun_disable( );
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x04 );
         ( void ) SMC_PMCTRL;
-#else
+    #else
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x04 ) ;
         ( void ) SMC_PMCTRL;
-#endif
+    #endif
 #else
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x04 ) ;
         ( void ) SMC_PMCTRL;
@@ -352,6 +355,9 @@ extern "C" {
         ( void ) SMC_VLLSCTRL;
         // Now execute the stop instruction to go into VLLS2
         stop( );
+#if defined(__MK66FX1M0__)
+        kinetis_hsrun_enable( );
+#endif
     }
     
     /*******************************************************************************
@@ -377,14 +383,14 @@ extern "C" {
     static inline
     void vlls1( void ) {
 #if defined(__MK66FX1M0__)
-#if F_CPU > 120000000
+    #if F_CPU > 120000000
         kinetis_hsrun_disable( );
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x04 );
         ( void ) SMC_PMCTRL;
-#else
+    #else
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x04 ) ;
         ( void ) SMC_PMCTRL;
-#endif
+    #endif
 #else
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x04 ) ;
         ( void ) SMC_PMCTRL;
@@ -393,6 +399,9 @@ extern "C" {
         ( void ) SMC_VLLSCTRL;
         // Now execute the stop instruction to go into VLLS1
         stop( );
+#if defined(__MK66FX1M0__)
+        kinetis_hsrun_enable( );
+#endif
     }
     
     /*******************************************************************************
@@ -418,12 +427,12 @@ extern "C" {
     static inline
     void vlls0( void ) {
 #if defined(__MK66FX1M0__)
-#if F_CPU > 120000000
+    #if F_CPU > 120000000
         SMC_PMCTRL = SMC_PMCTRL_RUNM( 0x03 ) | SMC_PMCTRL_STOPM( 0x04 );
-#else
+    #else
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x04 ) ;
         ( void ) SMC_PMCTRL;
-#endif
+    #endif
 #else
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x04 ) ;
         ( void ) SMC_PMCTRL;
@@ -431,7 +440,9 @@ extern "C" {
         SMC_VLLSCTRL =  SMC_VLLSCTRL_VLLSM( 0x00 );// set VLLSM = 0b11
         ( void ) SMC_VLLSCTRL;
         // Now execute the stop instruction to go into VLLS0
-        stop( );
+#if defined(__MK66FX1M0__)
+        kinetis_hsrun_enable( );
+#endif
     }
     
     /*******************************************************************************
@@ -457,13 +468,13 @@ extern "C" {
     static inline
     void vlls0_nopor( void ) {
 #if defined(__MK66FX1M0__)
-#if F_CPU > 120000000
+    #if F_CPU > 120000000
         SMC_PMCTRL = SMC_PMCTRL_RUNM( 0x03 ) | SMC_PMCTRL_STOPM( 0x04 );
         ( void ) SMC_PMCTRL;
-#else
+    #else
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x03 ) ;
         ( void ) SMC_PMCTRL;
-#endif
+    #endif
 #else
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x03 ) ;
         ( void ) SMC_PMCTRL;
@@ -471,7 +482,9 @@ extern "C" {
         SMC_VLLSCTRL =  SMC_VLLSCTRL_VLLSM( 0x00 );// set VLLSM = 0b11
         ( void ) SMC_VLLSCTRL;
         // Now execute the stop instruction to go into VLLS1
-        stop( );
+#if defined(__MK66FX1M0__)
+        kinetis_hsrun_enable( );
+#endif
     }
     
     /*******************************************************************************

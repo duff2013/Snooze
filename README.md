@@ -1,4 +1,4 @@
-# Snooze v6.2.6
+# Snooze v6.2.7
 
 ---
 For those using v5 of Snooze the reason for the change is that new Teensy's are in the pipeline and updating this fairly extensive library became to difficult because each new processor introduced has its own set of Low Power functionality. Now the library is divided into three classes:<br>

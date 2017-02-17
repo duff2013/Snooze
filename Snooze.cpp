@@ -118,11 +118,7 @@ int SnoozeClass::deepSleep( SNOOZE_BLOCK, SLEEP_MODE mode ) {
         default:
             break;
     }
-//#if defined(__MK66FX1M0__) || defined(__MKL26Z64__)
     p->source = llwu_disable( );
-//#else
-    //llwu_disable( );
-//#endif
     p->disableDriver( );
     p->mode = RUN;
     return p->source;
@@ -168,11 +164,7 @@ int SnoozeClass::hibernate( SNOOZE_BLOCK, SLEEP_MODE mode ) {
         default:
             break;
     }
-//#if defined(__MK66FX1M0__) || defined(__MKL26Z64__)
     p->source = llwu_disable( );
-//#else
-    //llwu_disable( );
-//#endif
     p->disableDriver( );
     p->mode = RUN;
     SIM_SOPT1CFG |= SIM_SOPT1CFG_USSWE;

@@ -265,7 +265,7 @@ extern "C" {
     
     static inline
     int llwu_disable( void ) {
-        volatile llwu_mask_t *mask = &llwuMask;
+        llwu_mask_t *mask = &llwuMask;
 #if defined(HAS_KINETIS_LLWU_32CH)
         if      ( mask->llwuFlag & LLWU_PF1_WUF0 ) mask->wakeupSource = 26;
         else if ( mask->llwuFlag & LLWU_PF1_WUF3 ) mask->wakeupSource = 33;
@@ -374,7 +374,7 @@ extern "C" {
      *       startup_early_hook -
      *
      *******************************************************************************/
-    void startup_early_hook( void ) __attribute__ ((weak));
+    void startup_early_hook( void ) __attribute__ ((weak, noinline));
     void startup_early_hook( void ) {
 #if defined(KINETISK)
         WDOG_STCTRLH = WDOG_STCTRLH_ALLOWUPDATE;

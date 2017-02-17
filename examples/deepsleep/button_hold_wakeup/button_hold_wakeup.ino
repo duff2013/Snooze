@@ -14,16 +14,22 @@
 
 // Load drivers
 SnoozeDigital digital;// this is the pin wakeup driver
+// configures the lc's 5v data buffer (OUTPUT, LOW) for low power
+Snoozelc5vBuffer lc5vBuffer;
 
-// use bounce for pin 2, debounce of 5ms
-Bounce button = Bounce(2, 5);
+// use bounce for pin 21, debounce of 5ms
+Bounce button = Bounce(21, 5);
 
 // install driver into SnoozeBlock
-SnoozeBlock config(digital);// digital driver is now a wakeup
+#if defined(__MK66FX1M0__) || defined(__MK64FX512__) || defined(__MK20DX256__)
+SnoozeBlock config_teensy3x(digital);
+#elif defined(__MKL26Z64__)
+SnoozeBlock config_teensyLC(digital, lc5vBuffer);
+#endif
 
 void setup() {
     // Configure pin 2 for bounce library
-    pinMode(2, INPUT_PULLUP);
+    pinMode(21, INPUT_PULLUP);
     // debug led
     pinMode(LED_BUILTIN, OUTPUT);
     while (!Serial);
@@ -31,7 +37,7 @@ void setup() {
     Serial.println("start...");
     delay(20);
     //pin, mode, type
-    digital.pinMode(2, INPUT_PULLUP, FALLING);
+    digital.pinMode(21, INPUT_PULLUP, FALLING);
 }
 
 void loop() {
@@ -41,7 +47,11 @@ SLEEP:
     button.update();
     
     // returns module that woke processor after waking from low power mode.
-    Snooze.deepSleep( config );
+#if defined(__MK66FX1M0__) || defined(__MK64FX512__) || defined(__MK20DX256__)
+    Snooze.deepSleep( config_teensy3x );
+#elif defined(__MKL26Z64__)
+    Snooze.deepSleep( config_teensyLC );
+#endif
     
     // indicate the button woke it up, hold led high for as long as the button
     // is held down.
@@ -105,4 +115,3 @@ bool threeSecondHold() {
     // button was held for 3 seconds so now we are awake
     return true;
 }
-

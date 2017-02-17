@@ -15,7 +15,8 @@ SnoozeCompare compare;
 SnoozeTimer timer;
 SnoozeTouch touch;
 SnoozeAlarm	alarm;
-
+// configures the lc's 5v data buffer (OUTPUT, LOW) for low power
+Snoozelc5vBuffer  lc5vBuffer;
 /***********************************************************
  Teensy 3.6/LC can't use Timer Driver with either Touch or
  Compare Drivers and Touch can't be used with Compare.
@@ -34,7 +35,7 @@ SnoozeBlock config_teensy35(digital, timer, compare);
 #elif defined(__MK20DX256__)
 SnoozeBlock config_teensy32(touch, digital, timer, compare);
 #elif defined(__MKL26Z64__)
-SnoozeBlock config_teensyLC(digital, timer);
+SnoozeBlock config_teensyLC(digital, timer, lc5vBuffer);
 #endif
 
 void setup() {
@@ -98,7 +99,7 @@ void loop() {
     int who;
     /********************************************************
      feed the sleep function its wakeup parameters. Then go
-     to deepSleep.
+     to hibernate.
      ********************************************************/
 #if defined(__MK66FX1M0__)
     who = Snooze.hibernate( config_teensy36 );// return module that woke processor
