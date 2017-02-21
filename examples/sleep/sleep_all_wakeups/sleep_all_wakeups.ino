@@ -1,13 +1,13 @@
 /***************************************
- * This shows all the wakeups for sleep
- * Expect IDD of  around 1.2mA (Teensy 3.x)
- * and IDD of around 900uA for (Teensy LC).
- *
- * Sleep is the most flexable and any
- * interrupt can wake the processor.
- *
- * Touch interface does not work in sleep
- * mode.
+ This shows all the wakeups for sleep
+ Expect IDD of  around 1.2mA (Teensy 3.x)
+ and IDD of around 900uA for (Teensy LC).
+ 
+ Sleep is the most flexable and any
+ interrupt can wake the processor.
+ 
+ Touch interface does not work in sleep
+ mode.
  ****************************************/
 #include <Snooze.h>
 // Load drivers
@@ -34,6 +34,8 @@ SnoozeBlock config_teensy36(digital, alarm, compare);
 SnoozeBlock config_teensy35(digital, timer, compare);
 #elif defined(__MK20DX256__)
 SnoozeBlock config_teensy32(digital, timer, compare);
+#elif defined(__MK20DX128__)
+SnoozeBlock config_teensy30(digital, timer, compare);
 #elif defined(__MKL26Z64__)
 SnoozeBlock config_teensyLC(digital, timer, lc5vBuffer);
 #endif
@@ -93,6 +95,8 @@ void loop() {
     who = Snooze.sleep( config_teensy35 );// return module that woke processor
 #elif defined(__MK20DX256__)
     who = Snooze.sleep( config_teensy32 );// return module that woke processor
+#elif defined(__MK20DX128__)
+    who = Snooze.sleep( config_teensy30 );// return module that woke processor
 #elif defined(__MKL26Z64__)
     who = Snooze.sleep( config_teensyLC );// return module that woke processor
 #endif

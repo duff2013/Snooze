@@ -1,3 +1,6 @@
+><b>Updated (2/20/17 v6.2.8)</b><br>
+* Re-added support for Teensy 3.0.<br>
+
 ><b>Updated (2/16/17 v6.2.7)</b><br>
 * Fixed sleep functions not returning right wakeup values.<br>
 * Updated examples.<br>

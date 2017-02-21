@@ -17,7 +17,7 @@
     #define TSI_PEN_LPSP(x)      (((uint32_t)(((uint32_t)(x))<<TSI_PEN_LPSP_SHIFT))&TSI_PEN_LPSP_MASK)
 #endif
 
-#if defined(__MK20DX256__)
+#if defined(__MK20DX256__) || defined(__MK20DX128__)
 static const uint8_t tsi_pins[] = {
     //0    1    2    3    4    5    6    7    8    9
     9,  10, 255, 255, 255, 255, 255, 255, 255, 255,

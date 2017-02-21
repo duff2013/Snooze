@@ -1,12 +1,12 @@
 /***************************************
- * This shows all the wakeups for hibernate
- * Expect IDD of  around 15uA (Teensy 3.x)
- * and IDD of around 6uA for (Teensy LC).
- *
- * Hibernate puts the USB regualtor into
- * a low power state which will effect
- * Teensy 3.0/3.1/LC 3.3v output or
- * anything that uses the regualtor.
+ This shows all the wakeups for hibernate
+ Expect IDD of  around 15uA (Teensy 3.x)
+ and IDD of around 6uA for (Teensy LC).
+ 
+ Hibernate puts the USB regualtor into
+ a low power state which will effect
+ Teensy 3.0/3.1/LC 3.3v output or
+ anything that uses the regualtor.
  ****************************************/
 #include <Snooze.h>
 // Load drivers
@@ -34,6 +34,8 @@ SnoozeBlock config_teensy36(touch, digital, alarm);
 SnoozeBlock config_teensy35(digital, timer, compare);
 #elif defined(__MK20DX256__)
 SnoozeBlock config_teensy32(touch, digital, timer, compare);
+#elif defined(__MK20DX128__)
+SnoozeBlock config_teensy30(touch, digital, timer, compare);
 #elif defined(__MKL26Z64__)
 SnoozeBlock config_teensyLC(digital, timer, lc5vBuffer);
 #endif
@@ -107,6 +109,8 @@ void loop() {
     who = Snooze.hibernate( config_teensy35 );// return module that woke processor
 #elif defined(__MK20DX256__)
     who = Snooze.hibernate( config_teensy32 );// return module that woke processor
+#elif defined(__MK20DX128__)
+    who = Snooze.hibernate( config_teensy30 );// return module that woke processor
 #elif defined(__MKL26Z64__)
     who = Snooze.hibernate( config_teensyLC );// return module that woke processor
 #endif

@@ -30,6 +30,8 @@ SnoozeBlock config_teensy36(touch, digital, alarm);
 SnoozeBlock config_teensy35(digital, timer, compare);
 #elif defined(__MK20DX256__)
 SnoozeBlock config_teensy32(touch, digital, timer, compare);
+#elif defined(__MK20DX128__)
+SnoozeBlock config_teensy30(touch, digital, timer, compare);
 #elif defined(__MKL26Z64__)
 SnoozeBlock config_teensyLC(digital, timer, lc5vBuffer);
 #endif
@@ -103,6 +105,8 @@ void loop() {
     who = Snooze.deepSleep( config_teensy35 );// return module that woke processor
 #elif defined(__MK20DX256__)
     who = Snooze.deepSleep( config_teensy32 );// return module that woke processor
+#elif defined(__MK20DX128__)
+    who = Snooze.deepSleep( config_teensy30 );// return module that woke processor
 #elif defined(__MKL26Z64__)
     who = Snooze.deepSleep( config_teensyLC );// return module that woke processor
 #endif
