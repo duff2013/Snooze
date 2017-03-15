@@ -20,7 +20,8 @@ time_t rtc_set_sync_provider( void ) {
 }
 
 /*******************************************************************************
- *  <#Description#>
+ *  <#Description#> Sets an alarm for a specific amount of time once the driver
+ *                  is enabled. Is dependent of when the driver is enabled.
  *
  *  @param hours   <#hours description#>
  *  @param minutes <#minutes description#>
@@ -29,6 +30,20 @@ time_t rtc_set_sync_provider( void ) {
 void SnoozeAlarm::setAlarm(  uint8_t hours, uint8_t minutes, uint8_t seconds ) {
     isUsed = true;
     alarm = hours*3600 + minutes*60 + seconds;
+    timer_ = true;
+}
+
+/*******************************************************************************
+ *  <#Description#> Override of original setAlarm function. Works more like a
+ *                  standard alarm. Is independent of when the driver is enabled.
+ *                  (So long as it is enabled before the alarmTime)
+ *
+ *  @param alarmTime <#time_t number of specific date & time to set alarm#>
+ *******************************************************************************/
+void SnoozeAlarm::setAlarm( time_t alarmTime){
+    isUsed = true;
+    alarm = alarmTime;
+    timer_ = false;
 }
 
 /*******************************************************************************
@@ -76,7 +91,10 @@ void SnoozeAlarm::enableDriver( void ) {
     }
     
     IER = RTC_IER;
-    RTC_TAR = rtc_get( ) + ( alarm - 1 );
+    if(timer_) // If setting timer style alarm
+        RTC_TAR = rtc_get( ) + ( alarm - 1 );
+    else        // else, setting true alarm
+        RTC_TAR = alarm - 1;
     RTC_IER = RTC_IER_TAIE_MASK;
 }
 
