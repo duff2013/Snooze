@@ -79,7 +79,9 @@ typedef enum {
 } SPEED;
 
 static inline CLOCK_MODE mcg_mode( void );
-
+/**
+ *  Start systick after 1 ms using lptmr
+ */
 static inline
 void start_lptmr_systick( void )
 __attribute__((always_inline, unused));
@@ -112,7 +114,9 @@ void start_lptmr_systick( void ) {
     // start low power timer, no interrupt, free running
     LPTMR0_CSR = LPTMR_CSR_TEN | LPTMR_CSR_TFC;
 }
-
+/**
+ *  Stop systick and use lptmr to keep track of time
+ */
 static inline
 void stop_lptmr_systick( uint32_t reload )
 __attribute__((always_inline, unused));
@@ -134,8 +138,9 @@ void stop_lptmr_systick( uint32_t reload ) {
     SYST_CVR = 0;
     SYST_CSR = SYST_CSR_CLKSOURCE | SYST_CSR_TICKINT | SYST_CSR_ENABLE;
 }
-
-
+/**
+ *  Transistion from clock domian pee -> blpi
+ */
 static inline
 void pee_blpi( void )
 __attribute__((always_inline, unused));
@@ -174,7 +179,7 @@ void pee_blpi( void ) {
     SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 0 ) |	 SIM_CLKDIV1_OUTDIV4( 1 );
 }
 /**
- *  <#Description#>
+ *  Transistion from clock domian blpi -> pee
  */
 static inline
 void blpi_pee( void )
@@ -308,7 +313,7 @@ void blpi_pee( void ) {
 #elif F_CPU == 24000000
     // config divisors: 24 MHz core, 24 MHz bus, 24 MHz flash
     #if defined( KINETISK )
-        SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1(4) | SIM_CLKDIV1_OUTDIV2( 4 ) | SIM_CLKDIV1_OUTDIV3( 4 ) | SIM_CLKDIV1_OUTDIV4( 4 );
+        SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 3 ) | SIM_CLKDIV1_OUTDIV2( 3 ) | SIM_CLKDIV1_OUTDIV3( 3 ) | SIM_CLKDIV1_OUTDIV4( 3 );
     #elif defined( KINETISL )
         SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 3 ) | SIM_CLKDIV1_OUTDIV4( 0 );
     #endif
@@ -318,7 +323,7 @@ void blpi_pee( void ) {
     while ( ( MCG_S & MCG_S_CLKST_MASK ) != MCG_S_CLKST( 0x03 ) ) ;
 }
 /**
- *  <#Description#>
+ *  Transistion from clock domian blpi -> blpe
  */
 static inline
 void blpi_blpe( void )
@@ -351,7 +356,7 @@ void blpi_blpe( void ) {
     SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( div ) | SIM_CLKDIV1_OUTDIV2( div ) |	 SIM_CLKDIV1_OUTDIV3( div ) |SIM_CLKDIV1_OUTDIV4( div );
 }
 /**
- *  <#Description#>
+ *  Transistion from clock domian blpe -> blpi
  */
 static inline
 void blpe_blpi( void )
@@ -379,7 +384,7 @@ void blpe_blpi( void ) {
 }
 
 /**
- *  <#Description#>
+ *  Transistion from clock domian pbe -> pee
  */
 static inline
 void pbe_pee( void )
@@ -398,9 +403,9 @@ void pbe_pee( void ) {
 }
 
 /**
- *  <#Description#>
+ *  Get current mode
  *
- *  @return <#return value description#>
+ *  @return clock mode
  */
 static inline
 CLOCK_MODE mcg_mode( void )

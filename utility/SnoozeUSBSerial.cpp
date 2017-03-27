@@ -13,7 +13,7 @@
  *  to initial state so while(!Serial) works after sleeping. Still buggy...
  *******************************************************************************/
 void SnoozeUSBSerial::disableDriver( void ) {
-#if (F_CPU > 16000000)
+#if F_CPU >= 20000000 && defined(USB_SERIAL)
     if ( mode == RUN_LP ) return;
     //usb_configuration = 0;
     usb_cdc_line_rtsdtr = 0;
@@ -33,7 +33,7 @@ void SnoozeUSBSerial::disableDriver( void ) {
  *  Turns off usb clock if using 'sleep'.
  *******************************************************************************/
 void SnoozeUSBSerial::enableDriver( void ) {
-#if (F_CPU > 16000000)
+#if F_CPU >= 20000000 && defined(USB_SERIAL)
     if ( mode == RUN_LP ) return;
     if ( mode == VLPW ) {
         USB0_USBCTRL |= USB_USBCTRL_SUSP;// suspended State

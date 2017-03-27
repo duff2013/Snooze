@@ -1,4 +1,4 @@
-, lc5vBuffer/***************************************
+/***************************************
   This shows the use of the Snooze 
   USB Serial driver when using sleep. 
   This USB Serial driver does not wake 
@@ -9,6 +9,8 @@
 // Load drivers
 SnoozeTimer     timer;
 SnoozeUSBSerial usb;
+// configures the lc's 5v data buffer (OUTPUT, LOW) for low power
+Snoozelc5vBuffer  lc5vBuffer;
 
 /***********************************************************
   Install drivers, timer to wake and USB Serial to fix 

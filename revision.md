@@ -1,3 +1,8 @@
+><b>Updated (3/27/17 v6.2.9)</b><br>
+* Fixed USB Serial driver for none USB_SERIAL type.<br>
+* Fixed return clock from sleep mode at 24MHz.<br>
+* Fixed typo in sleep_usb_serial.ino example.<br>
+
 ><b>Updated (2/20/17 v6.2.8)</b><br>
 * Re-added support for Teensy 3.0.<br>
 

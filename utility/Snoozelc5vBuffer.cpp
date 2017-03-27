@@ -18,7 +18,7 @@ void Snoozelc5vBuffer::disableDriver( void ) {
 #endif
 }
 /*******************************************************************************
- *  Turns off usb clock if using 'sleep'.
+ *  Configure pin 17 on Teensy LC for OUTPUT LOW
  *******************************************************************************/
 void Snoozelc5vBuffer::enableDriver( void ) {
 #if defined(KINETISL)
