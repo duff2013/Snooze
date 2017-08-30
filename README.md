@@ -50,7 +50,7 @@ Current Divers:
 8. spi       - Configures the spi pins for low power, does not wake the teensy up.
 
 Next we see the SnoozeBlock only has the timer and digital drivers installed. Even though the Touch driver is loaded it is not installed so it won't get called. In this example either the timer expires or the digital pin is lifted will wake the Teensy up.<br>
-```c++
+```c
 #include <Snooze.h>
 // Load drivers
 SnoozeTouch touch;
