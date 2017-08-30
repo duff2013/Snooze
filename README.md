@@ -102,25 +102,29 @@ SnoozeTimer timer;
 ```
 <br>
 3. Here we install only the Timer and Digital drivers to the SnoozeBlock.
-<br>
+
 ```
 SnoozeBlock config(timer, digital);
 ```
+
 <br>
-4. Now we configure the Drivers, typically drivers have some way of changing certain parameters.<br>
+4. Now we configure the Drivers, typically drivers have some way of changing certain parameters.
+
 ```
 timer.setTimer(5000);// milliseconds
 digital.pinMode(21, INPUT_PULLUP, RISING);//pin, mode, type
 digital.pinMode(22, INPUT_PULLUP, RISING);//pin, mode, type
 ```
 <br>
-5. Lastly we supply the SnoozeBlock to whatever sleep function you want to use from the Snooze class. We still have the same three sleep modes<br>
+5. Lastly we supply the SnoozeBlock to whatever sleep function you want to use from the Snooze class. We still have the same three sleep modes
+
 ```
 Snooze.sleep( config );
 Snooze.deepSleep( config );
 Snooze.hibernate( config );
 ```
-<br>
+
+
 ---
 Now that was easy enough lets take deeper look at the library structure.<br>
 ![alt text](https://github.com/duff2013/Snooze/blob/master/images/Snooze_Class_Layout/Slide3.png "Snooze Library Layout")
