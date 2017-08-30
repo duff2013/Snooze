@@ -5,7 +5,6 @@
  * Purpose: RTC Driver
  *
  ***********************************************************************************/
-#include "Arduino.h"
 #include "SnoozeAlarm.h"
 #include "wake.h"
 //#include "TimeLib.h"
@@ -23,13 +22,13 @@ time_t rtc_set_sync_provider( void ) {
  *  <#Description#> Sets an alarm for a specific amount of time once the driver
  *                  is enabled. Is dependent of when the driver is enabled.
  *
- *  @param hours   <#hours description#>
- *  @param minutes <#minutes description#>
- *  @param seconds <#seconds description#>
+ *  @param hours   0 - 24
+ *  @param minutes 0 - 60
+ *  @param seconds 0 - 60
  *******************************************************************************/
-void SnoozeAlarm::setAlarm(  uint8_t hours, uint8_t minutes, uint8_t seconds ) {
+void SnoozeAlarm::setRtcTimer( uint8_t hours, uint8_t minutes, uint8_t seconds ) {
     isUsed = true;
-    alarm = hours*3600 + minutes*60 + seconds;
+    alarm = ( hours * 3600 ) + ( minutes * 60 ) + seconds;
     timer_ = true;
 }
 
@@ -40,7 +39,7 @@ void SnoozeAlarm::setAlarm(  uint8_t hours, uint8_t minutes, uint8_t seconds ) {
  *
  *  @param alarmTime <#time_t number of specific date & time to set alarm#>
  *******************************************************************************/
-void SnoozeAlarm::setAlarm( time_t alarmTime){
+void SnoozeAlarm::setAlarm( time_t alarmTime ){
     isUsed = true;
     alarm = alarmTime;
     timer_ = false;
@@ -91,7 +90,7 @@ void SnoozeAlarm::enableDriver( void ) {
     }
     
     IER = RTC_IER;
-    if(timer_) // If setting timer style alarm
+    if( timer_ ) // If setting timer style alarm
         RTC_TAR = rtc_get( ) + ( alarm - 1 );
     else        // else, setting true alarm
         RTC_TAR = alarm - 1;

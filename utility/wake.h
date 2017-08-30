@@ -136,6 +136,9 @@ extern "C" {
         else if ( pin == 26 ) mask->PE1 |= LLWU_PE1_WUPE0 ( detect_type );
         else if ( pin == 30 ) mask->PE3 |= LLWU_PE3_WUPE11( detect_type );
         else if ( pin == 33 ) mask->PE1 |= LLWU_PE1_WUPE3 ( detect_type );
+        else if ( pin == 59 ) mask->PE1 |= LLWU_PE1_WUPE0( detect_type );
+        else if ( pin == 60 ) mask->PE1 |= LLWU_PE1_WUPE1( detect_type );
+        else if ( pin == 62 ) mask->PE1 |= LLWU_PE1_WUPE2( detect_type );
     }
     /*******************************************************************************
      *
@@ -158,8 +161,6 @@ extern "C" {
 #ifdef KINETISK
         else if( module & LLWU_CMP2_MOD )  mask->ME |= LLWU_ME_WUME3;
 #endif
-        //Serial.printf("mask->ME: %X\n", mask->ME);
-        
     }
     /*******************************************************************************
      *
@@ -220,8 +221,6 @@ extern "C" {
         LLWU_PE8 = mask->PE8;
 #endif
         LLWU_ME  = mask->ME;
-        //Serial.printf("LLWU: %X | mask->ME: %X\n", LLWU_ME, mask->ME);
-        //delay(1000);
     }
     /*******************************************************************************
      *
@@ -236,7 +235,7 @@ extern "C" {
     uint32_t llwu_clear_flags( void ) {
         
 #if defined(HAS_KINETIS_LLWU_32CH)
-        uint32_t flag = ( LLWU_PF1 | LLWU_PF2<<8 | LLWU_PF3<<16 | LLWU_MF5<<24 );
+        uint32_t flag = ( LLWU_PF1 | LLWU_PF2 << 8 | LLWU_PF3 << 16 | LLWU_MF5 << 24 );
         LLWU_PF1 = 0xFF;
         LLWU_PF2 = 0xFF;
         LLWU_PF3 = 0xFF;
@@ -245,7 +244,7 @@ extern "C" {
         LLWU_FILT1 = 0x80;
         LLWU_FILT2 = 0x80;
 #elif defined(HAS_KINETIS_LLWU_16CH)
-        uint32_t flag = ( LLWU_F1 | LLWU_F2<<8 | LLWU_F3<<16 );
+        uint32_t flag = ( LLWU_F1 | LLWU_F2 << 8 | LLWU_F3 << 16 );
         LLWU_F1 = 0xFF;
         LLWU_F2 = 0xFF;
         LLWU_F3 = 0xFF;
@@ -274,6 +273,10 @@ extern "C" {
         else if ( mask->llwuFlag & LLWU_PF1_WUF6 ) mask->wakeupSource = 22;
         else if ( mask->llwuFlag & LLWU_PF1_WUF7 ) mask->wakeupSource = 9;
         
+        else if ( mask->llwuFlag & LLWU_PF1_WUF0 ) mask->wakeupSource = 59;
+        else if ( mask->llwuFlag & LLWU_PF1_WUF1 ) mask->wakeupSource = 60;
+        else if ( mask->llwuFlag & LLWU_PF1_WUF2 ) mask->wakeupSource = 62;
+        
         else if ( ( mask->llwuFlag>>8 ) & LLWU_PF2_WUF8  ) mask->wakeupSource = 10;
         else if ( ( mask->llwuFlag>>8 ) & LLWU_PF2_WUF9  ) mask->wakeupSource = 13;
         else if ( ( mask->llwuFlag>>8 ) & LLWU_PF2_WUF10 ) mask->wakeupSource = 11;
@@ -283,10 +286,14 @@ extern "C" {
         else if ( ( mask->llwuFlag>>8 ) & LLWU_PF2_WUF14 ) mask->wakeupSource = 6;
         else if ( ( mask->llwuFlag>>8 ) & LLWU_PF2_WUF15 ) mask->wakeupSource = 21;
         
+        else if ( ( mask->llwuFlag>>8 ) & LLWU_PF2_WUF15 ) mask->wakeupSource = 21;
+        else if ( ( mask->llwuFlag>>8 ) & LLWU_PF2_WUF15 ) mask->wakeupSource = 21;
+        
         else if ( ( mask->llwuFlag>>24 ) & LLWU_ME_WUME0 ) mask->wakeupSource = 36;
         else if ( ( mask->llwuFlag>>24 ) & LLWU_ME_WUME1 ) mask->wakeupSource = 34;
         else if ( ( mask->llwuFlag>>24 ) & LLWU_ME_WUME4 ) mask->wakeupSource = 37;
         else if ( ( mask->llwuFlag>>24 ) & LLWU_ME_WUME5 ) mask->wakeupSource = 35;
+        
 #elif defined(HAS_KINETIS_LLWU_16CH)
         if      ( mask->llwuFlag & LLWU_F1_WUF0 ) mask->wakeupSource = 26;
         else if ( mask->llwuFlag & LLWU_F1_WUF3 ) mask->wakeupSource = 33;
@@ -308,10 +315,11 @@ extern "C" {
         else if ( ( mask->llwuFlag>>16 ) & LLWU_F3_MWUF1 ) mask->wakeupSource = 34;
         else if ( ( mask->llwuFlag>>16 ) & LLWU_F3_MWUF4 ) mask->wakeupSource = 37;
     #ifdef KINETISK
+        else if ( ( mask->llwuFlag>>16 ) & LLWU_F3_MWUF3 ) mask->wakeupSource = 34;
+        else if ( ( mask->llwuFlag>>16 ) & LLWU_F3_MWUF2 ) mask->wakeupSource = 34;
         else if ( ( mask->llwuFlag>>16 ) & LLWU_F3_MWUF5 ) mask->wakeupSource = 35;
     #endif
 #endif
-        
         LLWU_PE1 = 0;
         LLWU_PE2 = 0;
         LLWU_PE3 = 0;
@@ -322,6 +330,18 @@ extern "C" {
         LLWU_PE7 = 0;
         LLWU_PE8 = 0;
 #endif
+        mask->PE1 = 0;
+        mask->PE2 = 0;
+        mask->PE3 = 0;
+        mask->PE4 = 0;
+#if defined(HAS_KINETIS_LLWU_32CH)
+        mask->PE5 = 0;
+        mask->PE6 = 0;
+        mask->PE7 = 0;
+        mask->PE8 = 0;
+#endif
+        LLWU_ME  = mask->ME;
+        mask->ME = 0;
         mask->llwuFlag = 0;
         return mask->wakeupSource;
     }

@@ -57,7 +57,13 @@ private:
     uint32_t CSR;
     bool SIM_SCGC5_clock_active;
 #endif
-    volatile uint32_t return_core_pin_config[2];
+    volatile uint32_t return_core_pin_config[3];
+    static volatile uint8_t *cmpx_cr0;//CMP0_CR0;
+    static volatile uint8_t *cmpx_cr1;//CMP0_CR1;
+    static volatile uint8_t *cmpx_scr;//CMP0_SCR;
+    static volatile uint8_t *cmpx_fpr;//CMP0_FPR;
+    static volatile uint8_t *cmpx_muxcr;//CMP0_MUXCR;
+    static volatile uint8_t *cmpx_daccr;//CMP0_DACCR;
 public:
     SnoozeCompare( void ) {
 #if defined(__MKL26Z64__) || defined(__MK66FX1M0__)

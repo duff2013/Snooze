@@ -31,7 +31,6 @@
 #define Snooze_h
 
 /***************************************************************************/
-#include "Arduino.h"
 #include "SnoozeBlock.h"
 #include "utility/SnoozeTimer.h"
 #include "utility/SnoozeAlarm.h"
@@ -41,12 +40,13 @@
 #include "utility/SnoozeAudio.h"
 #include "utility/SnoozeUSBSerial.h"
 #include "utility/Snoozelc5vBuffer.h"
+#include "utility/SnoozeSPI.h"
 /***************************************************************************/
 class SnoozeClass {
 private:
     static volatile uint32_t PCR3;
 public:
-    SnoozeClass( void );
+    constexpr SnoozeClass( void );// {}
     static void idle ( SNOOZE_BLOCK );
     static int source( SNOOZE_BLOCK );
     /* sleep functions */

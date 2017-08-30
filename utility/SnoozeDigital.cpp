@@ -5,7 +5,6 @@
  * Purpose: Digital Pin Driver
  *
  ***********************************************************************************/
-#include "Arduino.h"
 #include "SnoozeDigital.h"
 #include "wake.h"
 
@@ -121,10 +120,10 @@ void SnoozeDigital::enableDriver( void ) {
         if ( pin_mode == INPUT || pin_mode == INPUT_PULLUP  || pin_mode == INPUT_PULLDOWN ) {
             *portModeRegister( pinNumber ) = 0;
             *config = PORT_PCR_MUX( 1 );
-            if ( pin_mode == INPUT_PULLUP ) *config = PORT_PCR_MUX( 1 ) | PORT_PCR_PE | PORT_PCR_PS;// pullup
+            if ( pin_mode == INPUT_PULLUP ) *config |= PORT_PCR_PE | PORT_PCR_PS;// pullup
             else if ( pin_mode == INPUT_PULLDOWN ) {
-                *config |= (PORT_PCR_PE); // pulldown
-                *config &= ~(PORT_PCR_PS);
+                *config |= ( PORT_PCR_PE ); // pulldown
+                *config &= ~( PORT_PCR_PS );
             }
             if ( mode == VLPW || mode == VLPS ) {
                 attachDigitalInterrupt( pinNumber, pin_type );// set pin interrupt
@@ -183,8 +182,8 @@ void SnoozeDigital::enableDriver( void ) {
             *config = PORT_PCR_MUX( 1 );
             if ( pin_mode == INPUT_PULLUP ) *config = PORT_PCR_MUX( 1 ) | PORT_PCR_PE | PORT_PCR_PS;// pullup
             else if ( pin_mode == INPUT_PULLDOWN ) {
-                *config |= (PORT_PCR_PE); // pulldown
-                *config &= ~(PORT_PCR_PS);
+                *config |= ( PORT_PCR_PE ); // pulldown
+                *config &= ~( PORT_PCR_PS );
             }
             if ( mode == VLPW || mode == VLPS ) {
                 attachDigitalInterrupt( pinNumber, pin_type );// set pin interrupt
@@ -291,7 +290,8 @@ void SnoozeDigital::isr( void ) {
     PORTC_ISFR = isfr_c;
     PORTD_ISFR = isfr_d;
     
-    if ( mode == LLS || mode == VLLS3 ) return;// return if using deepSleep or hibernate
+    if ( mode == LLS || mode == VLLS3 || mode == VLLS2 || mode == VLLS1 ) return;// return if using deepSleep or hibernate
+    
 #if defined(KINETISK)
     uint64_t _pin = isr_pin;
     while ( __builtin_popcountll( _pin ) ) {

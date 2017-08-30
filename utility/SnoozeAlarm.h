@@ -53,7 +53,7 @@ public:
     {
         isDriver = true;
     }
-    void setAlarm( uint8_t hours, uint8_t minutes, uint8_t seconds );
-    void setAlarm( time_t alarmTime);
+    void setRtcTimer( uint8_t hours, uint8_t minutes, uint8_t seconds );
+    void setAlarm( time_t alarmTime );
 };
 #endif /* defined(SnoozeAlarm_h) */

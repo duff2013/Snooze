@@ -57,7 +57,7 @@ void loop() {
   who = Snooze.sleep( config_teensyLC );// return module that woke processor
 #endif
   // wait for serial monitor
-  while (!Serial) {
+  while (!Serial && time < 1000) {
     Serial.write(0x00);// print out a bunch of NULLS to serial monitor
     digitalWriteFast(LED_BUILTIN, HIGH);
     delay(30);

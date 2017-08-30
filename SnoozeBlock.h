@@ -113,12 +113,14 @@ protected:
      *  Fired after waking from LLS-VLLS sleep modes
      ***********************************************************************************/
     static void wakeupIsr( void ) {
+        
         llwuMask.llwuFlag = llwu_clear_flags( );
         pbe_pee( );
         SnoozeBlock *p = SnoozeBlock::root_block[current_block];
         for ( ; p; p = p->next_block[current_block] ) {
             p->clearIsrFlags( );
         }
+        
     }
     
     static SnoozeBlock *root_block[8];
@@ -126,34 +128,40 @@ protected:
     static uint8_t current_block;
 public:
     /***********************************************************************************
-     *  Constructor - This connects drivers to this SnoozeBlock
+     *  Constructor - Recursively connects drivers to this SnoozeBlock using a linked list
      *
      *  @param head Driver
      *  @param tail Driver
      *
-     *  @return this
+     *  @return nothing
      ***********************************************************************************/
     template<class ...Tail>
     SnoozeBlock ( SnoozeBlock &head, Tail&... tail )  : local_block( -1 ), isUsed( false ), isDriver( false ) {
         
         if ( mode < VLLS3 ) mode = RUN;
-        
+        // number of drivers connected to this Snooze Block
         int i = sizeof...( tail );
-        
+        // check for duplicate Drivers
         SnoozeBlock *p = SnoozeBlock::root_block[global_block_count];
         for ( ; p; p = p->next_block[global_block_count] ) {
             if ( p == &head ) {
+                // last driver that is a duplicate, increment global block count
                 if ( i <= 0 ) {
                     global_block_count++;
                     return;
                 }
+                // get next driver
                 SnoozeBlock( tail... );
                 return;
             }
         }
-        
+        // update linked list
+        // set the root block
         if ( root_block[global_block_count] == NULL ) {
+            // update registers on first driver installed only once
             if ( global_block_count == 0 ) {
+                SIM_SOPT1CFG |= SIM_SOPT1CFG_USSWE;
+                SIM_SOPT1 &= ~SIM_SOPT1_USBSSTBY;
                 attachInterruptVector( IRQ_LLWU, wakeupIsr );
                 NVIC_ENABLE_IRQ( IRQ_LLWU );
             }
@@ -168,11 +176,11 @@ public:
         next_block[global_block_count] = NULL;
         local_block = global_block_count;
         
-        
         if ( i <= 0 ) {
             global_block_count++;
             return;
         }
+        // get next driver
         SnoozeBlock( tail... );
     }
     
@@ -190,12 +198,11 @@ public:
     }
     
     /***********************************************************************************
-     *  Deconstructor - Deallocate this SnoozeBlock
+     *  Deconstructor - Deallocate "this" SnoozeBlock
      ***********************************************************************************/
     ~SnoozeBlock ( void ) {
 
         if ( local_block == -1 ) return;
-        
         if ( root_class_address[local_block] == this ) {
             SnoozeBlock *u;
             SnoozeBlock *p = SnoozeBlock::root_block[local_block];
@@ -372,7 +379,7 @@ public:
     }
     
     /***********************************************************************************
-     *  call drivers clear isr flags functions
+     *  drivers override this function to clear isr flags, gets called in wakeup isr
      ***********************************************************************************/
     virtual void clearIsrFlags ( void ) {
     

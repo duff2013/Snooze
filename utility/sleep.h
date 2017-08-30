@@ -35,7 +35,6 @@
 extern "C" {
 #endif
     static inline void stop( void );
-    //static inline void wait( void );
     /*******************************************************************************
      * WAIT mode entry routine. Puts the processor into wait mode.
      * In this mode the core clock is disabled (no code executing), but
@@ -63,14 +62,7 @@ extern "C" {
      *          mode, they will not be able to generate interrupts to wake up
      *          the core.
      *******************************************************************************/
-    static inline
-    void enter_wait( void )
-    __attribute__((always_inline, unused));
-    
-    static inline
-    void enter_wait( void ) {
-        //wait( );
-    }
+    // see vlpw()
     
     /*******************************************************************************
      * STOP mode entry routine. Puts the processor into normal stop mode.
@@ -217,13 +209,15 @@ extern "C" {
     void vlps( void ) {
 #if defined(__MK66FX1M0__)
     #if F_CPU > 120000000
-        SMC_PMCTRL = SMC_PMCTRL_RUNM( 0x03 ) | SMC_PMCTRL_STOPM( 0x03 );
+        kinetis_hsrun_disable( );
+        SMC_PMCTRL = SMC_PMCTRL_RUNM( 0x02 ) | SMC_PMCTRL_STOPM( 0x02 );
+        ( void ) SMC_PMCTRL;
     #else
-        SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x03 ) ;
+        SMC_PMCTRL = SMC_PMCTRL_RUNM( 0x02 ) | SMC_PMCTRL_STOPM( 0x02 );
         ( void ) SMC_PMCTRL;
     #endif
 #else
-        SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x03 ) ;
+        SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x02 ) ;
         ( void ) SMC_PMCTRL;
 #endif
         // Now execute the stop instruction to go into VLPS
@@ -255,8 +249,10 @@ extern "C" {
 #if defined(__MK66FX1M0__)
     #if F_CPU > 120000000
         kinetis_hsrun_disable( );
+        
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x03 );
         ( void ) SMC_PMCTRL;
+        //SMC_STOPCTRL = 0x02;
     #else
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x03 ) ;
         ( void ) SMC_PMCTRL;
@@ -268,7 +264,9 @@ extern "C" {
         // Now execute the stop instruction to go into LLS
         stop( );
 #if defined(__MK66FX1M0__)
+    #if F_CPU > 120000000
         kinetis_hsrun_enable( );
+    #endif
 #endif
     }
     
@@ -312,7 +310,9 @@ extern "C" {
         // Now execute the stop instruction to go into VLLS3
         stop( );
 #if defined(__MK66FX1M0__)
+    #if F_CPU > 120000000
         kinetis_hsrun_enable( );
+    #endif
 #endif
     }
     
@@ -351,12 +351,14 @@ extern "C" {
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x04 ) ;
         ( void ) SMC_PMCTRL;
 #endif
-        SMC_VLLSCTRL =  SMC_VLLSCTRL_VLLSM( 0x02 );// set VLLSM = 0b11
+        SMC_VLLSCTRL =  SMC_VLLSCTRL_VLLSM( 0x02 );// set VLLSM = 0b10
         ( void ) SMC_VLLSCTRL;
         // Now execute the stop instruction to go into VLLS2
         stop( );
 #if defined(__MK66FX1M0__)
+    #if F_CPU > 120000000
         kinetis_hsrun_enable( );
+    #endif
 #endif
     }
     
@@ -395,12 +397,14 @@ extern "C" {
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x04 ) ;
         ( void ) SMC_PMCTRL;
 #endif
-        SMC_VLLSCTRL =  SMC_VLLSCTRL_VLLSM( 0x01 );// set VLLSM = 0b11
+        SMC_VLLSCTRL =  SMC_VLLSCTRL_VLLSM( 0x01 );// set VLLSM = 0b01
         ( void ) SMC_VLLSCTRL;
         // Now execute the stop instruction to go into VLLS1
         stop( );
 #if defined(__MK66FX1M0__)
+    #if F_CPU > 120000000
         kinetis_hsrun_enable( );
+    #endif
 #endif
     }
     
@@ -437,11 +441,13 @@ extern "C" {
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x04 ) ;
         ( void ) SMC_PMCTRL;
 #endif
-        SMC_VLLSCTRL =  SMC_VLLSCTRL_VLLSM( 0x00 );// set VLLSM = 0b11
+        SMC_VLLSCTRL =  SMC_VLLSCTRL_VLLSM( 0x00 );// set VLLSM = 0b00
         ( void ) SMC_VLLSCTRL;
         // Now execute the stop instruction to go into VLLS0
 #if defined(__MK66FX1M0__)
+    #if F_CPU > 120000000
         kinetis_hsrun_enable( );
+    #endif
 #endif
     }
     
@@ -479,9 +485,9 @@ extern "C" {
         SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x03 ) ;
         ( void ) SMC_PMCTRL;
 #endif
-        SMC_VLLSCTRL =  SMC_VLLSCTRL_VLLSM( 0x00 );// set VLLSM = 0b11
+        SMC_VLLSCTRL =  SMC_VLLSCTRL_VLLSM( 0x00 );// set VLLSM = 0b00
         ( void ) SMC_VLLSCTRL;
-        // Now execute the stop instruction to go into VLLS1
+        // Now execute the stop instruction to go into VLLS0
 #if defined(__MK66FX1M0__)
         kinetis_hsrun_enable( );
 #endif
@@ -536,11 +542,22 @@ extern "C" {
     
     static inline
     void stop( void ) {
-        SYST_CSR &= ~SYST_CSR_TICKINT;      // disable systick timer interrupt
-        SCB_SCR = SCB_SCR_SLEEPDEEP;  // Set the SLEEPDEEP bit to enable deep sleep mode (STOP)
-        ATOMIC_BLOCK( ATOMIC_RESTORESTATE ) { asm volatile( "wfi" ); } // WFI instruction will start entry into STOP mode
-        SCB_SCR = 0; // Clear the SLEEPDEEP bit
-        SYST_CSR |= SYST_CSR_TICKINT;       // renable systick timer interrupt
+        // disable systick timer interrupt
+        SYST_CSR &= ~SYST_CSR_TICKINT;
+        // Set the SLEEPDEEP bit to enable deep sleep mode (STOP)
+        SCB_SCR = SCB_SCR_SLEEPDEEP;
+        // WFI instruction will start entry into STOP mode
+        ATOMIC_BLOCK( ATOMIC_RESTORESTATE ) { asm volatile( "wfi" ); }
+        
+        /*if (SMC_PMCTRL & SMC_PMCTRL_STOPA) {
+            digitalWrite(LED_BUILTIN, HIGH);
+            while(1);
+        }*/
+        
+        // Clear the SLEEPDEEP bit
+        SCB_SCR = 0;
+        // renable systick timer interrupt
+        SYST_CSR |= SYST_CSR_TICKINT;
     }
     
     /*******************************************************************************
@@ -553,10 +570,12 @@ extern "C" {
     
     static inline
     void vlpw( void ) {
-        SYST_CSR &= ~SYST_CSR_TICKINT;      // disable systick timer interrupt
-        //SCB_SCR = SCB_SCR_SLEEPONEXIT; // Clear the SLEEPDEEP bit to make sure we go into WAIT (sleep) mode instead of deep sleep.
-        ATOMIC_BLOCK( ATOMIC_RESTORESTATE ) { asm volatile( "wfi" ); }// WFI instruction will start entry into WAIT mode
-        SYST_CSR |= SYST_CSR_TICKINT;       // renable systick timer interrupt
+        // disable systick timer interrupt
+        SYST_CSR &= ~SYST_CSR_TICKINT;
+        // WFI instruction will start entry into WAIT mode
+        ATOMIC_BLOCK( ATOMIC_RESTORESTATE ) { asm volatile( "wfi" ); }
+        // renable systick timer interrupt
+        SYST_CSR |= SYST_CSR_TICKINT;
     }
     /*******************************************************************************
      * Configures the ARM system control register for WAIT (sleep) mode
@@ -568,8 +587,10 @@ extern "C" {
     
     static inline
     void wait( void ) {
-        SCB_SCR = 0; // Clear the SLEEPDEEP bit to make sure we go into WAIT (sleep) mode instead of deep sleep.
-        ATOMIC_BLOCK( ATOMIC_RESTORESTATE ) { asm volatile( "wfi" ); }// WFI instruction will start entry into WAIT mode
+        // Clear the SLEEPDEEP bit to make sure we go into WAIT (sleep) mode instead of deep sleep.
+        SCB_SCR = 0;
+        // WFI instruction will start entry into WAIT mode
+        ATOMIC_BLOCK( ATOMIC_RESTORESTATE ) { asm volatile( "wfi" ); }
     }
     
 #ifdef __cplusplus

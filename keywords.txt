@@ -18,14 +18,17 @@ SnoozeAlarm	KEYWORD2
 SnoozeAudio	KEYWORD2
 SnoozeUSBSerial	KEYWORD2
 Snoozelc5vBuffer	KEYWORD2
+SnoozeSPI	KEYWORD2
 idle	KEYWORD2
 sleep	KEYWORD2
 deepSleep	KEYWORD2
 hibernate	KEYWORD2
 setAlarm	KEYWORD2
+setRtcTimer	KEYWORD2
 setTimer	KEYWORD2
 setPeripheral	KEYWORD2
 source	KEYWORD2
+spiClockPin	KEYWORD2
 #######################################
 # Instances (KEYWORD2)
 #######################################

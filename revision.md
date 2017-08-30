@@ -1,3 +1,12 @@
+><b>Updated (8/30/17 v6.3.0)</b><br>
+* Fixed examples "compare driver", thanks Erik-k -> https://github.com/Erik-k.<br>
+* Audio Driver for ADC, DAC, STGL5000.<br>
+* add SPI Driver.<br>
+* added clock transistion -> pee_bple and blpe_pee.<br>
+* fixed VLLS3-1, was only using VLLS3.<br>
+* alarm driver function name change.<br>
+* fixed actual Compare Driver, added pins 9 and 4, pin 12 is not a valid pin.<br>
+
 ><b>Updated (3/27/17 v6.2.9)</b><br>
 * Fixed USB Serial driver for none USB_SERIAL type.<br>
 * Fixed return clock from sleep mode at 24MHz.<br>

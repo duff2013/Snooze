@@ -60,7 +60,8 @@ void setup() {
      
      Set RTC alarm wake up in (hours, minutes, seconds).
      ********************************************************/
-    alarm.setAlarm(0, 0, 10);// hour, min, sec
+    alarm.setRtcTimer(0, 0, 10);// hour, min, sec
+    
     /********************************************************
      Set Low Power Timer wake up in milliseconds.
      ********************************************************/
@@ -78,9 +79,9 @@ void setup() {
      Compare pins: 11,12
      ********************************************************/
     // trigger at threshold values greater than 1.65v
-    //config.pinMode(11, CMP, HIGH, 1.65);//pin, mode, type, threshold(v)
+    //compare.pinMode(11, HIGH, 1.65);//pin, type, threshold(v)
     // trigger at threshold values less than 1.65v
-    compare.pinMode(11, LOW, 1.65);//pin, mode, type, threshold(v)
+    compare.pinMode(11, LOW, 1.65);//pin, type, threshold(v)
 }
 
 void loop() {

@@ -37,10 +37,10 @@ volatile uint32_t SnoozeClass::PCR3 = 0;
 /**
  *  SnoozeClass Constructor
  */
-SnoozeClass::SnoozeClass( void ) {
-    SIM_SOPT1CFG |= SIM_SOPT1CFG_USSWE;
-    SIM_SOPT1 &= ~SIM_SOPT1_USBSSTBY;
-}
+/*SnoozeClass::SnoozeClass( void ) {
+    //SIM_SOPT1CFG |= SIM_SOPT1CFG_USSWE;
+    //SIM_SOPT1 &= ~SIM_SOPT1_USBSSTBY;
+}*/
 /*******************************************************************************
  *  source - returns the wakeup source.
  *
@@ -73,10 +73,12 @@ int SnoozeClass::sleep( SNOOZE_BLOCK ) {
     //p->mode = VLPS;
     p->enableDriver( );
     pee_blpi( );
+    //pee_blpe( );
     enter_vlpr( );
     //vlps( );
     vlpw( );
     exit_vlpr( );
+    //blpe_pee();
     blpi_pee( );
     p->disableDriver( );
     p->mode = RUN;
@@ -122,6 +124,7 @@ int SnoozeClass::deepSleep( SNOOZE_BLOCK, SLEEP_MODE mode ) {
     p->disableDriver( );
     p->mode = RUN;
     return p->source;
+    
 }
 /*******************************************************************************
  *  hibernate - LLWU is used to handle interrupts that wake. USB regulator is 

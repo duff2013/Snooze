@@ -60,7 +60,7 @@ void setup() {
      
      Set RTC alarm wake up in (hours, minutes, seconds).
      ********************************************************/
-    alarm.setAlarm(0, 0, 10);// hour, min, sec
+    alarm.setRtcTimer(0, 0, 10);// hour, min, sec
     
     /********************************************************
      Set Low Power Timer wake up in milliseconds.
@@ -68,20 +68,26 @@ void setup() {
     timer.setTimer(5000);// milliseconds
     
     /********************************************************
-     Values greater or less than threshold will trigger CMP
-     wakeup. Threshold value is in volts (0-3.3v) using a 64
-     tap resistor ladder network at 0.0515625v per tap.
+     In hibernate the Compare module works by setting the
+     internal 6 bit DAC to a volatge threshold and monitors
+     the pin volatge for a voltage crossing. The internal
+     DAC uses a 64 tap resistor ladder network supplied by
+     VOUT33 at 0.0515625v per tap (VOUT33/64). Thus the
+     possible threshold voltages are 0.0515625*(0-64).
      
-     parameter "type": LOW & FALLING are the same.
-     parameter "type": HIGH & RISING are the same.
+     parameter "type": LOW & FALLING are the same and have no effect.
+     parameter "type": HIGH & RISING are the same and have no effect.
      
-     Teensy 3.x/LC
-     Compare pins: 11,12
+     Teensy 3.x
+     Compare pins: 11,9,4
+     
+     Teensy LC
+     Compare pins: 11
      ********************************************************/
     // trigger at threshold values greater than 1.65v
-    //config.pinMode(11, CMP, HIGH, 1.65);//pin, mode, type, threshold(v)
+    //compare.pinMode(11, HIGH, 1.65);//pin, type, threshold(v)
     // trigger at threshold values less than 1.65v
-    compare.pinMode(11, LOW, 1.65);//pin, mode, type, threshold(v)
+    compare.pinMode(11, LOW, 1.65);//pin, type, threshold(v)
     
     /********************************************************
      Values greater than threshold will trigger TSI wakeup.

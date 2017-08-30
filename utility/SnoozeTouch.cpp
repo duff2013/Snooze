@@ -5,7 +5,6 @@
  * Purpose: Touch (TSI) Driver
  *
  ***********************************************************************************/
-#include "Arduino.h"
 #include "SnoozeTouch.h"
 #include "wake.h"
 

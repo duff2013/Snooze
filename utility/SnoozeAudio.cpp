@@ -5,21 +5,37 @@
  * Purpose: Audio Driver
  *
  ***********************************************************************************/
-#include "Arduino.h"
 #include "SnoozeAudio.h"
+#include "Wire.h"
 /***********************************************************************************/
 #define PDB_CONFIG (PDB_SC_TRGSEL( 15 ) | PDB_SC_PDBEN | PDB_SC_CONT | PDB_SC_PDBIE | PDB_SC_DMAEN)
 /*******************************************************************************
- *  disable PDB0
+ *  disable audio features
  *******************************************************************************/
 void SnoozeAudio::disableDriver( void ) {
-    PDB0_SC = 0;
+    if ( audioADC || audioDAC ) {
+        PDB0_SC = 0;
+    }
 }
 
 /*******************************************************************************
- *  enable PDB0
+ *  enable audio features
  *******************************************************************************/
 void SnoozeAudio::enableDriver( void ) {
-    PDB0_SC = PDB_CONFIG | PDB_SC_LDOK;
-    PDB0_SC = PDB_CONFIG | PDB_SC_SWTRIG;
+    if ( audioADC || audioDAC ) {
+        PDB0_SC = PDB_CONFIG | PDB_SC_LDOK;
+        PDB0_SC = PDB_CONFIG | PDB_SC_SWTRIG;
+    }
+}
+/*******************************************************************************
+ *  adc uses pdb
+ *******************************************************************************/
+void SnoozeAudio::usingADC( uint8_t ADC_pin ) {
+    audioADC = true;
+}
+/*******************************************************************************
+ *  dac uses pdb
+ *******************************************************************************/
+void SnoozeAudio::usingDAC( uint8_t DAC_pin ) {
+    audioDAC = true;
 }

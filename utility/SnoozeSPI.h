@@ -1,5 +1,5 @@
 /***********************************************************************************
- * Low Power Library for Teensy 3.x
+ * Low Power Library for Teensy LC/3.x
  * Copyright (c) 2016, Colin Duffy https://github.com/duff2013
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,39 +20,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  ************************************************************************************
- *  SnoozeAudio.h
- *  Teensy 3.x
+ *  SnoozeSPI.h
+ *  Teensy 3.x/LC
  *
- * Purpose: Teensy 3.x Audio Library Driver Snooze compatibility
+ * Purpose: Low Power USB Serial Driver
  *
  ***********************************************************************************/
-#ifndef SnoozeAudio_h
-#define SnoozeAudio_h
+#ifndef SnoozeSPI_h
+#define SnoozeSPI_h
 
-#include "Arduino.h"
 #include "SnoozeBlock.h"
 
-/*
- #define CORE_PIN58_CONFIG	PORTE_PCR0
- #define CORE_PIN59_CONFIG	PORTE_PCR1
- #define CORE_PIN60_CONFIG	PORTE_PCR2
- #define CORE_PIN61_CONFIG	PORTE_PCR3
- #define CORE_PIN62_CONFIG	PORTE_PCR4
- #define CORE_PIN63_CONFIG	PORTE_PCR5
- */
+#define BUILTIN_SD_CLK_PIN 254
 
-class SnoozeAudio : public SnoozeBlock {
-private:
-    virtual void disableDriver( void );
+class SnoozeSPI : public SnoozeBlock {
+    private:
     virtual void enableDriver( void );
-    bool audioADC;
-    bool audioDAC;
-public:
-    SnoozeAudio( void ) : audioADC( false ), audioDAC( false )
-    {
+    virtual void disableDriver( void );
+    virtual void clearIsrFlags( void ) {}
+    static void isr( void ) {}
+    volatile uint32_t return_core_pin_config;
+    public:
+    SnoozeSPI( void ) {
         isDriver = true;
+        isUsed = true;
     }
-    void usingADC( uint8_t ADC_pin );
-    void usingDAC( uint8_t DAC_pin );
+    uint32_t clk_pin;
+    void spiClockPin( uint8_t pin );
 };
-#endif /* defined(SnoozeAudio_h) */
+#endif /* defined(SnoozeSPI_h) */

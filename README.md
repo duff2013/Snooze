@@ -1,25 +1,45 @@
-# Snooze v6.2.9
+# Snooze v6.3.0
 
 ---
-For those using v5 of Snooze the reason for the change is that new Teensy's are in the pipeline and updating this fairly extensive library became to difficult because each new processor introduced has its own set of Low Power functionality. Now the library is divided into three classes:<br>
-![alt text](https://github.com/duff2013/Snooze/blob/master/images/Snooze_Class_Layout/Slide1.png "Snooze Class Layout")<br>
-As you can see the Drivers are now separated from the SnoozeBlock Class. Before these drivers where part of the SnoozeBlock which made it difficult to add new functionalities. Each Teensy can now have driver classes designed specifically for them. Users can install their own drivers also if they wish also, see the skeltonClass example. Snooze uses something similar to the Audio library's conventions for adding drivers. As an added benefit, only the drivers that are installed are called, before all drivers where called just not used if not configured, this should add some performance benefits.
-
-Here are some new features and enhancments over Version 5:
-* Three teir class structure now means easier and faster debug and development of Snooze.
-* All core drivers save and restore all relevent registers and such before/after sleeping. So things like HardwareSerial will just work if using one of its pins as a digital wakeup event. 
-* Millis is updated when using Timer driver wakeup. Might implement this for other wakeup drivers also.
-* Audio library plays nice with Snooze now by using the SnoozeAudio core driver.
-* REDUCED_CPU_BLOCK does not mess up the millis anymore.
-* Add and subtract drivers from SnoozeBlock(s), now you can get creative with SnoozeBlocks!
-* USB Serial works better in low power opteration.
-* Audio library works with sleeping.
-
+Low power library for the Teensy LC/3.2/3.5/3.6 class microcontrollers.
 ---
-Here is a basic example of the new api. As you can see we load three of Core Driver Classes - touch, digital, timer.<br>
-What are the Core Drivers?<br>
-Core Drivers configure wakeup events or configure a module to work while in low power mode. Drivers are further explained later.<br>
+Example usage:
+```
+#include <Snooze.h>
+// Load drivers
+SnoozeDigital digital;
 
+// install drivers to a SnoozeBlock
+SnoozeBlock config(digital);
+void setup() {
+pinMode(LED_BUILTIN, OUTPUT);
+/********************************************************
+Define digital pins for waking the teensy up. This
+combines pinMode and attachInterrupt in one function.
+
+Teensy 3.x
+Digital pins: 2,4,6,7,9,10,11,13,16,21,22,26,30,33
+
+Teensy LC
+Digital pins: 2,6,7,9,10,11,16,21,22
+********************************************************/
+digital.pinMode(21, INPUT_PULLUP, RISING);//pin, mode, type
+digital.pinMode(22, INPUT_PULLUP, RISING);//pin, mode, type
+}
+
+void loop() {
+/********************************************************
+feed the sleep function its wakeup parameters. Then go
+to deepSleep.
+********************************************************/
+int who = Snooze.deepSleep( config );// return module that woke processor
+digitalWrite(LED_BUILTIN, HIGH);
+delay(100);
+digitalWrite(LED_BUILTIN, LOW);
+}
+```
+
+Current Divers:
 1. touch     - Using the Kinetis touch module to wake your Teensy. 
 2. digital   - Wake your Teensy with a RISING or FALLING event on a certian pin.
 3. timer     - Use the Low Power timer in milliseconds to wake your Teensy,
@@ -27,6 +47,7 @@ Core Drivers configure wakeup events or configure a module to work while in low 
 5. compare   - Setup a volatgae crossing to wake your Teensy.
 6. usbSerial - Does not wake the teensy it makes USB Serial play nice while using Snooze.
 7. audio     - Allows the Audio library to work as normal after waking from sleep, does not wake the Teensy.
+8. spi       - Configures the spi pins for low power, does not wake the teensy up.
 
 Next we see the SnoozeBlock only has the timer and digital drivers installed. Even though the Touch driver is loaded it is not installed so it won't get called. In this example either the timer expires or the digital pin is lifted will wake the Teensy up.<br>
 ```c++

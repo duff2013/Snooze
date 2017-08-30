@@ -65,7 +65,7 @@ void loop() {
 #endif
     // wait for serial monitor
     elapsedMillis time = 0;
-    while (!Serial || time < 1000) {
+    while (!Serial && time < 1000) {
         Serial.write(0x00);// print out a bunch of NULLS to serial monitor
         digitalWriteFast(LED_BUILTIN, HIGH);
         delay(30);
