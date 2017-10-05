@@ -1,3 +1,7 @@
+><b>Updated (9/5/17 v6.3.1)</b><br>
+* Fixed compare for TeensyLC<br>
+* Removed Wire library include from SnoozeAudio<br>
+
 ><b>Updated (8/30/17 v6.3.0)</b><br>
 * Fixed examples "compare driver", thanks Erik-k -> https://github.com/Erik-k.<br>
 * Audio Driver for ADC, DAC, STGL5000.<br>
