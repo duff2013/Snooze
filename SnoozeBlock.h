@@ -307,6 +307,7 @@ public:
                 index++;
             }
         }
+        return *this;
     }
     
     /***********************************************************************************
@@ -334,6 +335,7 @@ public:
             next_block[idx] = NULL;
             return *this;
         }
+        
         SnoozeBlock *rhsBlock = SnoozeBlock::root_block[rhs.local_block];
         for ( ; rhsBlock; rhsBlock = rhsBlock->next_block[rhs.local_block] ) {
             uint8_t idx = local_block;
@@ -357,7 +359,26 @@ public:
         }
         return *this;
     }
-    
+    /***********************************************************************************
+     *  Default add SnoozeBlock(s) - does nothing
+     *
+     *  @param rhs Driver or SnoozeBlock(s) to combine with the lhs
+     *
+     *  @return this
+     ***********************************************************************************/
+    SnoozeBlock & operator + ( const SnoozeBlock &rhs ) {
+        return *this;
+    }
+    /***********************************************************************************
+     *  Default subtract SnoozeBlock(s) - does nothing
+     *
+     *  @param rhs Driver or SnoozeBlock(s) to combine with the lhs
+     *
+     *  @return this
+     ***********************************************************************************/
+    SnoozeBlock & operator - ( const SnoozeBlock &rhs ) {
+        return *this;
+    }
     /***********************************************************************************
      *  call drivers enable functions
      ***********************************************************************************/

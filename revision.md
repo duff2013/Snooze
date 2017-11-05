@@ -1,3 +1,7 @@
+><b>Updated (11/4/17 v6.3.2)</b><br>
+* TeensyLC SnoozeSleepPWM example now works.<br>
+* Warning: now TeensyLC Internal Ref Clock is enabled, might lead to higher sleep currents.<br>
+
 ><b>Updated (9/5/17 v6.3.1)</b><br>
 * Fixed compare for TeensyLC<br>
 * Removed Wire library include from SnoozeAudio<br>

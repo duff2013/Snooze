@@ -19,11 +19,17 @@ private:
     volatile uint32_t *FTMx_CxV;
     volatile uint32_t *TPMx_CxV;
     volatile uint32_t *FTMx_MOD;
+    volatile uint32_t *TPMx_MOD;
     volatile uint32_t *FTMx_SC;
+    volatile uint32_t *TPMx_SC;
+    volatile uint32_t *FTMx_CNT;
+    uint32_t SIM_SOPT2_VALUE;
     uint32_t FTMx_CxV_VALUE;
     uint32_t TPMx_CxV_VALUE;
     uint32_t FTMx_MOD_VALUE;
+    uint32_t TPMx_MOD_VALUE;
     uint32_t FTMx_SC_VALUE;
+    uint32_t TPMx_SC_VALUE;
 public:
     SnoozeSleepPWM(void) { isDriver = true; }
     void configure( uint8_t pin, int value, uint8_t res  );

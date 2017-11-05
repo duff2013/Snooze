@@ -330,7 +330,11 @@ void pee_blpi( void ) {
     // set CLKS to 1 to select the internal reference clock
     // keep FRDIV at existing value to keep FLL ref clock in spec.
     // set IREFS to 1 to select internal reference clock
-    MCG_C1 = MCG_C1_CLKS( 0x01 ) | MCG_C1_FRDIV( 0x04 ) | MCG_C1_IREFS;
+#if defined(KINETISL)
+    MCG_C1 = MCG_C1_CLKS( 0x01 ) | MCG_C1_FRDIV( 0x04 ) | MCG_C1_IREFS | MCG_C1_IREFSTEN | MCG_C1_IRCLKEN;
+#else
+    MCG_C1 = MCG_C1_CLKS( 0x01 ) | MCG_C1_FRDIV( 0x04 ) | MCG_C1_IREFS | MCG_C1_IREFSTEN;
+#endif
     // wait for internal reference to be selected
     while ( !( MCG_S & MCG_S_IREFST ) ) ;
     // wait for fast internal reference to be selected

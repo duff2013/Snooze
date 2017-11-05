@@ -1,13 +1,18 @@
 #include "SnoozeSleepPWM.h"
 #include "defines.h"
 /*
- Set the FTM back to 2 MHz operation. This happens right before
+ Set the FTM | TPM back to 2 MHz operation. This happens right before
  we switch to 2 MHz then put the processor to sleep.
  */
 void SnoozeSleepPWM::enableDriver( void ) {
+#if defined(KINETISL)
+    SIM_SOPT2_VALUE = SIM_SOPT2;
+    SIM_SOPT2 |= SIM_SOPT2_TPMSRC( 3 );
+#endif
+    *FTMx_CNT = 0;
     *FTMx_MOD = DEFAULT_FTM_02_MOD;
-    while (*FTMx_MOD != DEFAULT_FTM_02_MOD);
-    *FTMx_SC = FTM_SC_CLKS(1) | FTM_SC_PS(DEFAULT_FTM_02_PRESCALE);
+    while ( *FTMx_MOD != DEFAULT_FTM_02_MOD );
+    *FTMx_SC = FTM_SC_CLKS( 1 ) | FTM_SC_PS( DEFAULT_FTM_02_PRESCALE );
 #if defined(__MK66FX1M0__) && defined(TPM1_CH0_PIN) || defined(TPM1_CH1_PIN)
     TPMx_CxV_VALUE = *TPMx_CxV;
     *TPMx_CxV = cval;
@@ -15,6 +20,7 @@ void SnoozeSleepPWM::enableDriver( void ) {
     FTMx_CxV_VALUE = *FTMx_CxV;
     *FTMx_CxV = cval;
 #endif
+    
 }
 
 /*
@@ -22,21 +28,27 @@ void SnoozeSleepPWM::enableDriver( void ) {
  at F_CPU processor speed in which the glitch in the pwm is to
  critical.
  */
-void SnoozeSleepPWM::disableDriver( void ) { }
+void SnoozeSleepPWM::disableDriver( void ) {
+
+}
 
 /*
- Set the FTM back to F_CPU operation. This gets called from
+ Set the FTM | TPM back to F_CPU operation. This gets called from
  whatever driver interrupt wakes the processor.
  */
 void SnoozeSleepPWM::clearIsrFlags( void ) {
+#if defined(KINETISL)
+    SIM_SOPT2 = SIM_SOPT2_VALUE;
+#endif
+    *FTMx_CNT = 0;
     *FTMx_MOD = DEFAULT_FTM_MOD;
-    while (*FTMx_MOD != DEFAULT_FTM_MOD);
+    while ( *FTMx_MOD != DEFAULT_FTM_MOD );
     *FTMx_SC = FTMx_SC_VALUE;
     *FTMx_CxV = rval;
 }
 
 /*
- Saves all the FTM register values at F_CPU and also saves and reconfigures
+ Saves all the FTM | TPM register values at F_CPU and also saves and reconfigures
  these values for 2 MHz operation while in sleep.
  */
 void SnoozeSleepPWM::configure( uint8_t pin, int val, uint8_t res ) {
@@ -44,18 +56,19 @@ void SnoozeSleepPWM::configure( uint8_t pin, int val, uint8_t res ) {
     pwm_pin = pin;
     pwm_value = val;
     pwm_resloution = res;
-    rval = ((uint32_t)val * (uint32_t)(DEFAULT_FTM_MOD + 1)) >> pwm_resloution;
-    cval = ((uint32_t)val * (uint32_t)(DEFAULT_FTM_02_MOD + 1)) >> pwm_resloution;
+    rval = ( ( uint32_t )val * ( uint32_t )( DEFAULT_FTM_MOD + 1 ) ) >> pwm_resloution;
+    cval = ( ( uint32_t )val * ( uint32_t )( DEFAULT_FTM_02_MOD + 1 ) ) >> pwm_resloution;
     
     FTMx_MOD_VALUE = DEFAULT_FTM_MOD;
     
-    switch (pwm_pin) {
+    switch ( pwm_pin ) {
 #ifdef FTM0_CH0_PIN
         case FTM0_CH0_PIN: // PTC1, FTM0_CH0
             FTMx_CxV      = &FTM0_C0V;
             FTMx_SC_VALUE = FTM0_SC;
             FTMx_MOD      = &FTM0_MOD;
             FTMx_SC       = &FTM0_SC;
+            FTMx_CNT      = &FTM0_CNT;
             break;
 #endif
 #ifdef FTM0_CH1_PIN
@@ -64,6 +77,7 @@ void SnoozeSleepPWM::configure( uint8_t pin, int val, uint8_t res ) {
             FTMx_SC_VALUE = FTM0_SC;
             FTMx_MOD      = &FTM0_MOD;
             FTMx_SC       = &FTM0_SC;
+            FTMx_CNT      = &FTM0_CNT;
             break;
 #endif
 #ifdef FTM0_CH2_PIN
@@ -72,6 +86,7 @@ void SnoozeSleepPWM::configure( uint8_t pin, int val, uint8_t res ) {
             FTMx_SC_VALUE = FTM0_SC;
             FTMx_MOD      = &FTM0_MOD;
             FTMx_SC       = &FTM0_SC;
+            FTMx_CNT      = &FTM0_CNT;
             break;
 #endif
 #ifdef FTM0_CH3_PIN
@@ -80,6 +95,7 @@ void SnoozeSleepPWM::configure( uint8_t pin, int val, uint8_t res ) {
             FTMx_SC_VALUE = FTM0_SC;
             FTMx_MOD      = &FTM0_MOD;
             FTMx_SC       = &FTM0_SC;
+            FTMx_CNT      = &FTM0_CNT;
             break;
 #endif
 #ifdef FTM0_CH4_PIN
@@ -88,6 +104,7 @@ void SnoozeSleepPWM::configure( uint8_t pin, int val, uint8_t res ) {
             FTMx_SC_VALUE = FTM0_SC;
             FTMx_MOD      = &FTM0_MOD;
             FTMx_SC       = &FTM0_SC;
+            FTMx_CNT      = &FTM0_CNT;
             break;
 #endif
 #ifdef FTM0_CH5_PIN
@@ -96,6 +113,7 @@ void SnoozeSleepPWM::configure( uint8_t pin, int val, uint8_t res ) {
             FTMx_SC_VALUE = FTM0_SC;
             FTMx_MOD      = &FTM0_MOD;
             FTMx_SC       = &FTM0_SC;
+            FTMx_CNT      = &FTM0_CNT;
             break;
 #endif
 #ifdef FTM0_CH6_PIN
@@ -104,6 +122,7 @@ void SnoozeSleepPWM::configure( uint8_t pin, int val, uint8_t res ) {
             FTMx_SC_VALUE = FTM0_SC;
             FTMx_MOD      = &FTM0_MOD;
             FTMx_SC       = &FTM0_SC;
+            FTMx_CNT      = &FTM0_CNT;
             break;
 #endif
 #ifdef FTM0_CH7_PIN
@@ -112,18 +131,17 @@ void SnoozeSleepPWM::configure( uint8_t pin, int val, uint8_t res ) {
             FTMx_SC_VALUE = FTM0_SC;
             FTMx_MOD      = &FTM0_MOD;
             FTMx_SC       = &FTM0_SC;
+            FTMx_CNT      = &FTM0_CNT;
             break;
 #endif
 #ifdef FTM1_CH0_PIN
         case FTM1_CH0_PIN: // PTA12, FTM1_CH0
             //used
-            FTMx_CxV_VALUE = FTM1_C0V;
             FTMx_CxV      = &FTM1_C0V;
-            
             FTMx_SC_VALUE = FTM1_SC;
             FTMx_SC       = &FTM1_SC;
-            
             FTMx_MOD      = &FTM1_MOD;
+            FTMx_CNT      = &FTM1_CNT;
             break;
 #endif
 #ifdef FTM1_CH1_PIN
@@ -132,6 +150,7 @@ void SnoozeSleepPWM::configure( uint8_t pin, int val, uint8_t res ) {
             FTMx_SC_VALUE = FTM1_SC;
             FTMx_MOD      = &FTM1_MOD;
             FTMx_SC       = &FTM1_SC;
+            FTMx_CNT      = &FTM1_CNT;
             break;
 #endif
 #ifdef FTM2_CH0_PIN
@@ -140,6 +159,7 @@ void SnoozeSleepPWM::configure( uint8_t pin, int val, uint8_t res ) {
             FTMx_SC_VALUE = FTM2_SC;
             FTMx_MOD      = &FTM2_MOD;
             FTMx_SC       = &FTM2_SC;
+            FTMx_CNT      = &FTM2_CNT;
             break;
 #endif
 #ifdef FTM2_CH1_PIN
@@ -148,6 +168,7 @@ void SnoozeSleepPWM::configure( uint8_t pin, int val, uint8_t res ) {
             FTMx_SC_VALUE = FTM2_SC;
             FTMx_MOD      = &FTM2_MOD;
             FTMx_SC       = &FTM2_SC;
+            FTMx_CNT      = &FTM2_CNT;
             break;
 #endif
 #ifdef FTM3_CH0_PIN
@@ -156,13 +177,16 @@ void SnoozeSleepPWM::configure( uint8_t pin, int val, uint8_t res ) {
             FTMx_SC_VALUE = FTM3_SC;
             FTMx_MOD      = &FTM3_MOD;
             FTMx_SC       = &FTM3_SC;
+            FTMx_CNT      = &FTM3_CNT;
             break;
 #endif
 #ifdef FTM3_CH1_PIN
         case FTM3_CH1_PIN:
             FTMx_CxV      = &FTM3_C1V;
             FTMx_SC_VALUE = FTM3_SC;
+            FTMx_MOD      = &FTM3_MOD;
             FTMx_SC       = &FTM3_SC;
+            FTMx_CNT      = &FTM3_CNT;
             break;
 #endif
 #ifdef FTM3_CH2_PIN
@@ -171,6 +195,7 @@ void SnoozeSleepPWM::configure( uint8_t pin, int val, uint8_t res ) {
             FTMx_SC_VALUE = FTM3_SC;
             FTMx_MOD      = &FTM3_MOD;
             FTMx_SC       = &FTM3_SC;
+            FTMx_CNT      = &FTM3_CNT;
             break;
 #endif
 #ifdef FTM3_CH3_PIN
@@ -179,6 +204,7 @@ void SnoozeSleepPWM::configure( uint8_t pin, int val, uint8_t res ) {
             FTMx_SC_VALUE = FTM3_SC;
             FTMx_MOD      = &FTM3_MOD;
             FTMx_SC       = &FTM3_SC;
+            FTMx_CNT      = &FTM3_CNT;
             break;
 #endif
 #ifdef FTM3_CH4_PIN
@@ -187,6 +213,7 @@ void SnoozeSleepPWM::configure( uint8_t pin, int val, uint8_t res ) {
             FTMx_SC_VALUE = FTM3_SC;
             FTMx_MOD      = &FTM3_MOD;
             FTMx_SC       = &FTM3_SC;
+            FTMx_CNT      = &FTM3_CNT;
             break;
 #endif
 #ifdef FTM3_CH5_PIN
@@ -195,6 +222,7 @@ void SnoozeSleepPWM::configure( uint8_t pin, int val, uint8_t res ) {
             FTMx_SC_VALUE = FTM3_SC;
             FTMx_MOD      = &FTM3_MOD;
             FTMx_SC       = &FTM3_SC;
+            FTMx_CNT      = &FTM3_CNT;
             break;
 #endif
 #ifdef FTM3_CH6_PIN
@@ -203,6 +231,7 @@ void SnoozeSleepPWM::configure( uint8_t pin, int val, uint8_t res ) {
             FTMx_SC_VALUE = FTM3_SC;
             FTMx_MOD      = &FTM3_MOD;
             FTMx_SC       = &FTM3_SC;
+            FTMx_CNT      = &FTM3_CNT;
             break;
 #endif
 #ifdef FTM3_CH7_PIN
@@ -211,18 +240,28 @@ void SnoozeSleepPWM::configure( uint8_t pin, int val, uint8_t res ) {
             FTMx_SC_VALUE = FTM3_SC;
             FTMx_MOD      = &FTM3_MOD;
             FTMx_SC       = &FTM3_SC;
+            FTMx_CNT      = &FTM3_CNT;
             break;
 #endif
 #ifdef TPM1_CH0_PIN
         case TPM1_CH0_PIN:
+            
             // not implemented
-            //TPMx_CxV = &TPM1_C0V;
+            TPMx_CxV      = &TPM1_C0V;
+            FTMx_SC_VALUE = TPM1_SC;
+            FTMx_MOD      = &TPM1_MOD;
+            FTMx_SC       = &TPM1_SC;
+            FTMx_CNT      = &FTM1_CNT;
             break;
 #endif
 #ifdef TPM1_CH1_PIN
         case TPM1_CH1_PIN:
             // not implemented
-            //TPMx_CxV = &TPM1_C1V;
+            TPMx_CxV      = &TPM1_C1V;
+            FTMx_SC_VALUE = TPM1_SC;
+            FTMx_MOD      = &TPM1_MOD;
+            FTMx_SC       = &TPM1_SC;
+            FTMx_CNT      = &TTM1_CNT;
             break;
 #endif
         default:
