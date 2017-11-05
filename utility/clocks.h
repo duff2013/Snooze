@@ -312,6 +312,7 @@ __attribute__((always_inline, unused));
 static inline
 void pee_blpi( void ) {
     if ( mcg_mode( ) != PEE ) return;
+    MCG_SC = MCG_SC_FCRDIV( 0 );
     /* Moving from PEE to BLPI */
     // first move from PEE to PBE
     // select external reference clock as MCG_OUT
@@ -326,11 +327,14 @@ void pee_blpi( void ) {
     while ( MCG_S & MCG_S_PLLST ) ; // Wait for PLLST status bit to clear to
     // indicate switch to FLL output
     // now move to FBI mode
-    MCG_C2 |= MCG_C2_IRCS; // set the IRCS bit to select the fast IRC
+    MCG_C2 |= MCG_C2_IRCS;// | 0x40; // set the IRCS bit to select the fast IRC
+#if defined( __MK64FX512__ )
+    MCG_C4 = MCG_C4_FCTRIM( 10 );
+#endif
     // set CLKS to 1 to select the internal reference clock
     // keep FRDIV at existing value to keep FLL ref clock in spec.
     // set IREFS to 1 to select internal reference clock
-#if defined(KINETISL)
+#if defined( KINETISL )
     MCG_C1 = MCG_C1_CLKS( 0x01 ) | MCG_C1_FRDIV( 0x04 ) | MCG_C1_IREFS | MCG_C1_IREFSTEN | MCG_C1_IRCLKEN;
 #else
     MCG_C1 = MCG_C1_CLKS( 0x01 ) | MCG_C1_FRDIV( 0x04 ) | MCG_C1_IREFS | MCG_C1_IREFSTEN;
@@ -344,7 +348,11 @@ void pee_blpi( void ) {
     // now move to BLPI
     MCG_C2 |= MCG_C2_LP; // set the LP bit to enter BLPI
     // config divisors: 2 MHz, 2 MHz, 1 MHz
-    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 0 ) |	 SIM_CLKDIV1_OUTDIV4( 1 );
+#if defined( KINETISK )
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 1 ) | SIM_CLKDIV1_OUTDIV2( 1 ) | SIM_CLKDIV1_OUTDIV3( 1 ) | SIM_CLKDIV1_OUTDIV4( 3 );
+#elif defined( KINETISL )
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 1 ) | SIM_CLKDIV1_OUTDIV4( 3 );
+#endif
 }
 /**
  *  Transistion from clock domian blpi -> pee

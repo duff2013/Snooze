@@ -10,9 +10,9 @@
 
 
 #if defined(KINETISK)
-    #define DEFAULT_FTM_02_MOD (4200 - 1)
+    #define DEFAULT_FTM_02_MOD (4096 - 1)
 #elif defined(KINETISL)
-    #define DEFAULT_FTM_02_MOD (2040 - 1)
+    #define DEFAULT_FTM_02_MOD (4096 - 1)
 #endif
 
 #define DEFAULT_FTM_02_PRESCALE 0
