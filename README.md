@@ -149,11 +149,15 @@ This class works by connecting the Driver Class to the Snooze Class and can have
 
 ---
 <br>
-![alt text](https://github.com/duff2013/Snooze/blob/master/images/Snooze_Class_Layout/Slide4.png "Snooze Library Layout")
+
+![alt text](images/Snooze_Class_Layout/Slide4.png "Snooze Library Layout")
 <br>
-![alt text](https://github.com/duff2013/Snooze/blob/master/images/Snooze_Class_Layout/Slide5.png "Snooze Library Layout")
+
+![alt text](images/Snooze_Class_Layout/Slide5.png "Snooze Library Layout")
 <br>
-![alt text](https://github.com/duff2013/Snooze/blob/master/images/Snooze_Class_Layout/Slide6.png "Snooze Library Layout")
+
+![alt text](images/Snooze_Class_Layout/Slide6.png "Snooze Library Layout")
 <br>
-![alt text](https://github.com/duff2013/Snooze/blob/master/images/Snooze_Class_Layout/Slide7.png "Snooze Library Layout")
+
+![alt text](images/Snooze_Class_Layout/Slide7.png "Snooze Library Layout")
 <br>
