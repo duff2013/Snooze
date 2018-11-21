@@ -1,3 +1,6 @@
+><b>Updated (11/20/18 v6.3.3)</b><br>
+* Added F_CPU 256MHz.<br>
+
 ><b>Updated (11/4/17 v6.3.2)</b><br>
 * TeensyLC SnoozeSleepPWM example now works.<br>
 * Warning: now TeensyLC Internal Ref Clock is enabled, might lead to higher sleep currents.<br>

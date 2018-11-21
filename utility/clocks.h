@@ -187,7 +187,12 @@ void blpe_pee( void ) {
     SMC_PMCTRL = SMC_PMCTRL_RUNM(3); // enter HSRUN mode
     while (SMC_PMSTAT != SMC_PMSTAT_HSRUN) ; // wait for HSRUN
 #endif
-#if F_CPU == 240000000
+#if F_CPU == 256000000
+    //See table in 27.4.6 MCG Control 6 Register (MCG_C6)
+    //16 -> Multiply factor 32. 32*8MHz =256MHz
+    MCG_C5 = MCG_C5_PRDIV0(0);
+    MCG_C6 = MCG_C6_PLLS | MCG_C6_VDIV0(16);
+#elif F_CPU == 240000000
     MCG_C5 = MCG_C5_PRDIV0( 0 );
     MCG_C6 = MCG_C6_PLLS | MCG_C6_VDIV0( 14 );
 #elif F_CPU == 216000000
@@ -237,7 +242,18 @@ void blpe_pee( void ) {
     while ( !(MCG_S & MCG_S_LOCK0) ) ;
     // configure the clock dividers back again before switching to the PLL to
     // ensure the system clock speeds are in spec.
-#if F_CPU == 240000000
+#if F_CPU == 256000000
+    // config divisors: 256 MHz core, 64 MHz bus, 32 MHz flash, USB = IRC48M
+    // TODO: gradual ramp-up for HSRUN mode
+#if F_BUS == 64000000
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1(0) | SIM_CLKDIV1_OUTDIV2(3) | SIM_CLKDIV1_OUTDIV4(7);
+#elif F_BUS == 128000000
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1(0) | SIM_CLKDIV1_OUTDIV2(1) | SIM_CLKDIV1_OUTDIV4(7);
+#else
+#error "This F_CPU & F_BUS combination is not supported"
+#endif
+    SIM_CLKDIV2 = SIM_CLKDIV2_USBDIV(0);
+#elif F_CPU == 240000000
 #if F_BUS == 60000000
     SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 3 ) | SIM_CLKDIV1_OUTDIV4( 7 );
 #elif F_BUS == 80000000
@@ -383,7 +399,12 @@ void blpi_pee( void ) {
         SMC_PMCTRL = SMC_PMCTRL_RUNM(3); // enter HSRUN mode
         while (SMC_PMSTAT != SMC_PMSTAT_HSRUN) ; // wait for HSRUN
     #endif
-    #if F_CPU == 240000000
+    #if F_CPU == 256000000
+        //See table in 27.4.6 MCG Control 6 Register (MCG_C6)
+        //16 -> Multiply factor 32. 32*8MHz =256MHz
+        MCG_C5 = MCG_C5_PRDIV0(0);
+        MCG_C6 = MCG_C6_PLLS | MCG_C6_VDIV0(16);
+    #elif F_CPU == 240000000
         MCG_C5 = MCG_C5_PRDIV0( 0 );
         MCG_C6 = MCG_C6_PLLS | MCG_C6_VDIV0( 14 );
     #elif F_CPU == 216000000
@@ -433,7 +454,18 @@ void blpi_pee( void ) {
     while ( !(MCG_S & MCG_S_LOCK0) ) ;
     // configure the clock dividers back again before switching to the PLL to
     // ensure the system clock speeds are in spec.
-#if F_CPU == 240000000
+#if F_CPU == 256000000
+    // config divisors: 256 MHz core, 64 MHz bus, 32 MHz flash, USB = IRC48M
+    // TODO: gradual ramp-up for HSRUN mode
+#if F_BUS == 64000000
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1(0) | SIM_CLKDIV1_OUTDIV2(3) | SIM_CLKDIV1_OUTDIV4(7);
+#elif F_BUS == 128000000
+    SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1(0) | SIM_CLKDIV1_OUTDIV2(1) | SIM_CLKDIV1_OUTDIV4(7);
+#else
+#error "This F_CPU & F_BUS combination is not supported"
+#endif
+    SIM_CLKDIV2 = SIM_CLKDIV2_USBDIV(0);
+#elif F_CPU == 240000000
     #if F_BUS == 60000000
         SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1( 0 ) | SIM_CLKDIV1_OUTDIV2( 3 ) | SIM_CLKDIV1_OUTDIV4( 7 );
     #elif F_BUS == 80000000
