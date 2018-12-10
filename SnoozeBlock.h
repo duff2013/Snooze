@@ -113,14 +113,45 @@ protected:
      *  Fired after waking from LLS-VLLS sleep modes
      ***********************************************************************************/
     static void wakeupIsr( void ) {
-        
-        llwuMask.llwuFlag = llwu_clear_flags( );
-        pbe_pee( );
         SnoozeBlock *p = SnoozeBlock::root_block[current_block];
-        for ( ; p; p = p->next_block[current_block] ) {
-            p->clearIsrFlags( );
+        
+        if ( mode == VLPW || mode == VLPS ) {
+            uint32_t ipsr;
+            __asm__ volatile("mrs %0, ipsr\n" : "=r" (ipsr)::);
+            //ipsr -= 16;
+            switch (ipsr-16) {
+                case IRQ_CMP0:
+                    p->source = COMPARE_WAKE;
+                    break;
+#if defined(KINETISK)
+                case IRQ_CMP1:
+                    p->source = COMPARE_WAKE;
+                    break;
+                case IRQ_CMP2:
+                    p->source = COMPARE_WAKE;
+                    break;
+#endif
+                case IRQ_RTC_ALARM:
+                    p->source = ALARM_WAKE;
+                    break;
+                case IRQ_LPTMR:
+                    p->source = TIMER_WAKE;
+                    break;
+#if !defined(__MK64FX512__)
+                case IRQ_TSI:
+                    p->source = TOUCH_WAKE;
+                    break;
+#endif
+                default:
+                    break;
+            }
+            
+        } else {
+            llwuMask.llwuFlag = llwu_clear_flags( );
+            pbe_pee( );
         }
         
+        for ( ; p; p = p->next_block[current_block] ) p->clearIsrFlags( );
     }
     
     static SnoozeBlock *root_block[8];
@@ -139,7 +170,7 @@ public:
     SnoozeBlock ( SnoozeBlock &head, Tail&... tail )  : local_block( -1 ), isUsed( false ), isDriver( false ) {
         
         if ( mode < VLLS3 ) mode = RUN;
-        // number of drivers connected to this Snooze Block
+        // number of drivers left to connected to the Snooze Block
         int i = sizeof...( tail );
         // check for duplicate Drivers
         SnoozeBlock *p = SnoozeBlock::root_block[global_block_count];

@@ -8,12 +8,6 @@
 #include "SnoozeTimer.h"
 #include "wake.h"
 /********************************************************************/
-// MCG_S Bit Fields
-//#define LPTMR_MCGIRCLK       (uint8_t)0x0
-//#define LPTMR_LPO            (uint8_t)0x1
-//#define LPTMR_ERCLK32K       (uint8_t)0x2
-//#define LPTMR_OSCERCLK       (uint8_t)0x3
-/********************************************************************/
 void ( * SnoozeTimer::return_lptmr_irq ) ( void );
 volatile uint16_t SnoozeTimer::lptmrUpdateSystick;
 /*******************************************************************************
@@ -117,5 +111,4 @@ void SnoozeTimer::isr( void ) {
     if ( !( SIM_SCGC5 & SIM_SCGC5_LPTIMER ) ) return;
     systick_millis_count += lptmrUpdateSystick;
     LPTMR0_CSR = LPTMR_CSR_TCF;
-    if ( mode == VLPW || mode == VLPS ) source = 36;
 }

@@ -10,7 +10,7 @@
 /*******************************************************************************
  *
  *******************************************************************************/
-void SnoozeSPI::spiClockPin( uint8_t pin ) {
+void SnoozeSPI::setClockPin( uint8_t pin ) {
     if ( pin == BUILTIN_SD_CLK_PIN ) {
         clk_pin = INTERNAL_SPI_CLK_PIN;
     } else {

@@ -46,6 +46,6 @@ class SnoozeSPI : public SnoozeBlock {
         isUsed = true;
     }
     uint32_t clk_pin;
-    void spiClockPin( uint8_t pin );
+    void setClockPin( uint8_t pin );
 };
 #endif /* defined(SnoozeSPI_h) */

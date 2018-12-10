@@ -140,6 +140,7 @@ int SnoozeClass::hibernate( SNOOZE_BLOCK, SLEEP_MODE mode ) {
     int priority = nvic_execution_priority( );// get current priority
     priority = ( priority  < 256 ) && ( ( priority - 16 ) > 0 ) ? priority - 16 : 128;
     NVIC_SET_PRIORITY( IRQ_LLWU, priority );//set priority to new level
+    // allows the SOPT1 USBSSTBY bit to be written
     SIM_SOPT1CFG |= SIM_SOPT1CFG_USSWE;
     SIM_SOPT1 |= SIM_SOPT1_USBSSTBY;
     PCR3 = PORTA_PCR3;
@@ -170,6 +171,7 @@ int SnoozeClass::hibernate( SNOOZE_BLOCK, SLEEP_MODE mode ) {
     p->source = llwu_disable( );
     p->disableDriver( );
     p->mode = RUN;
+    // allows the SOPT1 USBSSTBY bit to be written
     SIM_SOPT1CFG |= SIM_SOPT1CFG_USSWE;
     SIM_SOPT1 &= ~SIM_SOPT1_USBSSTBY;
     PORTA_PCR3 = PCR3;

@@ -54,7 +54,6 @@ void SnoozeDigital::enableDriver( void ) {
     uint64_t _pin = pin;
     isr_pin = pin;
     if ( mode == VLPW || mode == VLPS ) {
-        
         return_isr_a_enabled = NVIC_IS_ENABLED( IRQ_PORTA );
         return_isr_b_enabled = NVIC_IS_ENABLED( IRQ_PORTB );
         return_isr_c_enabled = NVIC_IS_ENABLED( IRQ_PORTC );
@@ -115,7 +114,7 @@ void SnoozeDigital::enableDriver( void ) {
         
         volatile uint32_t *config;
         config = portConfigRegister( pinNumber );
-        return_core_pin_config[pinNumber] = *config;
+        return_core_pin_config[pinNumber] = *config;// save pin config
         // setup pin mode/type/interrupt
         if ( pin_mode == INPUT || pin_mode == INPUT_PULLUP  || pin_mode == INPUT_PULLDOWN ) {
             *portModeRegister( pinNumber ) = 0;
@@ -175,12 +174,14 @@ void SnoozeDigital::enableDriver( void ) {
         
         volatile uint32_t *config;
         config = portConfigRegister( pinNumber );
-        return_core_pin_config[pinNumber] = *config;
+        return_core_pin_config[pinNumber] = *config;// save pin config
         
         if ( pin_mode == INPUT || pin_mode == INPUT_PULLUP ) {// setup pin mode/type/interrupt
             *portModeRegister( pinNumber ) &= ~digitalPinToBitMask( pinNumber );
             *config = PORT_PCR_MUX( 1 );
-            if ( pin_mode == INPUT_PULLUP ) *config = PORT_PCR_MUX( 1 ) | PORT_PCR_PE | PORT_PCR_PS;// pullup
+            if ( pin_mode == INPUT_PULLUP ) {
+                *config = PORT_PCR_MUX( 1 ) | PORT_PCR_PE | PORT_PCR_PS;// pullup
+            }
             else if ( pin_mode == INPUT_PULLDOWN ) {
                 *config |= ( PORT_PCR_PE ); // pulldown
                 *config &= ~( PORT_PCR_PS );
@@ -242,11 +243,11 @@ void SnoozeDigital::disableDriver( void ) {
         NVIC_SET_PRIORITY( IRQ_PORTD, return_priority_d );//return priority
         NVIC_SET_PRIORITY( IRQ_PORTE, return_priority_e );//return priority
         __disable_irq( );
-        attachInterruptVector( IRQ_PORTA, return_porta_irq );// set previous isr
-        attachInterruptVector( IRQ_PORTB, return_portb_irq );// set previous isr
-        attachInterruptVector( IRQ_PORTC, return_portc_irq );// set previous isr
-        attachInterruptVector( IRQ_PORTD, return_portd_irq );// set previous isr
-        attachInterruptVector( IRQ_PORTE, return_porte_irq );// set previous isr
+        attachInterruptVector( IRQ_PORTA, return_porta_irq );// set previous isr func
+        attachInterruptVector( IRQ_PORTB, return_portb_irq );// set previous isr func
+        attachInterruptVector( IRQ_PORTC, return_portc_irq );// set previous isr func
+        attachInterruptVector( IRQ_PORTD, return_portd_irq );// set previous isr func
+        attachInterruptVector( IRQ_PORTE, return_porte_irq );// set previous isr func
         __enable_irq( );
         if ( return_isr_a_enabled == 0 ) NVIC_DISABLE_IRQ( IRQ_PORTA );
         if ( return_isr_b_enabled == 0 ) NVIC_DISABLE_IRQ( IRQ_PORTB );
@@ -257,8 +258,8 @@ void SnoozeDigital::disableDriver( void ) {
         NVIC_SET_PRIORITY( IRQ_PORTA,  return_priority_a );//return priority
         NVIC_SET_PRIORITY( IRQ_PORTCD, return_priority_cd );//return priority
         __disable_irq( );
-        attachInterruptVector( IRQ_PORTA,  return_porta_irq );// set previous isr
-        attachInterruptVector( IRQ_PORTCD, return_portcd_irq );// set previous isr
+        attachInterruptVector( IRQ_PORTA,  return_porta_irq );// set previous isr func
+        attachInterruptVector( IRQ_PORTCD, return_portcd_irq );// set previous isr func
         __enable_irq( );
         if ( return_isr_a_enabled == 0 )  NVIC_DISABLE_IRQ( IRQ_PORTA );
         if ( return_isr_cd_enabled == 0 ) NVIC_DISABLE_IRQ( IRQ_PORTCD );
@@ -290,7 +291,8 @@ void SnoozeDigital::isr( void ) {
     PORTC_ISFR = isfr_c;
     PORTD_ISFR = isfr_d;
     
-    if ( mode == LLS || mode == VLLS3 || mode == VLLS2 || mode == VLLS1 ) return;// return if using deepSleep or hibernate
+    // return if using deepSleep or hibernate
+    if ( mode == LLS || mode == VLLS3 || mode == VLLS2 || mode == VLLS1 ) return;
     
 #if defined(KINETISK)
     uint64_t _pin = isr_pin;
@@ -298,7 +300,7 @@ void SnoozeDigital::isr( void ) {
         uint32_t pinNumber = 63 - __builtin_clzll( _pin );
         if ( pinNumber > 33 ) return;
         detachDigitalInterrupt( pinNumber );// remove pin interrupt
-        _pin &= ~( ( uint64_t )1 << pinNumber );// remove pin from list
+        _pin &= ~( ( uint64_t )1 << pinNumber );// remove pin from local list
     }
 #elif defined(KINETISL)
     uint32_t _pin = isr_pin;
@@ -306,11 +308,11 @@ void SnoozeDigital::isr( void ) {
         uint32_t pinNumber = 31 - __builtin_clz( _pin );
         if ( pinNumber > 33 ) return;
         detachDigitalInterrupt( pinNumber );// remove pin interrupt
-        _pin &= ~( ( uint32_t )1 << pinNumber );// remove pin from list
+        _pin &= ~( ( uint32_t )1 << pinNumber );// remove pin from local list
     }
 #endif
     
-    
+    // get source of interrupt
 #if defined(__MK64FX512__) || defined(__MK66FX1M0__)
     if ( isfr_a & CORE_PIN3_BITMASK )       source = 3;
     else if ( isfr_a & CORE_PIN4_BITMASK  ) source = 4;

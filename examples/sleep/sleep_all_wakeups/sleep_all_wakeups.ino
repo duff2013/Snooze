@@ -68,15 +68,22 @@ void setup() {
     timer.setTimer(5000);// milliseconds
     
     /********************************************************
-     Values greater or less than threshold will trigger CMP
-     wakeup. Threshold value is in volts (0-3.3v) using a 64
-     tap resistor ladder network at 0.0515625v per tap.
-     
-     parameter "type": LOW & FALLING are the same.
-     parameter "type": HIGH & RISING are the same.
-     
-     Teensy 3.x/LC
-     Compare pins: 11,12
+    In sleep the Compare module works by setting the
+    internal 6 bit DAC to a volatge threshold and monitors
+    the pin volatge for a voltage crossing. The internal
+    DAC uses a 64 tap resistor ladder network supplied by
+    VOUT33 at 0.0515625v per tap (VOUT33/64). Thus the
+    possible threshold voltages are 0.0515625*(0-64). Only
+    one compare pin can be used at a time.
+
+    parameter "type": LOW & FALLING are the same and have no effect.
+    parameter "type": HIGH & RISING are the same and have no effect.
+
+    Teensy 3.x
+    Compare pins: 11,9,4
+
+    Teensy LC
+    Compare pins: 11
      ********************************************************/
     // trigger at threshold values greater than 1.65v
     //compare.pinMode(11, HIGH, 1.65);//pin, type, threshold(v)

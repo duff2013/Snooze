@@ -40,6 +40,7 @@ static const uint8_t tsi_pins[] = {
     12, 255, 255, 255, 255, 255, 255, 255, 255, 255
 };
 #endif
+
 /*******************************************************************************
  *  <#Description#>
  *
@@ -51,6 +52,7 @@ void SnoozeTouch::pinMode( int _pin, int thresh ) {
     pin = _pin;
     threshold = thresh;
 }
+
 /*******************************************************************************
  *  <#Description#>
  *******************************************************************************/
@@ -81,6 +83,7 @@ void SnoozeTouch::disableDriver( void ) {
     
     if ( !SIM_SCGC5_clock_active ) SIM_SCGC5 &= ~SIM_SCGC5_TSI;
 }
+
 /*******************************************************************************
  *  <#Description#>
  *******************************************************************************/
@@ -165,20 +168,20 @@ void SnoozeTouch::enableDriver( void ) {
     LPTMR0_CSR = LPTMR_CSR_TEN | LPTMR_CSR_TCF;
 #endif
 }
+
 /*******************************************************************************
  *  <#Description#>
  *******************************************************************************/
 void SnoozeTouch::clearIsrFlags( void ) {
-    
     isr( );
 }
+
 /*******************************************************************************
  *  <#Description#>
  *******************************************************************************/
 void SnoozeTouch::isr( void ) {
     if ( !( SIM_SCGC5 & SIM_SCGC5_TSI ) ) return;
     TSI0_GENCS = TSI_GENCS_OUTRGF | TSI_GENCS_EOSF;
-    if ( mode == VLPW || mode == VLPS ) source = 37;
 }
 #else
 #warning Teensy 3.5 does not support touch sensing.

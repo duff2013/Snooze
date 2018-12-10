@@ -1,4 +1,4 @@
-# Snooze v6.3.3
+# Snooze v6.3.4
 
 ---
 Low power library for the Teensy LC/3.2/3.5/3.6 class microcontrollers.
@@ -41,10 +41,10 @@ digitalWrite(LED_BUILTIN, LOW);
 
 Current Divers:
 1. touch     - Using the Kinetis touch module to wake your Teensy. 
-2. digital   - Wake your Teensy with a RISING or FALLING event on a certian pin.
+2. digital   - Wake your Teensy with a RISING or FALLING event on a certain pin.
 3. timer     - Use the Low Power timer in milliseconds to wake your Teensy,
 4. alarm     - Use the RTC clock to wake your Teensy.
-5. compare   - Setup a volatgae crossing to wake your Teensy.
+5. compare   - Setup a voltage crossing to wake your Teensy.
 6. usbSerial - Does not wake the teensy it makes USB Serial play nice while using Snooze.
 7. audio     - Allows the Audio library to work as normal after waking from sleep, does not wake the Teensy.
 8. spi       - Configures the spi pins for low power, does not wake the teensy up.
@@ -129,7 +129,7 @@ Snooze.hibernate( config );
 Now that was easy enough lets take deeper look at the library structure.<br>
 ![alt text](https://github.com/duff2013/Snooze/blob/master/images/Snooze_Class_Layout/Slide3.png "Snooze Library Layout")
 <br>
-As you can see Snooze library has only one Snooze Class but can have mulitple SnoozeBlocks which have mulitiple Drivers. Refferring to the first graphic Snooze is 3 Tier Class structure:
+As you can see Snooze library has only one Snooze Class but can have multiple SnoozeBlocks which have multiple Drivers. Referring to the first graphic Snooze is 3 Tier Class structure:
 
 1. Snooze Class<br>
 2. SnoozeBlock Class<br>
@@ -140,7 +140,7 @@ This class is the top tier code for Snooze and handles the calling the low level
 
 ...TODO Snooze Class code flow diagram.
 <h4> SnoozeBlock Class:</h4>
-This class works by connecting the Driver Class to the Snooze Class and can have up to 8 class intstance defined for any one sketch. This class really does all the glue work to call the drivers before and after sleeping. There are three speacial virtual functions that need to be explianed.
+This class works by connecting the Driver Class to the Snooze Class and can have up to 8 class instance defined for any one sketch. This class really does all the glue work to call the drivers before and after sleeping. There are three special virtual functions that need to be explained.
 1. enableDriver     - Driver can override this function, it is called right before sleeping.
 2. disableDriver    - Driver can override this function, it gets called right after sleeping.
 3. clearFlags       - Driver can override this function, gets called by interrupts from a driver in 'sleep' mode or directly from deepSleep and hibernate wakeup interrupt.

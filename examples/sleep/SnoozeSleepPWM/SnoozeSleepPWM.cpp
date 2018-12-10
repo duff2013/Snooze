@@ -25,8 +25,8 @@ void SnoozeSleepPWM::enableDriver( void ) {
 
 /*
  Not used, but must be defined. This would be called after we are
- at F_CPU processor speed in which the glitch in the pwm is to
- critical.
+ at F_CPU processor speed by then the glitch to the pwm waveform
+ is to critical.
  */
 void SnoozeSleepPWM::disableDriver( void ) {
 

@@ -8,7 +8,6 @@
 #include "SnoozeAlarm.h"
 #include "wake.h"
 //#include "TimeLib.h"
-#define RTC_IER_TAIE_MASK 0x4u
 /*******************************************************************************
  *  <#Description#>
  *
@@ -74,7 +73,7 @@ void SnoozeAlarm::enableDriver( void ) {
         NVIC_SET_PRIORITY( IRQ_RTC_ALARM, priority );//set priority to new level
         __disable_irq( );
         return_rtc_irq = _VectorsRam[IRQ_RTC_ALARM+16];// save prev isr
-        attachInterruptVector( IRQ_RTC_ALARM, isr );
+        attachInterruptVector( IRQ_RTC_ALARM, wakeupIsr );
         __enable_irq( );
     }
     
@@ -94,7 +93,7 @@ void SnoozeAlarm::enableDriver( void ) {
         RTC_TAR = rtc_get( ) + ( alarm - 1 );
     else        // else, setting true alarm
         RTC_TAR = alarm - 1;
-    RTC_IER = RTC_IER_TAIE_MASK;
+    RTC_IER = RTC_IER_TAIE;
 }
 
 /*******************************************************************************
@@ -110,5 +109,4 @@ void SnoozeAlarm::clearIsrFlags( void ) {
 void SnoozeAlarm::isr( void ) {
     if ( !( SIM_SCGC6 & SIM_SCGC6_RTC ) ) return;
     RTC_TAR = RTC_TSR + 1;
-    if ( mode == VLPW || mode == VLPS ) source = 35;
 }

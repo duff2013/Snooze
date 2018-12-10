@@ -38,13 +38,15 @@ private:
     virtual void disableDriver( void );
     virtual void clearIsrFlags( void );
     static void isr( void );
-    void ( * return_cmp0_irq ) ( void );
+    static void ( * return_cmp_irq ) ( void );
 #if defined(KINETISK)
     void ( * return_cmp1_irq ) ( void );
     void ( * return_cmp2_irq ) ( void );
 #endif
     float  threshold_crossing;
-    uint8_t return_priority_cmp0;
+    //uint8_t return_priority_cmp;
+    uint8_t return_priority;
+    uint8_t return_isr_enabled;
     uint8_t pin;
     uint8_t type;
     uint8_t CR0;

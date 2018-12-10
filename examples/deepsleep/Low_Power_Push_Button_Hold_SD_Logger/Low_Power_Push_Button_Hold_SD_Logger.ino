@@ -63,7 +63,7 @@ void setup() {
     // does it for you.
     digital.pinMode(21, INPUT_PULLUP, FALLING);//pin, mode, type
     // Configure SD Card for Low Power operation
-    sdCard.spiClockPin( BUILTIN_SDCARD );
+    sdCard.setClockPin( BUILTIN_SDCARD );
     /****************End Snooze Driver Config****************/
     
     //UNCOMMENT THESE TWO LINES FOR TEENSY AUDIO BOARD:

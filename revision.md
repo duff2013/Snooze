@@ -1,3 +1,8 @@
+><b>Updated (12/9/18 v6.3.4)</b><br>
+* Fixed sleep wake souce reporting.<br>
+* sleep compare now works.<br>
+* add more comments.<br>
+
 ><b>Updated (11/20/18 v6.3.3)</b><br>
 * Added F_CPU 256MHz.<br>
 
