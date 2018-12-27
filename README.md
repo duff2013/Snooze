@@ -21,7 +21,7 @@ Teensy 3.x
 Digital pins: 2,4,6,7,9,10,11,13,16,21,22,26,30,33
 
 Teensy LC
-Digital pins: 2,6,7,9,10,11,16,21,22
+Digital pins: 6,9,10,11,13,16,21,22.
 ********************************************************/
 digital.pinMode(21, INPUT_PULLUP, RISING);//pin, mode, type
 digital.pinMode(22, INPUT_PULLUP, RISING);//pin, mode, type
@@ -74,7 +74,7 @@ timer.setTimer(5000);// milliseconds
 * Digital pins: 2,4,6,7,9,10,11,13,16,21,22,26,30,33
 *
 * Teensy LC
-* Digital pins: 2,6,7,9,10,11,16,21,22
+* Digital pins: 6,9,10,11,13,16,21,22.
 ********************************************************/
 digital.pinMode(21, INPUT_PULLUP, RISING);//pin, mode, type
 digital.pinMode(22, INPUT_PULLUP, RISING);//pin, mode, type
