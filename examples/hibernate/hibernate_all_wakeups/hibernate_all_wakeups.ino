@@ -50,7 +50,7 @@ void setup() {
      Digtal pins: 2,4,6,7,9,10,11,13,16,21,22,26,30,33
      
      Teensy LC
-     Digtal pins: 2,6,7,9,10,11,16,21,22
+     Digtal pins: 6,9,10,11,13,16,21,22.
      ********************************************************/
     digital.pinMode(21, INPUT_PULLUP, RISING);//pin, mode, type
     digital.pinMode(22, INPUT_PULLUP, RISING);//pin, mode, type
