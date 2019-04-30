@@ -168,8 +168,8 @@ public:
      ***********************************************************************************/
     template<class ...Tail>
     SnoozeBlock ( SnoozeBlock &head, Tail&... tail ) :
-			next_block { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr },
-			local_block( -1 ), isUsed( false ), isDriver( false ) {
+                next_block { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr },
+                local_block( -1 ), isUsed( false ), isDriver( false )
         
         if ( mode < VLLS3 ) mode = RUN;
         // number of drivers left to connected to the Snooze Block
