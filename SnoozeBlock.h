@@ -168,7 +168,7 @@ public:
      ***********************************************************************************/
     template<class ...Tail>
     SnoozeBlock ( SnoozeBlock &head, Tail&... tail ) :
-                next_block { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr },
+                next_block { nullptr, },
                 local_block( -1 ), isUsed( false ), isDriver( false )
         
         if ( mode < VLLS3 ) mode = RUN;
@@ -223,7 +223,7 @@ public:
      *  @return this
      ***********************************************************************************/
     SnoozeBlock ( void ) :
-                next_block { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr },
+                next_block { nullptr, },
                 local_block( -1 ),
                 isUsed( false ),
                 isDriver( false )
