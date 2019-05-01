@@ -45,12 +45,12 @@
  *  @param SNOOZE_BLOCK - Connected drivers
  *
  *  @return none
- ***********************************************************************************/
+ **********************************************************************************/
 #define SNOOZE_BLOCK SnoozeBlock &configuration
 #define TYPE uint8_t
 #define REDUCED_CPU_BLOCK( SNOOZE_BLOCK )   \
 for ( TYPE __ToDo = SNOOZE_BLOCK.set_runlp( SNOOZE_BLOCK );  __ToDo;  __ToDo = SNOOZE_BLOCK.set_run( SNOOZE_BLOCK ) )
-/***********************************************************************************/
+/**********************************************************************************/
 typedef enum {
     TSI          = 3,
     CMP          = 4,
@@ -80,12 +80,12 @@ private:
     SnoozeBlock *next_block[8];
     static uint8_t global_block_count;
     int8_t local_block;
-    /***********************************************************************************
+    /*******************************************************************************
      *  Driver list to be called after sleep
      *
      *  @param p   Call SnoozeBlock virtual functions
      *  @param idx Array index of the SnoozeBlock list
-     ***********************************************************************************/
+     ******************************************************************************/
     void reverseList( SnoozeBlock *p, uint8_t idx ) {
         if ( p != NULL ) {
             reverseList(p->next_block[idx], idx );
@@ -95,12 +95,12 @@ private:
         }
     }
     
-    /***********************************************************************************
+    /*******************************************************************************
      *  Driver list to be called before sleep
      *
      *  @param p   Call SnoozeBlock virtual functions
      *  @param idx Array index of the SnoozeBlock
-     ***********************************************************************************/
+     ******************************************************************************/
     void forwardList( SnoozeBlock *p, uint8_t idx ) {
         for ( ; p; p = p->next_block[idx] ) {
             if ( p->isUsed ) {
@@ -109,9 +109,9 @@ private:
         }
     }
 protected:
-    /***********************************************************************************
+    /*******************************************************************************
      *  Fired after waking from LLS-VLLS sleep modes
-     ***********************************************************************************/
+     ******************************************************************************/
     static void wakeupIsr( void ) {
         SnoozeBlock *p = SnoozeBlock::root_block[current_block];
         
@@ -157,18 +157,19 @@ protected:
     static SnoozeBlock *root_class_address[8];
     static uint8_t current_block;
 public:
-    /***********************************************************************************
+    /*******************************************************************************
      *  Constructor - Recursively connects drivers to this SnoozeBlock using a linked list
      *
      *  @param head Driver
      *  @param tail Driver
      *
      *  @return nothing
-     ***********************************************************************************/
+     ******************************************************************************/
     template<class ...Tail>
     SnoozeBlock ( SnoozeBlock &head, Tail&... tail ) :
-                next_block { nullptr, },
+                //next_block ( nullptr, ),
                 local_block( -1 ), isUsed( false ), isDriver( false )
+    {
         
         if ( mode < VLLS3 ) mode = RUN;
         // number of drivers left to connected to the Snooze Block
@@ -216,13 +217,13 @@ public:
         SnoozeBlock( tail... );
     }
     
-    /***********************************************************************************
+    /*******************************************************************************
      *  Constructor - Inherited Drivers call this constructor
      *
      *  @return this
-     ***********************************************************************************/
+     ******************************************************************************/
     SnoozeBlock ( void ) :
-                next_block { nullptr, },
+                //next_block { nullptr, },
                 local_block( -1 ),
                 isUsed( false ),
                 isDriver( false )
@@ -230,11 +231,10 @@ public:
         
     }
     
-    /***********************************************************************************
+    /*******************************************************************************
      *  Deconstructor - Deallocate "this" SnoozeBlock
-     ***********************************************************************************/
+     ******************************************************************************/
     ~SnoozeBlock ( void ) {
-
         if ( local_block == -1 ) return;
         if ( root_class_address[local_block] == this ) {
             SnoozeBlock *u;
@@ -251,15 +251,14 @@ public:
         }
     }
     
-    /***********************************************************************************
+    /*******************************************************************************
      *  Combine SnoozeBlock(s)
      *
-     *  @param rhs Driver or SnoozeBlock(s) to combine with the lhs
+     *  @param replace lhs driver(s) with rhs driver(s)
      *
      *  @return this
-     ***********************************************************************************/
+     ******************************************************************************/
     SnoozeBlock & operator = ( const SnoozeBlock &rhs ) {
-        
         if ( isDriver ) return *this;
         
         if ( local_block == -1 ) local_block = global_block_count++;
@@ -291,13 +290,13 @@ public:
         return *this;
     }
 
-    /***********************************************************************************
+    /*******************************************************************************
      *  Remove SnoozeBlock(s)
      *
-     *  @param rhs Driver or SnoozeBlock(s) to subtract with the lhs
+     *  @param subtract lhs driver(s) from rhs driver(s)
      *
      *  @return this
-     ***********************************************************************************/
+     ******************************************************************************/
     SnoozeBlock & operator -= ( const SnoozeBlock &rhs ) {
         if ( isDriver || local_block == -1 ) return *this;
         
@@ -343,17 +342,15 @@ public:
         return *this;
     }
     
-    /***********************************************************************************
+    /*******************************************************************************
      *  Add SnoozeBlock(s)
      *
-     *  @param rhs Driver or SnoozeBlock(s) to add with the lhs
+     *  @param add lhs driver(s) to rhs driver(s)
      *
      *  @return this
-     ***********************************************************************************/
+     ******************************************************************************/
     SnoozeBlock & operator += ( const SnoozeBlock &rhs ) {
-        
         if ( isDriver ) return *this;
-        //int b = local_block;
         if ( local_block == -1 ) local_block = global_block_count++;
         
         if ( rhs.isDriver ) {
@@ -392,29 +389,32 @@ public:
         }
         return *this;
     }
-    /***********************************************************************************
+
+    /*******************************************************************************
      *  Default add SnoozeBlock(s) - does nothing
      *
-     *  @param rhs Driver or SnoozeBlock(s) to combine with the lhs
+     *  @param
      *
      *  @return this
-     ***********************************************************************************/
+     ******************************************************************************/
     SnoozeBlock & operator + ( const SnoozeBlock &rhs ) {
         return *this;
     }
-    /***********************************************************************************
+
+    /*******************************************************************************
      *  Default subtract SnoozeBlock(s) - does nothing
      *
-     *  @param rhs Driver or SnoozeBlock(s) to combine with the lhs
+     *  @param
      *
      *  @return this
-     ***********************************************************************************/
+     ******************************************************************************/
     SnoozeBlock & operator - ( const SnoozeBlock &rhs ) {
         return *this;
     }
-    /***********************************************************************************
+
+    /*******************************************************************************
      *  call drivers enable functions
-     ***********************************************************************************/
+     ******************************************************************************/
     virtual void enableDriver ( void ) {
         if ( local_block == -1 ) return;
         current_block = local_block;
@@ -423,29 +423,29 @@ public:
         forwardList( p, local_block );
     }
     
-    /***********************************************************************************
+    /*******************************************************************************
      *  call drivers disable functions
-     ***********************************************************************************/
+     ******************************************************************************/
     virtual void disableDriver ( void ) {
         if ( local_block == -1 ) return;
         SnoozeBlock *p = SnoozeBlock::root_block[local_block];
         reverseList( p, local_block );
     }
     
-    /***********************************************************************************
+    /*******************************************************************************
      *  drivers override this function to clear isr flags, gets called in wakeup isr
-     ***********************************************************************************/
+     ******************************************************************************/
     virtual void clearIsrFlags ( void ) {
     
     }
     
-    /***********************************************************************************
+    /*******************************************************************************
      *  called before low speed operation (2 MHZ)
      *
      *  @param SNOOZE_BLOCK
      *
      *  @return true
-     ***********************************************************************************/
+     ******************************************************************************/
     uint8_t set_runlp( SNOOZE_BLOCK ) __attribute__((always_inline, unused)) {
         SnoozeBlock *p = &configuration;
         p->mode = RUN_LP;
@@ -458,13 +458,13 @@ public:
         return 1;
     }
     
-    /***********************************************************************************
+    /*******************************************************************************
      *  called before high speed operation (F_CPU MHZ)
      *
      *  @param SNOOZE_BLOCK
      *
      *  @return false
-     ***********************************************************************************/
+     ******************************************************************************/
     uint8_t set_run( SNOOZE_BLOCK ) __attribute__((always_inline, unused)) {
         SnoozeBlock *p = &configuration;
         p->mode = RUN;
