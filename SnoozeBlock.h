@@ -118,7 +118,6 @@ protected:
         if ( mode == VLPW || mode == VLPS ) {
             uint32_t ipsr;
             __asm__ volatile("mrs %0, ipsr\n" : "=r" (ipsr)::);
-            //ipsr -= 16;
             switch (ipsr-16) {
                 case IRQ_CMP0:
                     p->source = COMPARE_WAKE;
