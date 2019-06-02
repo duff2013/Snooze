@@ -1,7 +1,7 @@
 # Snooze v6.3.4
 
 ---
-Low power library for the Teensy LC/3.2/3.5/3.6 class microcontrollers.
+Low power library for the Teensy LC/3.2/3.5/3.6/4.0 class microcontrollers.
 ---
 Example usage:
 ```
@@ -40,7 +40,7 @@ digitalWrite(LED_BUILTIN, LOW);
 ```
 
 Current Divers:
-1. touch     - Using the Kinetis touch module to wake your Teensy. 
+1. touch     - Using the Kinetis touch module to wake your Teensy. (Teensy 3.5 does not have Touch)
 2. digital   - Wake your Teensy with a RISING or FALLING event on a certain pin.
 3. timer     - Use the Low Power timer in milliseconds to wake your Teensy,
 4. alarm     - Use the RTC clock to wake your Teensy.
@@ -92,7 +92,7 @@ digitalWrite(LED_BUILTIN, LOW);
 }
 ```
 <b>Lets break out each part out so we can see what is going on here:</b><br>
-1. Include the Snooze library header. This brings in Snooze, SnoozeBlock, Core Driver Classes.<br>
+1. Include the Snooze library header. This brings in Snooze, SnoozeBlock, HAL and HAL Driver Classes.<br>
 ```#include <Snooze.h>```<br>
 2. Next we load the drivers classes we want visible to install.<br>
 ```
@@ -143,10 +143,11 @@ This class is the top tier code for Snooze and handles the calling the low level
 This class works by connecting the Driver Class to the Snooze Class and can have up to 8 class instance defined for any one sketch. This class really does all the glue work to call the drivers before and after sleeping. There are three special virtual functions that need to be explained.
 1. enableDriver     - Driver can override this function, it is called right before sleeping.
 2. disableDriver    - Driver can override this function, it gets called right after sleeping.
-3. clearFlags       - Driver can override this function, gets called by interrupts from a driver in 'sleep' mode or directly from deepSleep and hibernate wakeup interrupt.
+3. clearFlags       - Driver can override this function, typically gets called from an interrupt defined in the HAL.
 <h4> Driver Class:</h4>
 ...
-
+<h4> HAL:</h4>
+The HAL (Hardware Abstraction Layer) is where each type of microcrontroller adds it's low power functionality. The SnoozeBlock is decoupled from any HAL so adding new micros archtechures in the future will be possible. 
 ---
 <br>
 
