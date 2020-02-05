@@ -15,8 +15,10 @@ SnoozeDigital digital;
 SnoozeCompare compare;
 SnoozeTimer timer;
 SnoozeAlarm  alarm;
+#if defined(__MKL26Z64__)
 // configures the lc's 5v data buffer (OUTPUT, LOW) for low power
 Snoozelc5vBuffer  lc5vBuffer;
+#endif
 /***********************************************************
  Teensy 3.6/LC can't use Timer Driver with either Touch or
  Compare Drivers and Touch can't be used with Compare.
@@ -52,8 +54,8 @@ void setup() {
      Teensy LC
      Digtal pins: all interrupt able pins
      ********************************************************/
-    digital.pinMode(21, INPUT_PULLUP, RISING);//pin, mode, type
-    digital.pinMode(22, INPUT_PULLUP, RISING);//pin, mode, type
+    digital.pinMode(21, INPUT_PULLUP, FALLING);//pin, mode, type
+    digital.pinMode(22, INPUT_PULLUP, FALLING);//pin, mode, type
     
     /********************************************************
      Teensy 3.x only currently.

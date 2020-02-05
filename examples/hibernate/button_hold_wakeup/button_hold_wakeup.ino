@@ -14,9 +14,10 @@
 
 // Load drivers
 SnoozeDigital digital;// this is the pin wakeup driver
+#if defined(__MKL26Z64__)
 // configures the lc's 5v data buffer (OUTPUT, LOW) for low power
 Snoozelc5vBuffer lc5vBuffer;
-
+#endif
 // use bounce for pin 21, debounce of 5ms
 Bounce button = Bounce(21, 5);
 

@@ -38,7 +38,7 @@ class SnoozeUSBSerial : public SnoozeBlock {
 private:
     virtual void enableDriver( uint8_t type );
     virtual void disableDriver( uint8_t type );
-    virtual void clearIsrFlags( void );
+    virtual void clearIsrFlags( uint32_t ipsr );
     static void isr( void );
 public:
     SnoozeUSBSerial( void ) {

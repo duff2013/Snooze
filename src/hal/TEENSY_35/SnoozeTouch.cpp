@@ -25,7 +25,7 @@ void SnoozeTouch::enableDriver( uint8_t type ) {
 /*******************************************************************************
  *
  *******************************************************************************/
-void SnoozeTouch::clearIsrFlags( void ) {
+void SnoozeTouch::clearIsrFlags( uint32_t ipsr ) {
     isr( );
 }
 

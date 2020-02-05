@@ -42,7 +42,7 @@ private:
     uint8_t return_isr_enabled;
     virtual void disableDriver( uint8_t type );
     virtual void enableDriver( uint8_t type );
-    virtual void clearIsrFlags( void );
+    virtual void clearIsrFlags( uint32_t ipsr );
     static void isr( void );
     uint16_t period;
     uint32_t PSR;

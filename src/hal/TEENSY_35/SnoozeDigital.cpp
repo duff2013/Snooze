@@ -46,7 +46,8 @@ int SnoozeDigital::pinMode( int _pin, int mode, int type ) {
  *******************************************************************************/
 void SnoozeDigital::enableDriver( uint8_t type ) {
     sleep_type = type;
-    if ( mode == RUN_LP ) { return; }
+    //if ( mode == RUN_LP ) { return; }
+    if (type == 0) return;
     uint64_t _pin = pin;
     isr_pin = pin;
     //if ( mode == VLPW || mode == VLPS ) {
@@ -140,7 +141,8 @@ void SnoozeDigital::enableDriver( uint8_t type ) {
  *  Disable interrupt and configure pin to orignal state.
  *******************************************************************************/
 void SnoozeDigital::disableDriver( uint8_t type ) {
-    if ( mode == RUN_LP ) { return; }
+    //if ( mode == RUN_LP ) { return; }
+    if (type == 0) return;
     uint64_t _pin = pin;
     while ( __builtin_popcountll( _pin ) ) {
         uint32_t pinNumber = 63 - __builtin_clzll( _pin );
@@ -179,7 +181,7 @@ void SnoozeDigital::disableDriver( uint8_t type ) {
 /*******************************************************************************
  *  for LLWU wakeup ISR to call actual digital ISR code
  *******************************************************************************/
-void SnoozeDigital::clearIsrFlags( void ) {
+void SnoozeDigital::clearIsrFlags( uint32_t ipsr ) {
     isr( );
 }
 
@@ -257,7 +259,7 @@ void SnoozeDigital::isr( void ) {
     else if ( isfr_e & CORE_PIN33_BITMASK ) source = 33;
     else if ( isfr_e & CORE_PIN34_BITMASK ) source = 34;
     
-    wake_source = source;
+    //wake_source = source;
     
 }
 

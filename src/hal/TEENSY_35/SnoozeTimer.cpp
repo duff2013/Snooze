@@ -117,7 +117,7 @@ void SnoozeTimer::enableDriver( uint8_t type ) {
 /*******************************************************************************
  *  clears low power timer flags called from sleep llwu wakeup
  *******************************************************************************/
-void SnoozeTimer::clearIsrFlags( void ) {
+void SnoozeTimer::clearIsrFlags( uint32_t ipsr ) {
     isr( );
 }
 
@@ -127,7 +127,7 @@ void SnoozeTimer::clearIsrFlags( void ) {
 void SnoozeTimer::isr( void ) {
     if ( !( SIM_SCGC5 & SIM_SCGC5_LPTIMER ) ) return;
     systick_millis_count += lptmrUpdateSystick;
-    LPTMR0_CSR = LPTMR_CSR_TCF;
+    LPTMR0_CSR |= LPTMR_CSR_TCF;
 }
 
 #endif

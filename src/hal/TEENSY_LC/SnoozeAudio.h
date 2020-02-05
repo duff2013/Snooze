@@ -46,8 +46,8 @@
 
 class SnoozeAudio : public SnoozeBlock {
 private:
-    virtual void disableDriver( void );
-    virtual void enableDriver( void );
+    virtual void disableDriver( uint8_t type );
+    virtual void enableDriver( uint8_t type );
     bool audioADC;
     bool audioDAC;
 public:

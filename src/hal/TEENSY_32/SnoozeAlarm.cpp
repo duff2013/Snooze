@@ -58,9 +58,11 @@ void SnoozeAlarm::setAlarm( time_t alarmTime ){
 /*******************************************************************************
  *  <#Description#>
  *******************************************************************************/
-void SnoozeAlarm::disableDriver( void ) {
-    if ( mode == RUN_LP ) { return; }
-    if ( mode == VLPW || mode == VLPS ) {
+void SnoozeAlarm::disableDriver( uint8_t type ) {
+    //if ( mode == RUN_LP ) { return; }
+    if (type == 0) return;
+    //if ( mode == VLPW || mode == VLPS ) {
+    if ( type == 1 ) {
         if ( return_isr_enabled == 0 )  NVIC_DISABLE_IRQ( IRQ_RTC_ALARM ); //disable irq
         NVIC_SET_PRIORITY( IRQ_RTC_ALARM, return_priority );// return priority
         __disable_irq( );
@@ -74,9 +76,11 @@ void SnoozeAlarm::disableDriver( void ) {
 /*******************************************************************************
  *  <#Description#>
  *******************************************************************************/
-void SnoozeAlarm::enableDriver( void ) {
-    if ( mode == RUN_LP ) { return; }
-    if ( mode == VLPW || mode == VLPS ) {
+void SnoozeAlarm::enableDriver( uint8_t type ) {
+    //if ( mode == RUN_LP ) { return; }
+    if (type == 0) return;
+    //if ( mode == VLPW || mode == VLPS ) {
+    if ( type == 1 ) {
         return_priority = NVIC_GET_PRIORITY( IRQ_RTC_ALARM );//get current priority
         int priority = nvic_execution_priority( );// get current priority
         // if running from handler set priority higher than current handler
@@ -92,11 +96,12 @@ void SnoozeAlarm::enableDriver( void ) {
     else SIM_SCGC6 |= SIM_SCGC6_RTC;
     
     
-    if ( mode == VLPW || mode == VLPS) {
+    //if ( mode == VLPW || mode == VLPS) {
+    if ( type == 1 ) {
         return_isr_enabled = NVIC_IS_ENABLED( IRQ_RTC_ALARM );
         if ( return_isr_enabled == 0 ) NVIC_ENABLE_IRQ( IRQ_RTC_ALARM );
     } else {
-        //llwu_configure_modules_mask( LLWU_RTCA_MOD );
+        llwu_configure_modules_mask( LLWU_RTCA_MOD );
     }
     
     IER = RTC_IER;
@@ -110,7 +115,8 @@ void SnoozeAlarm::enableDriver( void ) {
 /*******************************************************************************
  *  <#Description#>
  *******************************************************************************/
-void SnoozeAlarm::clearIsrFlags( void ) {
+void SnoozeAlarm::clearIsrFlags( uint32_t ipsr ) {
+    digitalWrite(LED_BUILTIN, HIGH);
     isr( );
 }
 
@@ -120,6 +126,7 @@ void SnoozeAlarm::clearIsrFlags( void ) {
 void SnoozeAlarm::isr( void ) {
     if ( !( SIM_SCGC6 & SIM_SCGC6_RTC ) ) return;
     RTC_TAR = RTC_TSR + 1;
+    RTC_SR |= RTC_SR_TAF;
 }
 
 #endif

@@ -1,8 +1,12 @@
-# Snooze v6.3.4
+# Snooze v6.3.5
 
 ---
 Low power library for the Teensy LC/3.2/3.5/3.6/4.0 class microcontrollers.
 ---
+***
+This is a maintenance update because of a change in the new class structure which the main Snooze Class is now decoupled from the Drivers and HAL.  Only deepSleep and hibernate work with T.LC and 3.x . Work on the  Teensy 4.0 is continuing.
+***
+
 Example usage:
 ```
 #include <Snooze.h>

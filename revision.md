@@ -1,3 +1,11 @@
+><b>Updated (2/5/30 v6.3.5)</b><br>
+* Maintenance release.<br>
+* Uncoupled Snooze Class from drivers.<br>
+* Only deepSleep and hibernate work so far.<br>
+* Only LLS sleep mode for now.<br>
+* Checked all wakeups for TLC and 3.x.<br>
+* Hopefully improved wakeup sequence.<br>
+
 ><b>Updated (12/9/18 v6.3.4)</b><br>
 * Fixed sleep wake souce reporting.<br>
 * sleep compare now works.<br>

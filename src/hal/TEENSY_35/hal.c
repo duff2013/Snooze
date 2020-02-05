@@ -21,7 +21,7 @@ typedef struct {
     uint8_t PE8;
 #endif
     uint8_t ME;
-    uint32_t wakeupSource;
+    int32_t wakeupSource;
     uint32_t llwuFlag;
 } llwu_mask_t;
 
@@ -104,9 +104,9 @@ volatile uint32_t PCR3 = 0;
 
 volatile DMAMEM int wake_source = -1;
 
-int llwu_disable( void );
+int llwu_disable( llwu_mask_t *mask );
 
-llwu_mask_t llwuMask;
+volatile llwu_mask_t llwuMask;
 
 //----------------------------------------------------------------------------------
 void wait( void ) {
@@ -263,28 +263,10 @@ void vlls3( void ) {
 }
 //----------------------------------------------------------------------------------
 void lls( void ) {
-#if defined(__MK66FX1M0__)
-#if F_CPU > 120000000
-    kinetis_hsrun_disable( );
-    
-    SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x03 );
-    ( void ) SMC_PMCTRL;
-    //SMC_STOPCTRL = 0x02;
-#else
     SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x03 ) ;
     ( void ) SMC_PMCTRL;
-#endif
-#else
-    SMC_PMCTRL = SMC_PMCTRL_STOPM( 0x03 ) ;
-    ( void ) SMC_PMCTRL;
-#endif
     // Now execute the __stop instruction to go into LLS
     __stop( );
-#if defined(__MK66FX1M0__)
-#if F_CPU > 120000000
-    kinetis_hsrun_enable( );
-#endif
-#endif
 }
 //----------------------------------------------------------------------------------
 void vlps( void ) {
@@ -896,7 +878,7 @@ void startup_early_hook( void ) {
 #endif
     if ( PMC_REGSC & PMC_REGSC_ACKISO ) {
         //llwuMask.llwuFlag = llwu_clear_flags( );// clear flags
-        llwuMask.wakeupSource = llwu_disable( );
+        //llwuMask.wakeupSource = llwu_disable( &llwuMask );
     }
 }
 //----------------------------------------------------------------------------------
@@ -924,108 +906,52 @@ void llwu_configure_filter( unsigned int pin_num, unsigned char filter_en, unsig
     }
 }
 //----------------------------------------------------------------------------------
-int llwu_disable( void ) {
-    llwu_mask_t *mask = &llwuMask;
-#if defined(HAS_KINETIS_LLWU_32CH)
-    if      ( mask->llwuFlag & LLWU_PF1_WUF0 ) mask->wakeupSource = 26;
-    else if ( mask->llwuFlag & LLWU_PF1_WUF3 ) mask->wakeupSource = 33;
-    else if ( mask->llwuFlag & LLWU_PF1_WUF4 ) mask->wakeupSource = 4;
-    else if ( mask->llwuFlag & LLWU_PF1_WUF5 ) mask->wakeupSource = 16;
-    else if ( mask->llwuFlag & LLWU_PF1_WUF6 ) mask->wakeupSource = 22;
-    else if ( mask->llwuFlag & LLWU_PF1_WUF7 ) mask->wakeupSource = 9;
+int llwu_disable( llwu_mask_t *mask ) {
+    uint32_t flag = mask->llwuFlag;
+    int source = -1;
+    if      ( flag & LLWU_F1_WUF0 ) source = 26;
+    else if ( flag & LLWU_F1_WUF3 ) source = 33;
+    else if ( flag & LLWU_F1_WUF4 ) source = 4;
+    else if ( flag & LLWU_F1_WUF5 ) source = 16;
+    else if ( flag & LLWU_F1_WUF6 ) source = 22;
+    else if ( flag & LLWU_F1_WUF7 ) source = 9;
     
-    else if ( mask->llwuFlag & LLWU_PF1_WUF0 ) mask->wakeupSource = 59;
-    else if ( mask->llwuFlag & LLWU_PF1_WUF1 ) mask->wakeupSource = 60;
-    else if ( mask->llwuFlag & LLWU_PF1_WUF2 ) mask->wakeupSource = 62;
+    else if ( ( flag>>8 ) & LLWU_F2_WUF8  ) source = 10;
+    else if ( ( flag>>8 ) & LLWU_F2_WUF9  ) source = 13;
+    else if ( ( flag>>8 ) & LLWU_F2_WUF10 ) source = 11;
+    else if ( ( flag>>8 ) & LLWU_F2_WUF11 ) source = 30;
+    else if ( ( flag>>8 ) & LLWU_F2_WUF12 ) source = 2;
+    else if ( ( flag>>8 ) & LLWU_F2_WUF13 ) source = 7;
+    else if ( ( flag>>8 ) & LLWU_F2_WUF14 ) source = 6;
+    else if ( ( flag>>8 ) & LLWU_F2_WUF15 ) source = 21;
     
-    else if ( ( mask->llwuFlag>>8 ) & LLWU_PF2_WUF8  ) mask->wakeupSource = 10;
-    else if ( ( mask->llwuFlag>>8 ) & LLWU_PF2_WUF9  ) mask->wakeupSource = 13;
-    else if ( ( mask->llwuFlag>>8 ) & LLWU_PF2_WUF10 ) mask->wakeupSource = 11;
-    else if ( ( mask->llwuFlag>>8 ) & LLWU_PF2_WUF11 ) mask->wakeupSource = 30;
-    else if ( ( mask->llwuFlag>>8 ) & LLWU_PF2_WUF12 ) mask->wakeupSource = 2;
-    else if ( ( mask->llwuFlag>>8 ) & LLWU_PF2_WUF13 ) mask->wakeupSource = 7;
-    else if ( ( mask->llwuFlag>>8 ) & LLWU_PF2_WUF14 ) mask->wakeupSource = 6;
-    else if ( ( mask->llwuFlag>>8 ) & LLWU_PF2_WUF15 ) mask->wakeupSource = 21;
-    
-    else if ( ( mask->llwuFlag>>8 ) & LLWU_PF2_WUF15 ) mask->wakeupSource = 21;
-    else if ( ( mask->llwuFlag>>8 ) & LLWU_PF2_WUF15 ) mask->wakeupSource = 21;
-    
-    else if ( ( mask->llwuFlag>>24 ) & LLWU_ME_WUME0 ) mask->wakeupSource = 36;
-    else if ( ( mask->llwuFlag>>24 ) & LLWU_ME_WUME1 ) mask->wakeupSource = 34;
-    else if ( ( mask->llwuFlag>>24 ) & LLWU_ME_WUME4 ) mask->wakeupSource = 37;
-    else if ( ( mask->llwuFlag>>24 ) & LLWU_ME_WUME5 ) mask->wakeupSource = 35;
-    
-#elif defined(HAS_KINETIS_LLWU_16CH)
-    if      ( mask->llwuFlag & LLWU_F1_WUF0 ) mask->wakeupSource = 26;
-    else if ( mask->llwuFlag & LLWU_F1_WUF3 ) mask->wakeupSource = 33;
-    else if ( mask->llwuFlag & LLWU_F1_WUF4 ) mask->wakeupSource = 4;
-    else if ( mask->llwuFlag & LLWU_F1_WUF5 ) mask->wakeupSource = 16;
-    else if ( mask->llwuFlag & LLWU_F1_WUF6 ) mask->wakeupSource = 22;
-    else if ( mask->llwuFlag & LLWU_F1_WUF7 ) mask->wakeupSource = 9;
-    
-    else if ( ( mask->llwuFlag>>8 ) & LLWU_F2_WUF8  ) mask->wakeupSource = 10;
-    else if ( ( mask->llwuFlag>>8 ) & LLWU_F2_WUF9  ) mask->wakeupSource = 13;
-    else if ( ( mask->llwuFlag>>8 ) & LLWU_F2_WUF10 ) mask->wakeupSource = 11;
-    else if ( ( mask->llwuFlag>>8 ) & LLWU_F2_WUF11 ) mask->wakeupSource = 30;
-    else if ( ( mask->llwuFlag>>8 ) & LLWU_F2_WUF12 ) mask->wakeupSource = 2;
-    else if ( ( mask->llwuFlag>>8 ) & LLWU_F2_WUF13 ) mask->wakeupSource = 7;
-    else if ( ( mask->llwuFlag>>8 ) & LLWU_F2_WUF14 ) mask->wakeupSource = 6;
-    else if ( ( mask->llwuFlag>>8 ) & LLWU_F2_WUF15 ) mask->wakeupSource = 21;
-    
-    else if ( ( mask->llwuFlag>>16 ) & LLWU_F3_MWUF0 ) mask->wakeupSource = 36;
-    else if ( ( mask->llwuFlag>>16 ) & LLWU_F3_MWUF1 ) mask->wakeupSource = 34;
-    else if ( ( mask->llwuFlag>>16 ) & LLWU_F3_MWUF4 ) mask->wakeupSource = 37;
-#ifdef KINETISK
-    else if ( ( mask->llwuFlag>>16 ) & LLWU_F3_MWUF3 ) mask->wakeupSource = 34;
-    else if ( ( mask->llwuFlag>>16 ) & LLWU_F3_MWUF2 ) mask->wakeupSource = 34;
-    else if ( ( mask->llwuFlag>>16 ) & LLWU_F3_MWUF5 ) mask->wakeupSource = 35;
-#endif
-#endif
+    else if ( ( flag>>16 ) & LLWU_F3_MWUF0 ) source = 36;
+    else if ( ( flag>>16 ) & LLWU_F3_MWUF1 ) source = 34;
+    else if ( ( flag>>16 ) & LLWU_F3_MWUF4 ) source = 37;
+    else if ( ( flag>>16 ) & LLWU_F3_MWUF3 ) source = 34;
+    else if ( ( flag>>16 ) & LLWU_F3_MWUF2 ) source = 34;
+    else if ( ( flag>>16 ) & LLWU_F3_MWUF5 ) source = 35;
     LLWU_PE1 = 0;
     LLWU_PE2 = 0;
     LLWU_PE3 = 0;
     LLWU_PE4 = 0;
-#if defined(HAS_KINETIS_LLWU_32CH)
-    LLWU_PE5 = 0;
-    LLWU_PE6 = 0;
-    LLWU_PE7 = 0;
-    LLWU_PE8 = 0;
-#endif
     mask->PE1 = 0;
     mask->PE2 = 0;
     mask->PE3 = 0;
     mask->PE4 = 0;
-#if defined(HAS_KINETIS_LLWU_32CH)
-    mask->PE5 = 0;
-    mask->PE6 = 0;
-    mask->PE7 = 0;
-    mask->PE8 = 0;
-#endif
     LLWU_ME  = mask->ME;
     mask->ME = 0;
     mask->llwuFlag = 0;
-    return mask->wakeupSource;
+    return source;
 }
 //----------------------------------------------------------------------------------
 uint32_t llwu_clear_flags( void ) {
-    
-#if defined(HAS_KINETIS_LLWU_32CH)
-    uint32_t flag = ( LLWU_PF1 | LLWU_PF2 << 8 | LLWU_PF3 << 16 | LLWU_MF5 << 24 );
-    LLWU_PF1 = 0xFF;
-    LLWU_PF2 = 0xFF;
-    LLWU_PF3 = 0xFF;
-    LLWU_PF4 = 0xFF;
-    LLWU_MF5 = 0xFF;
-    LLWU_FILT1 = 0x80;
-    LLWU_FILT2 = 0x80;
-#elif defined(HAS_KINETIS_LLWU_16CH)
     uint32_t flag = ( LLWU_F1 | LLWU_F2 << 8 | LLWU_F3 << 16 );
     LLWU_F1 = 0xFF;
     LLWU_F2 = 0xFF;
     LLWU_F3 = 0xFF;
     LLWU_FILT1 = 0x80;
     LLWU_FILT2 = 0x80;
-#endif
     return flag;
 }
 //----------------------------------------------------------------------------------
@@ -1069,9 +995,7 @@ void llwu_configure_modules_mask( uint8_t module ) {
     else if ( module & LLWU_TSI_MOD )  mask->ME |= LLWU_ME_WUME4;
     else if ( module & LLWU_CMP0_MOD ) mask->ME |= LLWU_ME_WUME1;
     else if ( module & LLWU_CMP1_MOD ) mask->ME |= LLWU_ME_WUME2;
-#ifdef KINETISK
     else if( module & LLWU_CMP2_MOD )  mask->ME |= LLWU_ME_WUME3;
-#endif
 }
 //----------------------------------------------------------------------------------
 void llwu_configure_pin_mask( uint8_t pin, uint8_t rise_fall ) {
@@ -1101,8 +1025,7 @@ void llwu_configure_pin_mask( uint8_t pin, uint8_t rise_fall ) {
     else if ( pin == 62 ) mask->PE1 |= LLWU_PE1_WUPE2( detect_type );
 }
 //----------------------------------------------------------------------------------
-
-void ( * clear_flags )( void );
+void ( * clear_flags )( uint32_t );
 //----------------------------------------------------------------------------------
 void wakeup_isr( void ) {
     int source = -1;
@@ -1112,62 +1035,48 @@ void wakeup_isr( void ) {
         case IRQ_CMP0:
             source = COMPARE_WAKE;
             break;
-#if defined(KINETISK)
         case IRQ_CMP1:
             source = COMPARE_WAKE;
             break;
         case IRQ_CMP2:
             source = COMPARE_WAKE;
             break;
-#endif
         case IRQ_RTC_ALARM:
             source = ALARM_WAKE;
             break;
         case IRQ_LPTMR:
             source = TIMER_WAKE;
             break;
-#if !defined(__MK64FX512__)
-        case IRQ_TSI:
-            source = TOUCH_WAKE;
-            break;
-#endif
         case IRQ_PORTA:
             
             break;
-            
         case IRQ_PORTB:
             
             break;
-            
         case IRQ_PORTC:
  
             break;
-            
         case IRQ_PORTD:
             
             break;
-            
         case IRQ_PORTE:
             
             break;
-            
         case IRQ_LLWU:
             llwuMask.llwuFlag = llwu_clear_flags( );
+            source = llwu_disable( &llwuMask );
             pbe_pee( );
+            clear_flags( ipsr );
             break;
-            
         default:
             source = -1;
             break;
     }
     wake_source = source;
-    clear_flags( );
-    digitalWrite(LED_BUILTIN, LOW);
-    //digitalWrite(LED_BUILTIN, HIGH);
 }
 //----------------------------------------------------------------------------------
-void hal_initialize( void ( * ptr )( void ) ) {
-    if ( mode < VLLS3 ) mode = RUN;
+void hal_initialize( void ( * ptr )( uint32_t ) ) {
+    //if ( mode < VLLS3 ) mode = RUN;
     SIM_SOPT1CFG |= SIM_SOPT1CFG_USSWE;
     SIM_SOPT1 &= ~SIM_SOPT1_USBSSTBY;
     attachInterruptVector( IRQ_LLWU, wakeup_isr );
@@ -1221,8 +1130,8 @@ int hal_deepSleep ( void ) {
         default:
             break;
     }*/
-    int source = llwu_disable( );
-    return source;
+    //int source = llwu_disable( );
+    return wake_source;//source;
 }
 //----------------------------------------------------------------------------------
 int hal_hibernate ( void ) {
@@ -1255,11 +1164,12 @@ int hal_hibernate ( void ) {
         default:
             break;
     }*/
-    int source = llwu_disable( );
+    //int source = llwu_disable( );
     // allows the SOPT1 USBSSTBY bit to be written
     SIM_SOPT1CFG |= SIM_SOPT1CFG_USSWE;
     SIM_SOPT1 &= ~SIM_SOPT1_USBSSTBY;
     PORTA_PCR3 = PCR3;
-    return source;
+    //return source;
+    return wake_source;//source;
 }
 #endif /* MK64FX512 */

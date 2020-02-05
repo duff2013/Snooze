@@ -10,8 +10,10 @@
 SnoozeDigital     digital;
 SnoozeTimer       timer;
 SnoozeUSBSerial   usb;
+#if defined(__MKL26Z64__)
 // configures the lc's 5v data buffer (OUTPUT, LOW) for low power
 Snoozelc5vBuffer  lc5vBuffer;
+#endif
 /***********************************************************
  Install drivers, timer to wake and USB Serial Driver to
  fix printing to serial monitor after sleeping.
@@ -42,8 +44,8 @@ void setup() {
      Define digital pins for waking the teensy up. This
      combines pinMode and attachInterrupt in one function.
      ********************************************************/
-    digital.pinMode(21, INPUT_PULLUP, RISING);//pin, mode, type
-    digital.pinMode(22, INPUT_PULLUP, RISING);//pin, mode, type
+    digital.pinMode(21, INPUT_PULLUP, FALLING);//pin, mode, type
+    digital.pinMode(22, INPUT_PULLUP, FALLING);//pin, mode, type
     // sleep index
     idx = 0;
 }

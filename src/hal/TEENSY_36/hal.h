@@ -45,7 +45,6 @@ for ( TYPE __ToDo = set_runlp( SNOOZE_BLOCK );  __ToDo;  __ToDo = set_run( SNOOZ
 #include "SnoozeDigital.h"
 #include "SnoozeAudio.h"
 #include "SnoozeUSBSerial.h"
-#include "Snoozelc5vBuffer.h"
 #include "SnoozeSPI.h"
 
 #endif /* cplusplus */

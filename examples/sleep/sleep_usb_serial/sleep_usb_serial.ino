@@ -9,9 +9,10 @@
 // Load drivers
 SnoozeTimer     timer;
 SnoozeUSBSerial usb;
+#if defined(__MKL26Z64__)
 // configures the lc's 5v data buffer (OUTPUT, LOW) for low power
 Snoozelc5vBuffer  lc5vBuffer;
-
+#endif
 /***********************************************************
   Install drivers, timer to wake and USB Serial to fix 
   printing to serial monitor after sleeping.

@@ -37,12 +37,13 @@
 
 class SnoozeDigital : public SnoozeBlock {
 private:
-    virtual void enableDriver( void );
-    virtual void disableDriver( void );
-    virtual void clearIsrFlags( void );
+    virtual void enableDriver( uint8_t type );
+    virtual void disableDriver( uint8_t type );
+    virtual void clearIsrFlags( uint32_t ipsr );
     static void isr( void );
     static void attachDigitalInterrupt( uint8_t pin, int mode );
     static void detachDigitalInterrupt( uint8_t pin );
+    static volatile uint8_t sleep_type;
 #if defined(KINETISK)
     uint64_t pin;
     static uint64_t isr_pin;

@@ -46,10 +46,10 @@ public:
     static void idle ( SNOOZE_BLOCK );
     /* sleep functions */
     static int sleep    ( SNOOZE_BLOCK );
-    //static int deepSleep( SNOOZE_BLOCK, SLEEP_MODE mode = LLS );
-    //static int hibernate( SNOOZE_BLOCK,  SLEEP_MODE mode = LLS );
-    static int deepSleep( SNOOZE_BLOCK );
-    static int hibernate( SNOOZE_BLOCK );
+    static int deepSleep( SNOOZE_BLOCK, SLEEP_MODE mode = LLS );
+    static int hibernate( SNOOZE_BLOCK,  SLEEP_MODE mode = LLS );
+    //static int deepSleep( SNOOZE_BLOCK );
+    //static int hibernate( SNOOZE_BLOCK );
 };
 extern SnoozeClass Snooze;
 /***************************************************************************/

@@ -13,7 +13,7 @@
 /*******************************************************************************
  *  disable audio features
  *******************************************************************************/
-void SnoozeAudio::disableDriver( void ) {
+void SnoozeAudio::disableDriver( uint8_t type ) {
     if ( audioADC || audioDAC ) {
         PDB0_SC = 0;
     }
@@ -22,7 +22,7 @@ void SnoozeAudio::disableDriver( void ) {
 /*******************************************************************************
  *  enable audio features
  *******************************************************************************/
-void SnoozeAudio::enableDriver( void ) {
+void SnoozeAudio::enableDriver( uint8_t type ) {
     if ( audioADC || audioDAC ) {
         PDB0_SC = PDB_CONFIG | PDB_SC_LDOK;
         PDB0_SC = PDB_CONFIG | PDB_SC_SWTRIG;

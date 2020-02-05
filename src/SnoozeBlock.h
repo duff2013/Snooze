@@ -41,7 +41,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern void hal_initialize( void ( * ptr )( void ) );
+    extern void hal_initialize( void ( * ptr )( uint32_t ) );
 #ifdef __cplusplus
 }
 #endif
@@ -441,16 +441,16 @@ public:
     /*******************************************************************************
      *  drivers override this function to clear isr flags, gets called in wakeup isr
      ******************************************************************************/
-    virtual void clearIsrFlags ( void ) {
+    virtual void clearIsrFlags ( uint32_t ipsr ) {
     
     }
     
     /*******************************************************************************
      *  called from device's HAL
      ******************************************************************************/
-    static void clear_flags( void ) {
+    static void clear_flags( uint32_t ipsr ) {
         SnoozeBlock *p = SnoozeBlock::root_block[current_block];
-        for ( ; p; p = p->next_block[current_block] ) p->clearIsrFlags( );
+        for ( ; p; p = p->next_block[current_block] ) p->clearIsrFlags( ipsr );
     }
     
     /*******************************************************************************

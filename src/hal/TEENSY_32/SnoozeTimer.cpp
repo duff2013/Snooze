@@ -36,10 +36,12 @@ void SnoozeTimer::setTimer( uint16_t newPeriod ) {
 /*******************************************************************************
  *  Disables low power timer and returns registers and clock to previous state
  *******************************************************************************/
-void SnoozeTimer::disableDriver( void ) {
+void SnoozeTimer::disableDriver( uint8_t type ) {
     LPTMR0_CSR = 0;
-    if ( mode == RUN_LP ) return;
-    if ( mode == VLPW || mode == VLPS ) {
+    //if ( mode == RUN_LP ) return;
+    if ( type == 0 ) return;
+    //if ( mode == VLPW || mode == VLPS ) {
+    if ( type == 1 ) {
         if ( return_isr_enabled == 0 )  NVIC_DISABLE_IRQ( IRQ_LPTMR ); //disable irq
         NVIC_SET_PRIORITY( IRQ_LPTMR, return_priority );// return priority
         __disable_irq( );
@@ -56,9 +58,11 @@ void SnoozeTimer::disableDriver( void ) {
 /*******************************************************************************
  *  Enables low power timer and saves regiater and clock state
  *******************************************************************************/
-void SnoozeTimer::enableDriver( void ) {
-    if ( mode == RUN_LP ) return;
-    if ( mode == VLPW || mode == VLPS ) {
+void SnoozeTimer::enableDriver( uint8_t type ) {
+    //if ( mode == RUN_LP ) return;
+    if ( type == 0 ) return;
+    //if ( mode == VLPW || mode == VLPS ) {
+    if ( type == 1 ) {
         return_priority = NVIC_GET_PRIORITY( IRQ_LPTMR );//get current priority
         int priority = nvic_execution_priority( );// get current priority
         // if running from handler mode set priority higher than current handler
@@ -101,11 +105,12 @@ void SnoozeTimer::enableDriver( void ) {
      LPTMR0_CMR = period;
      }*/
     
-    if ( mode == VLPW || mode == VLPS ) {
+    //if ( mode == VLPW || mode == VLPS ) {
+    if ( type == 1 ) {
         return_isr_enabled = NVIC_IS_ENABLED( IRQ_LPTMR );
         if ( return_isr_enabled == 0 ) NVIC_ENABLE_IRQ( IRQ_LPTMR );
     } else {
-        //llwu_configure_modules_mask( LLWU_LPTMR_MOD );
+        llwu_configure_modules_mask( LLWU_LPTMR_MOD );
     }
     LPTMR0_CSR = LPTMR_CSR_TEN | LPTMR_CSR_TIE | LPTMR_CSR_TCF;
 }
@@ -113,7 +118,7 @@ void SnoozeTimer::enableDriver( void ) {
 /*******************************************************************************
  *  clears low power timer flags called from sleep llwu wakeup
  *******************************************************************************/
-void SnoozeTimer::clearIsrFlags( void ) {
+void SnoozeTimer::clearIsrFlags( uint32_t ipsr ) {
     isr( );
 }
 
@@ -123,7 +128,7 @@ void SnoozeTimer::clearIsrFlags( void ) {
 void SnoozeTimer::isr( void ) {
     if ( !( SIM_SCGC5 & SIM_SCGC5_LPTIMER ) ) return;
     systick_millis_count += lptmrUpdateSystick;
-    LPTMR0_CSR = LPTMR_CSR_TCF;
+    LPTMR0_CSR |= LPTMR_CSR_TCF;
 }
 
 #endif

@@ -35,7 +35,6 @@
 #define REDUCED_CPU_BLOCK( SNOOZE_BLOCK )   \
 for ( TYPE __ToDo = set_runlp( SNOOZE_BLOCK );  __ToDo;  __ToDo = set_run( SNOOZE_BLOCK ) )
 
-
 #ifdef __cplusplus
 #include "common.h"
 #include "SnoozeTimer.h"
@@ -45,7 +44,6 @@ for ( TYPE __ToDo = set_runlp( SNOOZE_BLOCK );  __ToDo;  __ToDo = set_run( SNOOZ
 #include "SnoozeDigital.h"
 #include "SnoozeAudio.h"
 #include "SnoozeUSBSerial.h"
-#include "Snoozelc5vBuffer.h"
 #include "SnoozeSPI.h"
 
 #endif /* cplusplus */

@@ -37,32 +37,13 @@
 
 class SnoozeDigital : public SnoozeBlock {
 private:
-    virtual void enableDriver( void );
-    virtual void disableDriver( void );
-    virtual void clearIsrFlags( void );
+    virtual void enableDriver( uint8_t type );
+    virtual void disableDriver( uint8_t type );
+    virtual void clearIsrFlags( uint32_t ipsr );
     static void isr( void );
     static void attachDigitalInterrupt( uint8_t pin, int mode );
     static void detachDigitalInterrupt( uint8_t pin );
-#if defined(KINETISK)
-    uint64_t pin;
-    static uint64_t isr_pin;
-    uint8_t  irqType[CORE_NUM_INTERRUPT];
-    void ( * return_porta_irq ) ( void );
-    void ( * return_portb_irq ) ( void );
-    void ( * return_portc_irq ) ( void );
-    void ( * return_portd_irq ) ( void );
-    void ( * return_porte_irq ) ( void );
-    uint32_t return_isr_a_enabled;
-    uint32_t return_isr_b_enabled;
-    uint32_t return_isr_c_enabled;
-    uint32_t return_isr_d_enabled;
-    uint32_t return_isr_e_enabled;
-    uint8_t  return_priority_a;
-    uint8_t  return_priority_b;
-    uint8_t  return_priority_c;
-    uint8_t  return_priority_d;
-    uint8_t  return_priority_e;
-#elif defined(KINETISL)
+    static volatile uint8_t sleep_type;
     uint32_t pin;
     static uint32_t isr_pin;
     uint8_t  irqType[CORE_NUM_INTERRUPT];
@@ -72,7 +53,6 @@ private:
     uint32_t return_isr_cd_enabled;
     uint8_t  return_priority_a;
     uint8_t  return_priority_cd;
-#endif
     volatile uint32_t return_core_pin_config[CORE_NUM_INTERRUPT];
 public:
     SnoozeDigital( void ) {

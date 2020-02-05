@@ -39,7 +39,7 @@ class SnoozeAlarm : public SnoozeBlock {
 private:
     virtual void disableDriver( uint8_t type );
     virtual void enableDriver( uint8_t type );
-    virtual void clearIsrFlags( void );
+    virtual void clearIsrFlags( uint32_t ipsr );
     static void isr( void );
     //time_t rtc_set_sync_provider( void );
     void ( * return_rtc_irq ) ( void );
