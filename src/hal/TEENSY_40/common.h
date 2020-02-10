@@ -16,7 +16,5 @@ extern "C" {
 }
 #endif
 
-
-#endif
-
-#endif
+#endif /* common_h */
+#endif /* __IMXRT1062__ */

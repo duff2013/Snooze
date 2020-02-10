@@ -54,9 +54,18 @@ void SnoozeTouch::pinMode( int _pin, int thresh ) {
 /*******************************************************************************
  *  Disabale the Driver after waking
  *******************************************************************************/
-void SnoozeTouch::disableDriver( uint8_t type ) {
+void SnoozeTouch::disableDriver( uint8_t mode ) {
     //if ( mode == RUN_LP || mode == VLPW ) return;
-    if ( type <= 1 ) return;
+    //if ( mode <= 1 ) return;
+    if ( mode == 0 ) return;
+    if ( mode == 1 ) {
+        if ( return_isr_enabled == 0 )  NVIC_DISABLE_IRQ( IRQ_TSI ); //disable irq
+        NVIC_SET_PRIORITY( IRQ_TSI, return_priority );// return priority
+        __disable_irq( );
+        attachInterruptVector( IRQ_TSI, return_tsi0_irq );// return prev interrupt
+        __enable_irq( );
+        
+    }
     uint8_t _pin = pin;
     LPTMR0_PSR = PSR;
     LPTMR0_CMR = CMR;
@@ -68,16 +77,27 @@ void SnoozeTouch::disableDriver( uint8_t type ) {
     volatile uint32_t *config;
     config = portConfigRegister( _pin );
     *config = return_core_pin_config;
-    
     if ( !SIM_SCGC5_clock_active ) SIM_SCGC5 &= ~SIM_SCGC5_TSI;
 }
 
 /*******************************************************************************
  *  Enable the Driver before sleeping
  *******************************************************************************/
-void SnoozeTouch::enableDriver( uint8_t type ) {
+void SnoozeTouch::enableDriver( uint8_t mode ) {
     //if ( mode == RUN_LP || mode == VLPW ) return;
-    if ( type <= 1 ) return;
+    //if ( mode <= 1 ) return;
+    if ( mode == 0 ) return;
+    if ( mode == 1 ) {
+        return_priority = NVIC_GET_PRIORITY( IRQ_TSI );//get current priority
+        int priority = nvic_execution_priority( );// get current priority
+        // if running from handler mode set priority higher than current handler
+        priority = ( priority < 256 ) && ( ( priority - 16 ) > 0 ) ? priority - 16 : 128;
+        NVIC_SET_PRIORITY( IRQ_TSI, priority );//set priority to new level
+        __disable_irq( );
+        return_tsi0_irq = _VectorsRam[IRQ_TSI+16];// save prev isr
+        attachInterruptVector( IRQ_TSI, wakeup_isr );
+        __enable_irq( );
+    }
     uint8_t _pin = pin;
     if ( _pin >= NUM_DIGITAL_PINS ) return;
     if ( SIM_SCGC5 & SIM_SCGC5_LPTIMER ) timer_clock_active = true;
@@ -122,25 +142,25 @@ void SnoozeTouch::enableDriver( uint8_t type ) {
     LPTMR0_PSR = LPTMR_PSR_PBYP | LPTMR_PSR_PCS( LPTMR_LPO );// LPO Clock
     LPTMR0_CMR = 1;
     LPTMR0_CSR = LPTMR_CSR_TEN | LPTMR_CSR_TCF;
-    llwu_configure_modules_mask( LLWU_TSI_MOD );
+    
+    if ( mode == 1 ) {
+        NVIC_CLEAR_PENDING( IRQ_TSI );
+        //LPTMR0_CSR = LPTMR_CSR_TEN | LPTMR_CSR_TIE | LPTMR_CSR_TCF;
+        return_isr_enabled = NVIC_IS_ENABLED( IRQ_TSI );
+        if ( return_isr_enabled == 0 ) NVIC_ENABLE_IRQ( IRQ_TSI );
+    } else {
+        llwu_configure_modules_mask( LLWU_TSI_MOD );
+    }
 }
 
 /*******************************************************************************
  *  Clear any interrupt or driver flags
  *******************************************************************************/
 void SnoozeTouch::clearIsrFlags( uint32_t ipsr ) {
-    isr( );
-}
-
-/*******************************************************************************
- *  <#Description#>
- *******************************************************************************/
-void SnoozeTouch::isr( void ) {
     if ( !( SIM_SCGC5 & SIM_SCGC5_TSI ) ) return;
     TSI0_GENCS = TSI_GENCS_OUTRGF | TSI_GENCS_EOSF;
 }
 #else
 #warning Teensy 3.5 does not support touch sensing.
 #endif
-
-#endif
+#endif /* __MKL26Z64__ */

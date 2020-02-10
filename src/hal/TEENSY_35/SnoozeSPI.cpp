@@ -22,7 +22,7 @@ void SnoozeSPI::setClockPin( uint8_t pin ) {
 /*******************************************************************************
  *  
  *******************************************************************************/
-void SnoozeSPI::disableDriver( uint8_t type ) {
+void SnoozeSPI::disableDriver( uint8_t mode ) {
     *portModeRegister( clk_pin ) = 0;
     volatile uint32_t *config;
     config = portConfigRegister( clk_pin );
@@ -31,7 +31,7 @@ void SnoozeSPI::disableDriver( uint8_t type ) {
 /*******************************************************************************
  *  SPI clk -> output low
  *******************************************************************************/
-void SnoozeSPI::enableDriver( uint8_t type ) {
+void SnoozeSPI::enableDriver( uint8_t mode ) {
     volatile uint32_t *config;
     config = portConfigRegister( clk_pin );
     return_core_pin_config = *config;
@@ -39,5 +39,4 @@ void SnoozeSPI::enableDriver( uint8_t type ) {
     *config = PORT_PCR_SRE | PORT_PCR_DSE | PORT_PCR_MUX( 1 );
     *config &= ~PORT_PCR_ODE;
 }
-
-#endif
+#endif /* __MK64FX512__ */

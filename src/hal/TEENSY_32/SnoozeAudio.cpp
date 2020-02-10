@@ -13,7 +13,7 @@
 /*******************************************************************************
  *  disable audio features
  *******************************************************************************/
-void SnoozeAudio::disableDriver( uint8_t type ) {
+void SnoozeAudio::disableDriver( uint8_t mode ) {
     if ( audioADC || audioDAC ) {
         PDB0_SC = 0;
     }
@@ -22,7 +22,7 @@ void SnoozeAudio::disableDriver( uint8_t type ) {
 /*******************************************************************************
  *  enable audio features
  *******************************************************************************/
-void SnoozeAudio::enableDriver( uint8_t type ) {
+void SnoozeAudio::enableDriver( uint8_t mode ) {
     if ( audioADC || audioDAC ) {
         PDB0_SC = PDB_CONFIG | PDB_SC_LDOK;
         PDB0_SC = PDB_CONFIG | PDB_SC_SWTRIG;
@@ -40,5 +40,4 @@ void SnoozeAudio::usingADC( uint8_t ADC_pin ) {
 void SnoozeAudio::usingDAC( uint8_t DAC_pin ) {
     audioDAC = true;
 }
-
-#endif
+#endif /* __MK20DX256__ */

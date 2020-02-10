@@ -11,7 +11,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern volatile int wake_source;
+
 #ifdef __cplusplus
 }
 #endif
@@ -22,6 +22,7 @@ typedef enum {
     CMP          = 4,
 } PIN_TYPE;
 
+/* powerdown Modes */
 typedef enum {
     RUN,
     RUN_LP,
@@ -34,10 +35,7 @@ typedef enum {
     VLLS2,
     VLLS1,
     VLLS0
-} SLEEP_MODE;
+} POWERDOWN_MODES;
 
-DMAMEM static SLEEP_MODE mode = RUN;
-
-#endif
-
-#endif
+#endif /* common_h */
+#endif /* __MK64FX512__ */

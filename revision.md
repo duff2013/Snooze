@@ -1,4 +1,16 @@
-><b>Updated (2/5/30 v6.3.5)</b><br>
+><b>Updated (2/9/20 v6.3.6)</b><br>
+* Maintenance release.<br>
+* Fixed Digital driver pin type to HAL.<br>
+* Snooze "sleep" now works for most drivers.<br>
+* Added Touch support for T-LC/36 Snooze "sleep" now!<br>
+* New function to change between LLS and VLLS modes in "deepSleep and hibernate".<br>
+* Wakeup ISR now run fastrun section for T3.x.<br>
+* Removed dummy Drivers, now will give an error if tried to use.<br>
+* Got rid of Drivers "isr" function, not needed since all "sleep" interrupt's run through the hal now.<br>
+* Changed "type" param to "mode" to not confict with pin type, i.e. "RISING,FALLING,etc...".<br>
+
+
+><b>Updated (2/5/20 v6.3.5)</b><br>
 * Maintenance release.<br>
 * Uncoupled Snooze Class from drivers.<br>
 * Only deepSleep and hibernate work so far.<br>

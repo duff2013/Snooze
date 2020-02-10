@@ -40,28 +40,24 @@ private:
     static void ( * return_lptmr_irq ) ( void );
     uint8_t return_priority;
     uint8_t return_isr_enabled;
-    virtual void disableDriver( uint8_t type );
-    virtual void enableDriver( uint8_t type );
+    virtual void disableDriver( uint8_t mode );
+    virtual void enableDriver( uint8_t mode );
     virtual void clearIsrFlags( uint32_t ipsr );
-    static void isr( void );
-    uint16_t period;
+    static volatile uint16_t period;
     uint32_t PSR;
     uint32_t CMR;
     uint32_t CSR;
     bool SIM_SCGC5_clock_active;
     bool OSC_clock_active;
-    static volatile uint16_t lptmrUpdateSystick;
 public:
     SnoozeTimer( void ) : PSR( 0 ), CMR( 0 ), CSR( 0 ),
                   SIM_SCGC5_clock_active(false ),
                   OSC_clock_active( false )
     {
-        lptmrUpdateSystick = 0;
         isDriver = true;
         period = 0;
     }
     void setTimer( uint16_t newPeriod );
 };
-#endif /* defined(SnoozeTimer_h) */
-
-#endif
+#endif /* SnoozeTimer_h */
+#endif /* __MKL26Z64__ */

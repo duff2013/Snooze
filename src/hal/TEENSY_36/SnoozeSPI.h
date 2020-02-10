@@ -38,8 +38,8 @@
 
 class SnoozeSPI : public SnoozeBlock {
     private:
-    virtual void enableDriver( uint8_t type );
-    virtual void disableDriver( uint8_t type );
+    virtual void enableDriver( uint8_t mode );
+    virtual void disableDriver( uint8_t mode );
     virtual void clearIsrFlags( uint32_t ipsr ) {}
     static void isr( void ) {}
     volatile uint32_t return_core_pin_config;
@@ -51,6 +51,5 @@ class SnoozeSPI : public SnoozeBlock {
     uint32_t clk_pin;
     void setClockPin( uint8_t pin );
 };
-#endif /* defined(SnoozeSPI_h) */
-
-#endif
+#endif /* SnoozeSPI_h */
+#endif /* __MK66FX1M0__ */

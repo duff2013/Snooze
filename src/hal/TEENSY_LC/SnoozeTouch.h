@@ -37,10 +37,9 @@
 
 class SnoozeTouch : public SnoozeBlock {
 private:
-    virtual void enableDriver( uint8_t type );
-    virtual void disableDriver( uint8_t type );
+    virtual void enableDriver( uint8_t mode );
+    virtual void disableDriver( uint8_t mode );
     virtual void clearIsrFlags( uint32_t ipsr );
-    static void isr( void );
     void ( * return_tsi0_irq ) ( void );
     uint8_t  pin;
     uint16_t threshold;
@@ -51,8 +50,8 @@ private:
     uint32_t CMR;
     uint32_t CSR;
     bool timer_clock_active;
-    //uint8_t return_priority;
-    //uint8_t return_isr_enabled;
+    uint8_t return_priority;
+    uint8_t return_isr_enabled;
     bool SIM_SCGC5_clock_active;
     volatile uint32_t return_core_pin_config;
     //bool OSC_clock_active;
@@ -66,6 +65,5 @@ public:
     }
     void pinMode( int _pin, int thresh );
 };
-#endif /* defined(SnoozeTouch_h) */
-
-#endif
+#endif /* SnoozeTouch_h */
+#endif /* __MKL26Z64__ */

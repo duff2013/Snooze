@@ -58,6 +58,5 @@ public:
     void usingADC( uint8_t ADC_pin );
     void usingDAC( uint8_t DAC_pin );
 };
-#endif /* defined(SnoozeAudio_h) */
-
-#endif
+#endif /* SnoozeAudio_h */
+#endif /* __MK66FX1M0__ */

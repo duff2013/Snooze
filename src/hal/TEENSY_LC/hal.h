@@ -43,13 +43,10 @@ for ( TYPE __ToDo = set_runlp( SNOOZE_BLOCK );  __ToDo;  __ToDo = set_run( SNOOZ
 #include "SnoozeTouch.h"
 #include "SnoozeCompare.h"
 #include "SnoozeDigital.h"
-#include "SnoozeAudio.h"
 #include "SnoozeUSBSerial.h"
 #include "Snoozelc5vBuffer.h"
 #include "SnoozeSPI.h"
 
 #endif /* cplusplus */
-
 #endif /* __HAL_H__ */
-
-#endif /* MK64FX512 */
+#endif /* __MKL26Z64__ */

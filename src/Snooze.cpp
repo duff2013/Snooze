@@ -40,8 +40,8 @@ int SnoozeClass::sleep( SNOOZE_BLOCK ) {
  *
  *  @return wakeup source
  *******************************************************************************/
-int SnoozeClass::deepSleep( SNOOZE_BLOCK, SLEEP_MODE mode ) {
-//int SnoozeClass::deepSleep( SNOOZE_BLOCK ) {
+//int SnoozeClass::deepSleep( SNOOZE_BLOCK, SLEEP_MODE mode ) {
+int SnoozeClass::deepSleep( SNOOZE_BLOCK ) {
     SnoozeBlock *p = &configuration;
     p->enableDriver( 2 );
     int source = hal_deepSleep( );
@@ -56,8 +56,8 @@ int SnoozeClass::deepSleep( SNOOZE_BLOCK, SLEEP_MODE mode ) {
  *
  *  @return wakeup source
  *******************************************************************************/
-int SnoozeClass::hibernate( SNOOZE_BLOCK, SLEEP_MODE mode ) {
-//int SnoozeClass::hibernate( SNOOZE_BLOCK ) {
+//int SnoozeClass::hibernate( SNOOZE_BLOCK, SLEEP_MODE mode ) {
+int SnoozeClass::hibernate( SNOOZE_BLOCK ) {
     SnoozeBlock *p = &configuration;
     p->enableDriver( 3 );
     int source = hal_hibernate( );

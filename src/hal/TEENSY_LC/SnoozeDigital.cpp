@@ -42,16 +42,16 @@ int SnoozeDigital::pinMode( int _pin, int mode, int type ) {
 /*******************************************************************************
  *  Enable digital interrupt and configure the pin
  *******************************************************************************/
-void SnoozeDigital::enableDriver( uint8_t type ) {
-    sleep_type = type;
+void SnoozeDigital::enableDriver( uint8_t mode ) {
+    sleep_type = mode;
     //if ( mode == RUN_LP ) { return; }
-    if (type == 0) return;
+    if (mode == 0) return;
 
     uint32_t _pin = pin;
     isr_pin = pin;
     // if using sleep must setup pin interrupt to wake
     //if ( mode == VLPW || mode == VLPS ) {
-    if (type == 1) {
+    if (mode == 1) {
         return_isr_a_enabled  = NVIC_IS_ENABLED( IRQ_PORTA );
         return_isr_cd_enabled = NVIC_IS_ENABLED( IRQ_PORTCD );
         NVIC_DISABLE_IRQ(IRQ_PORTA);
@@ -68,8 +68,8 @@ void SnoozeDigital::enableDriver( uint8_t type ) {
         __disable_irq( );
         return_porta_irq = _VectorsRam[IRQ_PORTA+16];// save prev isr handler
         return_portcd_irq = _VectorsRam[IRQ_PORTCD+16];// save prev isr handler
-        attachInterruptVector( IRQ_PORTA, isr );// set snooze isr
-        attachInterruptVector( IRQ_PORTCD, isr );// set snooze isr
+        attachInterruptVector( IRQ_PORTA, wakeup_isr );// set snooze isr
+        attachInterruptVector( IRQ_PORTCD, wakeup_isr );// set snooze isr
         __enable_irq( );
         NVIC_ENABLE_IRQ( IRQ_PORTA );
         NVIC_ENABLE_IRQ( IRQ_PORTCD );
@@ -80,8 +80,8 @@ void SnoozeDigital::enableDriver( uint8_t type ) {
         
         if ( pinNumber > CORE_NUM_INTERRUPT ) break;
         
-        uint32_t pin_mode = irqType[pinNumber] >> 4;// get type
-        uint32_t pin_type = irqType[pinNumber] & 0x0F;// get mode
+        uint32_t pin_mode = irqType[pinNumber] >> 4;// get mode
+        uint32_t pin_type = irqType[pinNumber] & 0x0F;// get type
         
         volatile uint32_t *config;
         config = portConfigRegister( pinNumber );
@@ -98,11 +98,11 @@ void SnoozeDigital::enableDriver( uint8_t type ) {
                 *config &= ~( PORT_PCR_PS );
             }
             //if ( mode == VLPW || mode == VLPS ) {
-            if (type == 1) {
+            if (mode == 1) {
                 attachDigitalInterrupt( pinNumber, pin_type );// set pin interrupt
             }
             else {
-                llwu_configure_pin_mask( pinNumber, mode );
+                llwu_configure_pin_mask( pinNumber, pin_type );
             }
         } else {
             //pinMode( pinNumber, pin_mode );
@@ -115,9 +115,9 @@ void SnoozeDigital::enableDriver( uint8_t type ) {
 /*******************************************************************************
  *  Disable interrupt and configure pin to orignal state.
  *******************************************************************************/
-void SnoozeDigital::disableDriver( uint8_t type ) {
+void SnoozeDigital::disableDriver( uint8_t mode ) {
     //if ( mode == RUN_LP ) { return; }
-    if (type == 0) return;
+    if (mode == 0) return;
 
     uint32_t _pin = pin;
     while ( __builtin_popcount( _pin ) ) {
@@ -133,7 +133,7 @@ void SnoozeDigital::disableDriver( uint8_t type ) {
         _pin &= ~( ( uint32_t )1 << pinNumber );// remove pin from list
     }
     //if ( mode == VLPW || mode == VLPS ) {
-    if (type == 1) {
+    if (mode == 1) {
         NVIC_SET_PRIORITY( IRQ_PORTA,  return_priority_a );//return priority
         NVIC_SET_PRIORITY( IRQ_PORTCD, return_priority_cd );//return priority
         __disable_irq( );
@@ -149,21 +149,14 @@ void SnoozeDigital::disableDriver( uint8_t type ) {
  *  for LLWU wakeup ISR to call actual digital ISR code
  *******************************************************************************/
 void SnoozeDigital::clearIsrFlags( uint32_t ipsr ) {
-    isr( );
-}
-
-/*******************************************************************************
- *  this gets called when we wake up by NVIC or LLWU
- *******************************************************************************/
-void SnoozeDigital::isr( void ) {
-    int source = -1;
+    //int source = -1;
     
-    uint32_t isfr_a = PORTA_ISFR;
+    /*uint32_t isfr_a = PORTA_ISFR;
     PORTA_ISFR = isfr_a;
     uint32_t isfr_c = PORTC_ISFR;
     uint32_t isfr_d = PORTD_ISFR;
     PORTC_ISFR = isfr_c;
-    PORTD_ISFR = isfr_d;
+    PORTD_ISFR = isfr_d;*/
     
     // return if using deepSleep or hibernate
     //if ( mode == LLS || mode == VLLS3 || mode == VLLS2 || mode == VLLS1 ) return;
@@ -177,7 +170,7 @@ void SnoozeDigital::isr( void ) {
     }
     
     // get source of interrupt
-    if ( isfr_a & CORE_PIN3_BITMASK )       source = 3;
+    /*if ( isfr_a & CORE_PIN3_BITMASK )       source = 3;
     else if ( isfr_a & CORE_PIN4_BITMASK  ) source = 4;
     
     else if ( isfr_c & CORE_PIN9_BITMASK )  source = 9;
@@ -197,7 +190,7 @@ void SnoozeDigital::isr( void ) {
     else if ( isfr_d & CORE_PIN14_BITMASK ) source = 14;
     else if ( isfr_d & CORE_PIN20_BITMASK ) source = 20;
     else if ( isfr_d & CORE_PIN21_BITMASK ) source = 21;
-    wake_source = source;
+    wake_source = source;*/
 }
 
 /*******************************************************************************
@@ -242,5 +235,4 @@ void SnoozeDigital::detachDigitalInterrupt( uint8_t pin ) {
     *config = ( ( *config & ~0x000F0000 ) | 0x01000000 );
     __enable_irq( );
 }
-
-#endif
+#endif /* __MKL26Z64__ */

@@ -38,10 +38,9 @@
 #if defined(HAS_KINETIS_TSI) || defined(HAS_KINETIS_TSI_LITE)
 class SnoozeTouch : public SnoozeBlock {
 private:
-    virtual void enableDriver( uint8_t type );
-    virtual void disableDriver( uint8_t type );
+    virtual void enableDriver( uint8_t mode );
+    virtual void disableDriver( uint8_t mode );
     virtual void clearIsrFlags( uint32_t ipsr );
-    static void isr( void );
     void ( * return_tsi0_irq ) ( void );
     uint8_t  pin;
     uint16_t threshold;
@@ -82,8 +81,8 @@ public:
 #else
 class SnoozeTouch : public SnoozeBlock {
 private:
-    virtual void enableDriver( uint8_t type )   { }
-    virtual void disableDriver( uint8_t type )  { }
+    virtual void enableDriver( uint8_t mode )   { }
+    virtual void disableDriver( uint8_t mode )  { }
     virtual void clearIsrFlags( uint32_t ipsr )  { }
     static void isr( void )             { }
     void ( * return_tsi0_irq ) ( void );
@@ -94,6 +93,5 @@ public:
     void pinMode( int _pin, int thresh ) { }
 };
 #endif
-#endif /* defined(SnoozeTouch_h) */
-
-#endif
+#endif /* SnoozeTouch_h */
+#endif /* __MK20DX256__ */

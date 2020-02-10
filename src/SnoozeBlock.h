@@ -32,12 +32,7 @@
 #define SnoozeBlock_h
 
 #include "Arduino.h"
-//#include "utility/clocks.h"
-//#include "utility/sleep.h"
-//#include "utility/wake.h"
-
 /**********************************************************************************/
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -54,32 +49,8 @@ extern "C" {
  *  @return none
  **********************************************************************************/
 #define SNOOZE_BLOCK SnoozeBlock &configuration
-/*#define TYPE uint8_t
-#define REDUCED_CPU_BLOCK( SNOOZE_BLOCK )   \
-for ( TYPE __ToDo = SNOOZE_BLOCK.set_runlp( SNOOZE_BLOCK );  __ToDo;  __ToDo = SNOOZE_BLOCK.set_run( SNOOZE_BLOCK ) )*/
 
 /**********************************************************************************/
-/*typedef enum {
-    TSI          = 3,
-    CMP          = 4,
-} PIN_TYPE;*/
-
-/***********************************************************************************
- *  Deep Sleep Modes
-***********************************************************************************/
-/*typedef enum {
-    RUN,
-    RUN_LP,
-    WAIT,
-    VLPW,
-    STOP,
-    VLPS,
-    LLS,
-    VLLS3,
-    VLLS2,
-    VLLS1,
-    VLLS0
-} SLEEP_MODE;*/
 
 /***********************************************************************************
  *  Class SnoozeBlock - Connects low power drivers to Snooze.
@@ -94,12 +65,13 @@ private:
      *
      *  @param p   Call SnoozeBlock virtual functions
      *  @param idx Array index of the SnoozeBlock list
+     *  @param mode Pass Drivers what sleep mode i.e. "sleep, deepSleep, hibernate"
      ******************************************************************************/
-    void reverseList( SnoozeBlock *p, uint8_t idx, uint8_t type ) {
+    void reverseList( SnoozeBlock *p, uint8_t idx, uint8_t mode ) {
         if ( p != NULL ) {
-            reverseList(p->next_block[idx], idx, type );
+            reverseList(p->next_block[idx], idx, mode );
             if ( p->isUsed ) {
-                p->disableDriver( type );
+                p->disableDriver( mode );
             }
         }
     }
@@ -109,59 +81,16 @@ private:
      *
      *  @param p   Call SnoozeBlock virtual functions
      *  @param idx Array index of the SnoozeBlock
+     *  @param mode Pass Drivers what sleep mode i.e. "sleep, deepSleep, hibernate"
      ******************************************************************************/
-    void forwardList( SnoozeBlock *p, uint8_t idx, uint8_t type ) {
+    void forwardList( SnoozeBlock *p, uint8_t idx, uint8_t mode ) {
         for ( ; p; p = p->next_block[idx] ) {
             if ( p->isUsed ) {
-                p->enableDriver( type );
+                p->enableDriver( mode );
             }
         }
     }
 protected:
-    /*******************************************************************************
-     *  Fired after waking from LLS-VLLS sleep modes
-     ******************************************************************************/
-    /*static void wakeupIsr( void ) {
-        SnoozeBlock *p = SnoozeBlock::root_block[current_block];
-        
-        if ( mode == VLPW || mode == VLPS ) {
-            uint32_t ipsr;
-            __asm__ volatile("mrs %0, ipsr\n" : "=r" (ipsr)::);
-            switch (ipsr-16) {
-                case IRQ_CMP0:
-                    p->source = COMPARE_WAKE;
-                    break;
-#if defined(KINETISK)
-                case IRQ_CMP1:
-                    p->source = COMPARE_WAKE;
-                    break;
-                case IRQ_CMP2:
-                    p->source = COMPARE_WAKE;
-                    break;
-#endif
-                case IRQ_RTC_ALARM:
-                    p->source = ALARM_WAKE;
-                    break;
-                case IRQ_LPTMR:
-                    p->source = TIMER_WAKE;
-                    break;
-#if !defined(__MK64FX512__)
-                case IRQ_TSI:
-                    p->source = TOUCH_WAKE;
-                    break;
-#endif
-                default:
-                    break;
-            }
-            
-        } else {
-            llwuMask.llwuFlag = llwu_clear_flags( );
-            pbe_pee( );
-        }
-        
-        for ( ; p; p = p->next_block[current_block] ) p->clearIsrFlags( );
-    }*/
-    
     static SnoozeBlock *root_block[8];
     static SnoozeBlock *root_class_address[8];
     static uint8_t current_block;
@@ -200,9 +129,9 @@ public:
         // update linked list
         // set the root block
         if ( root_block[global_block_count] == NULL ) {
-            // On first driver installed call HAL initialization.
             root_class_address[global_block_count] = this;
             root_block[global_block_count] = &head;
+            // On first driver installed call HAL initialization.
             if ( global_block_count == 0 ) {
                 // Pass clear_flags function to HAL
                 hal_initialize( clear_flags );
@@ -421,25 +350,31 @@ public:
 
     /*******************************************************************************
      *  call drivers enable functions
+     *
+     *  @param mode Pass Drivers what sleep mode i.e. "sleep, deepSleep, hibernate"
      ******************************************************************************/
-    virtual void enableDriver ( uint8_t type ) {
+    virtual void enableDriver ( uint8_t mode ) {
         if ( local_block == -1 ) return;
         current_block = local_block;
         SnoozeBlock *p = SnoozeBlock::root_block[local_block];
-        forwardList( p, local_block, type );
+        forwardList( p, local_block, mode );
     }
     
     /*******************************************************************************
      *  call drivers disable functions
+     *
+     *  @param mode Pass Drivers what sleep mode i.e. "sleep, deepSleep, hibernate"
      ******************************************************************************/
-    virtual void disableDriver ( uint8_t type ) {
+    virtual void disableDriver ( uint8_t mode ) {
         if ( local_block == -1 ) return;
         SnoozeBlock *p = SnoozeBlock::root_block[local_block];
-        reverseList( p, local_block, type );
+        reverseList( p, local_block, mode );
     }
     
     /*******************************************************************************
      *  drivers override this function to clear isr flags, gets called in wakeup isr
+     *
+     *  @param ipsr arm register not used
      ******************************************************************************/
     virtual void clearIsrFlags ( uint32_t ipsr ) {
     
@@ -447,6 +382,8 @@ public:
     
     /*******************************************************************************
      *  called from device's HAL
+     *
+     *  @param ipsr arm register not used
      ******************************************************************************/
     static void clear_flags( uint32_t ipsr ) {
         SnoozeBlock *p = SnoozeBlock::root_block[current_block];
@@ -491,10 +428,8 @@ public:
         //return 0;/
     //}
     
-    //DMAMEM static SLEEP_MODE mode;
-    //DMAMEM static int source;
     static uint8_t sleepType;
     volatile bool isUsed;
     bool isDriver;
 };
-#endif /* defined(SnoozeBlock_h) */
+#endif /* SnoozeBlock_h */

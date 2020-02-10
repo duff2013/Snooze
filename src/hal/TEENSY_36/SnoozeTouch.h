@@ -35,65 +35,35 @@
 #include "common.h"
 #include "SnoozeBlock.h"
 
-#if defined(HAS_KINETIS_TSI) || defined(HAS_KINETIS_TSI_LITE)
 class SnoozeTouch : public SnoozeBlock {
 private:
-    virtual void enableDriver( uint8_t type );
-    virtual void disableDriver( uint8_t type );
+    virtual void enableDriver( uint8_t mode );
+    virtual void disableDriver( uint8_t mode );
     virtual void clearIsrFlags( uint32_t ipsr );
-    static void isr( void );
     void ( * return_tsi0_irq ) ( void );
     uint8_t  pin;
     uint16_t threshold;
     uint32_t GENCS;
     uint32_t THRESHOLD;
-#if defined(HAS_KINETIS_TSI)
-    uint32_t SCANC;
-    uint32_t PEN;
-#elif defined(HAS_KINETIS_TSI_LITE)
     uint32_t DATA;
-#endif
-    
-#if defined(HAS_KINETIS_TSI_LITE)
     uint32_t PSR;
     uint32_t CMR;
     uint32_t CSR;
     bool timer_clock_active;
-#endif
-    //uint8_t return_priority;
-    //uint8_t return_isr_enabled;
+    uint8_t return_priority;
+    uint8_t return_isr_enabled;
     bool SIM_SCGC5_clock_active;
     volatile uint32_t return_core_pin_config;
     //bool OSC_clock_active;
 public:
     SnoozeTouch( void ) : pin( 0x03 ), threshold( 0 ), GENCS( 0 ),
                           THRESHOLD( 0 ),
-#if defined(HAS_KINETIS_TSI)
-                          SCANC( 0 ), PEN( 0 )
-#elif defined(HAS_KINETIS_TSI_LITE)
                           DATA( 0 ),PSR( 0 ), CMR( 0 ), CSR( 0 ),
                           timer_clock_active( 0 )
-#endif
     {
         isDriver = true;
     }
     void pinMode( int _pin, int thresh );
 };
-#else
-class SnoozeTouch : public SnoozeBlock {
-private:
-    virtual void enableDriver( uint8_t type )   { }
-    virtual void disableDriver( uint8_t type )  { }
-    virtual void clearIsrFlags( uint32_t ipsr )  { }
-    static void isr( void )             { }
-    void ( * return_tsi0_irq ) ( void );
-public:
-    SnoozeTouch( void ) {
-        isDriver = true;
-    }
-    void pinMode( int _pin, int thresh ) { }
-};
-#endif
-#endif /* defined(SnoozeTouch_h) */
-
-#endif
+#endif /* SnoozeTouch_h */
+#endif /* __MK66FX1M0__ */

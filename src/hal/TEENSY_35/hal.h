@@ -39,7 +39,6 @@ for ( TYPE __ToDo = set_runlp( SNOOZE_BLOCK );  __ToDo;  __ToDo = set_run( SNOOZ
 #include "common.h"
 #include "SnoozeTimer.h"
 #include "SnoozeAlarm.h"
-#include "SnoozeTouch.h"
 #include "SnoozeCompare.h"
 #include "SnoozeDigital.h"
 #include "SnoozeAudio.h"
@@ -47,7 +46,5 @@ for ( TYPE __ToDo = set_runlp( SNOOZE_BLOCK );  __ToDo;  __ToDo = set_run( SNOOZ
 #include "SnoozeSPI.h"
 
 #endif /* cplusplus */
-
 #endif /* __HAL_H__ */
-
 #endif /* MK64FX512 */

@@ -260,16 +260,8 @@ void SnoozeCompare::enableDriver( uint8_t type ) {
  *  Clear Interrupt Flags
  *******************************************************************************/
 void SnoozeCompare::clearIsrFlags( uint32_t ipsr ) {
-    isr( );
-}
-
-/*******************************************************************************
- *  Interrupt handler
- *******************************************************************************/
-void SnoozeCompare::isr( void ) {
     if ( !( SIM_SCGC4 & SIM_SCGC4_CMP ) ) return;
     if ( *cmpx_scr & CMP_SCR_CFF ) *cmpx_scr = CMP_SCR_CFF;
     if ( *cmpx_scr & CMP_SCR_CFR ) *cmpx_scr = CMP_SCR_CFR;
 }
-
-#endif
+#endif /* __MK66FX1M0__ */

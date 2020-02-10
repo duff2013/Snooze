@@ -22,7 +22,7 @@ extern "C" {
 #endif
 
 void ( * SnoozeTimer::return_lptmr_irq ) ( void );
-volatile uint16_t SnoozeTimer::lptmrUpdateSystick;
+volatile uint16_t SnoozeTimer::period;
 /*******************************************************************************
  *  Set The Period for the Low Power Timer to wake the processor
  *
@@ -36,12 +36,12 @@ void SnoozeTimer::setTimer( uint16_t newPeriod ) {
 /*******************************************************************************
  *  Disables low power timer and returns registers and clock to previous state
  *******************************************************************************/
-void SnoozeTimer::disableDriver( uint8_t type ) {
+void SnoozeTimer::disableDriver( uint8_t mode ) {
     LPTMR0_CSR = 0;
     //if ( mode == RUN_LP ) return;
-    if ( type == 0 ) return;
+    if ( mode == 0 ) return;
     //if ( mode == VLPW || mode == VLPS ) {
-    if ( type == 1 ) {
+    if ( mode == 1 ) {
         if ( return_isr_enabled == 0 )  NVIC_DISABLE_IRQ( IRQ_LPTMR ); //disable irq
         NVIC_SET_PRIORITY( IRQ_LPTMR, return_priority );// return priority
         __disable_irq( );
@@ -58,11 +58,11 @@ void SnoozeTimer::disableDriver( uint8_t type ) {
 /*******************************************************************************
  *  Enables low power timer and saves regiater and clock state
  *******************************************************************************/
-void SnoozeTimer::enableDriver( uint8_t type ) {
+void SnoozeTimer::enableDriver( uint8_t mode ) {
     //if ( mode == RUN_LP ) return;
-    if ( type == 0 ) return;
+    if ( mode == 0 ) return;
     //if ( mode == VLPW || mode == VLPS ) {
-    if ( type == 1 ) {
+    if ( mode == 1 ) {
         return_priority = NVIC_GET_PRIORITY( IRQ_LPTMR );//get current priority
         int priority = nvic_execution_priority( );// get current priority
         // if running from handler mode set priority higher than current handler
@@ -73,9 +73,6 @@ void SnoozeTimer::enableDriver( uint8_t type ) {
         attachInterruptVector( IRQ_LPTMR, wakeup_isr );
         __enable_irq( );
     }
-    
-    // save lp timer value to update systick if woke by timer.
-    lptmrUpdateSystick = period;
     
     if ( SIM_SCGC5 & SIM_SCGC5_LPTIMER ) SIM_SCGC5_clock_active = true;
     else SIM_SCGC5 |= SIM_SCGC5_LPTIMER;
@@ -106,7 +103,7 @@ void SnoozeTimer::enableDriver( uint8_t type ) {
      }*/
     
     //if ( mode == VLPW || mode == VLPS ) {
-    if ( type == 1 ) {
+    if ( mode == 1 ) {
         return_isr_enabled = NVIC_IS_ENABLED( IRQ_LPTMR );
         if ( return_isr_enabled == 0 ) NVIC_ENABLE_IRQ( IRQ_LPTMR );
     } else {
@@ -119,16 +116,8 @@ void SnoozeTimer::enableDriver( uint8_t type ) {
  *  clears low power timer flags called from sleep llwu wakeup
  *******************************************************************************/
 void SnoozeTimer::clearIsrFlags( uint32_t ipsr ) {
-    isr( );
-}
-
-/*******************************************************************************
- *  Low power timer isr
- *******************************************************************************/
-void SnoozeTimer::isr( void ) {
     if ( !( SIM_SCGC5 & SIM_SCGC5_LPTIMER ) ) return;
-    systick_millis_count += lptmrUpdateSystick;
+    systick_millis_count += period;
     LPTMR0_CSR |= LPTMR_CSR_TCF;
 }
-
-#endif
+#endif /* __MK66FX1M0__ */

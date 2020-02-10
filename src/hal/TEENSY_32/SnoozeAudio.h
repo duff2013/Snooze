@@ -46,8 +46,8 @@
 
 class SnoozeAudio : public SnoozeBlock {
 private:
-    virtual void disableDriver( uint8_t type );
-    virtual void enableDriver( uint8_t type );
+    virtual void disableDriver( uint8_t mode );
+    virtual void enableDriver( uint8_t mode );
     virtual void clearIsrFlags( uint32_t ipsr ) {}
     bool audioADC;
     bool audioDAC;
@@ -59,6 +59,5 @@ public:
     void usingADC( uint8_t ADC_pin );
     void usingDAC( uint8_t DAC_pin );
 };
-#endif /* defined(SnoozeAudio_h) */
-
-#endif
+#endif /* SnoozeAudio_h */
+#endif /* __MK20DX256__ */

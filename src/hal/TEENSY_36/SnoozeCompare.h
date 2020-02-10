@@ -39,7 +39,6 @@ private:
     virtual void enableDriver( uint8_t type );
     virtual void disableDriver( uint8_t type );
     virtual void clearIsrFlags( uint32_t ipsr );
-    static void isr( void );
     static void ( * return_cmp_irq ) ( void );
 #if defined(KINETISK)
     void ( * return_cmp1_irq ) ( void );
@@ -88,6 +87,5 @@ public:
     }
     void pinMode( int _pin, int _type, float val );
 };
-#endif /* defined(SnoozeCompare_h) */
-
-#endif
+#endif /* SnoozeCompare_h */
+#endif /* __MK66FX1M0__ */

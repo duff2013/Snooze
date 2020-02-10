@@ -37,10 +37,9 @@
 
 class SnoozeAlarm : public SnoozeBlock {
 private:
-    virtual void disableDriver( uint8_t type );
-    virtual void enableDriver( uint8_t type );
+    virtual void disableDriver( uint8_t mode );
+    virtual void enableDriver( uint8_t mode );
     virtual void clearIsrFlags( uint32_t ipsr );
-    static void isr( void );
     //time_t rtc_set_sync_provider( void );
     void ( * return_rtc_irq ) ( void );
     time_t alarm;
@@ -59,6 +58,5 @@ public:
     void setRtcTimer( uint8_t hours, uint8_t minutes, uint8_t seconds );
     void setAlarm( time_t alarmTime );
 };
-#endif /* defined(SnoozeAlarm_h) */
-
-#endif
+#endif /* SnoozeAlarm_h */
+#endif /* __MK20DX256__ */

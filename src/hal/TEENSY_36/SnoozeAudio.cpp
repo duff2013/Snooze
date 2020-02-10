@@ -40,5 +40,4 @@ void SnoozeAudio::usingADC( uint8_t ADC_pin ) {
 void SnoozeAudio::usingDAC( uint8_t DAC_pin ) {
     audioDAC = true;
 }
-
-#endif
+#endif /* __MK66FX1M0__ */

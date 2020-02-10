@@ -4,11 +4,6 @@
 #include "common.h"
 #include "hal.h"
 
-#define COMPARE_WAKE    34
-#define ALARM_WAKE      35
-#define TIMER_WAKE      36
-#define TOUCH_WAKE      37
-
 typedef struct {
     uint8_t PE1;
     uint8_t PE2;
@@ -100,13 +95,19 @@ typedef enum {
     HUNDRED_NINETY_TWO_MHZ  = 192000000,
 } SPEED;
 
+void ( * clear_flags )( uint32_t );
+
 volatile uint32_t PCR3 = 0;
+
+void wakeup_isr( void ) __attribute__ ((section(".fastrun"), noinline, noclone ));
 
 volatile DMAMEM int wake_source = -1;
 
-int llwu_disable( llwu_mask_t *mask );
+int llwu_disable( volatile llwu_mask_t *mask );
 
 volatile llwu_mask_t llwuMask;
+
+POWERDOWN_MODES PD_MODE = LLS;
 
 //----------------------------------------------------------------------------------
 void wait( void ) {
@@ -906,7 +907,7 @@ void llwu_configure_filter( unsigned int pin_num, unsigned char filter_en, unsig
     }
 }
 //----------------------------------------------------------------------------------
-int llwu_disable( llwu_mask_t *mask ) {
+int llwu_disable( volatile llwu_mask_t *mask ) {
     uint32_t flag = mask->llwuFlag;
     int source = -1;
     if      ( flag & LLWU_F1_WUF0 ) source = 26;
@@ -955,8 +956,8 @@ uint32_t llwu_clear_flags( void ) {
     return flag;
 }
 //----------------------------------------------------------------------------------
-void llwu_set(void ) {
-    llwu_mask_t *mask = &llwuMask;
+void llwu_set( void ) {
+    volatile llwu_mask_t *mask = &llwuMask;
     LLWU_PE1 = mask->PE1;
     LLWU_PE2 = mask->PE2;
     LLWU_PE3 = mask->PE3;
@@ -988,7 +989,7 @@ void lllwu_clear_pins( void ) {
 }
 //----------------------------------------------------------------------------------
 void llwu_configure_modules_mask( uint8_t module ) {
-    llwu_mask_t *mask = &llwuMask;
+    volatile llwu_mask_t *mask = &llwuMask;
     if( module & LLWU_LPTMR_MOD )      mask->ME |= LLWU_ME_WUME0;
     else if ( module & LLWU_RTCA_MOD ) mask->ME |= LLWU_ME_WUME5;
     else if ( module & LLWU_RTCS_MOD ) mask->ME |= LLWU_ME_WUME7;
@@ -999,7 +1000,7 @@ void llwu_configure_modules_mask( uint8_t module ) {
 }
 //----------------------------------------------------------------------------------
 void llwu_configure_pin_mask( uint8_t pin, uint8_t rise_fall ) {
-    llwu_mask_t *mask = &llwuMask;
+    volatile llwu_mask_t *mask = &llwuMask;
     uint8_t detect_type;
     if ( rise_fall == RISING )       detect_type = LLWU_PIN_RISING;
     else if ( rise_fall == FALLING ) detect_type = LLWU_PIN_FALLING;
@@ -1025,8 +1026,6 @@ void llwu_configure_pin_mask( uint8_t pin, uint8_t rise_fall ) {
     else if ( pin == 62 ) mask->PE1 |= LLWU_PE1_WUPE2( detect_type );
 }
 //----------------------------------------------------------------------------------
-void ( * clear_flags )( uint32_t );
-//----------------------------------------------------------------------------------
 void wakeup_isr( void ) {
     int source = -1;
     uint32_t ipsr;
@@ -1047,31 +1046,82 @@ void wakeup_isr( void ) {
         case IRQ_LPTMR:
             source = TIMER_WAKE;
             break;
-        case IRQ_PORTA:
+        case IRQ_PORTA: {
+            uint32_t isfr_a = PORTA_ISFR;
+            PORTA_ISFR = isfr_a;
+            if ( isfr_a & CORE_PIN3_BITMASK )       source = 3;
+            else if ( isfr_a & CORE_PIN4_BITMASK  ) source = 4;
+            else if ( isfr_a & CORE_PIN25_BITMASK ) source = 25;
+            else if ( isfr_a & CORE_PIN26_BITMASK ) source = 26;
+            else if ( isfr_a & CORE_PIN27_BITMASK ) source = 27;
+            else if ( isfr_a & CORE_PIN28_BITMASK ) source = 28;
+            else if ( isfr_a & CORE_PIN39_BITMASK ) source = 39;
+            break;
+        }
+        case IRQ_PORTB: {
+            uint32_t isfr_b = PORTB_ISFR;
+            PORTB_ISFR = isfr_b;
+            if ( isfr_b & CORE_PIN0_BITMASK )  source = 0;
+            else if ( isfr_b & CORE_PIN1_BITMASK )  source = 1;
+            else if ( isfr_b & CORE_PIN16_BITMASK ) source = 16;
+            else if ( isfr_b & CORE_PIN17_BITMASK ) source = 17;
+            else if ( isfr_b & CORE_PIN18_BITMASK ) source = 18;
+            else if ( isfr_b & CORE_PIN19_BITMASK ) source = 19;
+            else if ( isfr_b & CORE_PIN29_BITMASK ) source = 29;
+            else if ( isfr_b & CORE_PIN30_BITMASK ) source = 30;
+            else if ( isfr_b & CORE_PIN31_BITMASK ) source = 31;
+            else if ( isfr_b & CORE_PIN32_BITMASK ) source = 32;
             
             break;
-        case IRQ_PORTB:
-            
+        }
+        case IRQ_PORTC: {
+            uint32_t isfr_c = PORTC_ISFR;
+            PORTC_ISFR = isfr_c;
+            if ( isfr_c & CORE_PIN9_BITMASK )  source = 9;
+            else if ( isfr_c & CORE_PIN10_BITMASK ) source = 10;
+            else if ( isfr_c & CORE_PIN11_BITMASK ) source = 11;
+            else if ( isfr_c & CORE_PIN12_BITMASK ) source = 12;
+            else if ( isfr_c & CORE_PIN13_BITMASK ) source = 13;
+            else if ( isfr_c & CORE_PIN15_BITMASK ) source = 15;
+            else if ( isfr_c & CORE_PIN22_BITMASK ) source = 22;
+            else if ( isfr_c & CORE_PIN23_BITMASK ) source = 23;
+            else if ( isfr_c & CORE_PIN35_BITMASK ) source = 35;
+            else if ( isfr_c & CORE_PIN36_BITMASK ) source = 36;
+            else if ( isfr_c & CORE_PIN37_BITMASK ) source = 37;
+            else if ( isfr_c & CORE_PIN38_BITMASK ) source = 38;
             break;
-        case IRQ_PORTC:
- 
+        }
+        case IRQ_PORTD: {
+            uint32_t isfr_d = PORTD_ISFR;
+            PORTD_ISFR = isfr_d;
+            if ( isfr_d & CORE_PIN2_BITMASK )  source = 2;
+            else if ( isfr_d & CORE_PIN5_BITMASK )  source = 5;
+            else if ( isfr_d & CORE_PIN6_BITMASK )  source = 6;
+            else if ( isfr_d & CORE_PIN7_BITMASK )  source = 7;
+            else if ( isfr_d & CORE_PIN8_BITMASK )  source = 8;
+            else if ( isfr_d & CORE_PIN14_BITMASK ) source = 14;
+            else if ( isfr_d & CORE_PIN20_BITMASK ) source = 20;
+            else if ( isfr_d & CORE_PIN21_BITMASK ) source = 21;
             break;
-        case IRQ_PORTD:
-            
+        }
+        case IRQ_PORTE: {
+            uint32_t isfr_e = PORTE_ISFR;
+            PORTE_ISFR = isfr_e;
+            if ( isfr_e & CORE_PIN24_BITMASK ) source = 24;
+            else if ( isfr_e & CORE_PIN33_BITMASK ) source = 33;
+            else if ( isfr_e & CORE_PIN34_BITMASK ) source = 34;
             break;
-        case IRQ_PORTE:
-            
-            break;
+        }
         case IRQ_LLWU:
             llwuMask.llwuFlag = llwu_clear_flags( );
             source = llwu_disable( &llwuMask );
             pbe_pee( );
-            clear_flags( ipsr );
             break;
         default:
-            source = -1;
+            source = -2;
             break;
     }
+    clear_flags( ipsr );
     wake_source = source;
 }
 //----------------------------------------------------------------------------------
@@ -1092,8 +1142,12 @@ int source ( void ) {
     return wake_source;
 }
 //----------------------------------------------------------------------------------
+void hal_setPowerdownMode( POWERDOWN_MODES mode ) {
+    PD_MODE = mode;
+}
+//----------------------------------------------------------------------------------
 int hal_sleep ( void ) {
-    wake_source = -1;
+    //wake_source = -1;
     pee_blpi( );
     //pee_blpe( );
     enter_vlpr( );
@@ -1110,8 +1164,7 @@ int hal_deepSleep ( void ) {
     priority = ( priority  < 256 ) && ( ( priority - 16 ) > 0 ) ? priority - 16 : 128;
     NVIC_SET_PRIORITY( IRQ_LLWU, priority );//set priority to new level
     llwu_set( );
-    lls( );
-    /*switch ( LLS ) {
+    switch ( PD_MODE ) {
         case LLS:
             lls( );
             break;
@@ -1129,9 +1182,8 @@ int hal_deepSleep ( void ) {
             break;
         default:
             break;
-    }*/
-    //int source = llwu_disable( );
-    return wake_source;//source;
+    }
+    return wake_source;
 }
 //----------------------------------------------------------------------------------
 int hal_hibernate ( void ) {
@@ -1144,8 +1196,7 @@ int hal_hibernate ( void ) {
     PCR3 = PORTA_PCR3;
     PORTA_PCR3 = PORT_PCR_MUX( 0 );
     llwu_set( );
-    lls( );
-    /*switch ( LLS ) {
+    switch ( PD_MODE ) {
         case LLS:
             lls( );
             break;
@@ -1163,13 +1214,11 @@ int hal_hibernate ( void ) {
             break;
         default:
             break;
-    }*/
-    //int source = llwu_disable( );
+    }
     // allows the SOPT1 USBSSTBY bit to be written
     SIM_SOPT1CFG |= SIM_SOPT1CFG_USSWE;
     SIM_SOPT1 &= ~SIM_SOPT1_USBSSTBY;
     PORTA_PCR3 = PCR3;
-    //return source;
-    return wake_source;//source;
+    return wake_source;
 }
 #endif /* MK64FX512 */

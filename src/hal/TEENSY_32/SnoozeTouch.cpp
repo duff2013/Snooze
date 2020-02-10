@@ -20,11 +20,9 @@ extern "C" {
 
 #define LLWU_TSI_MOD         ( uint8_t )0x40
 
-#if defined(KINETISK)
     #define TSI_PEN_LPSP_MASK    0xF0000u
     #define TSI_PEN_LPSP_SHIFT   16
     #define TSI_PEN_LPSP(x)      (((uint32_t)(((uint32_t)(x))<<TSI_PEN_LPSP_SHIFT))&TSI_PEN_LPSP_MASK)
-#endif
 
 #if defined(__MK20DX256__) || defined(__MK20DX128__)
 static const uint8_t tsi_pins[] = {
@@ -66,9 +64,9 @@ void SnoozeTouch::pinMode( int _pin, int thresh ) {
 /*******************************************************************************
  *  <#Description#>
  *******************************************************************************/
-void SnoozeTouch::disableDriver( uint8_t type ) {
+void SnoozeTouch::disableDriver( uint8_t mode ) {
     //if ( mode == RUN_LP || mode == VLPW ) return;
-    if ( type <= 1 ) return;
+    if ( mode <= 1 ) return;
     uint8_t _pin = pin;
     
     TSI0_GENCS     &= ~TSI_GENCS_TSIEN;
@@ -86,9 +84,9 @@ void SnoozeTouch::disableDriver( uint8_t type ) {
 /*******************************************************************************
  *  <#Description#>
  *******************************************************************************/
-void SnoozeTouch::enableDriver( uint8_t type ) {
+void SnoozeTouch::enableDriver( uint8_t mode ) {
     //if ( mode == RUN_LP || mode == VLPW ) return;
-    if ( type <= 1 ) return;
+    if ( mode <= 1 ) return;
     uint8_t _pin = pin;
     if ( _pin >= NUM_DIGITAL_PINS ) return;
     
@@ -136,14 +134,7 @@ void SnoozeTouch::enableDriver( uint8_t type ) {
  *  <#Description#>
  *******************************************************************************/
 void SnoozeTouch::clearIsrFlags( uint32_t ipsr ) {
-    isr( );
-}
-
-/*******************************************************************************
- *  <#Description#>
- *******************************************************************************/
-void SnoozeTouch::isr( void ) {
     if ( !( SIM_SCGC5 & SIM_SCGC5_TSI ) ) return;
     TSI0_GENCS = TSI_GENCS_OUTRGF | TSI_GENCS_EOSF;
 }
-#endif
+#endif /* __MK20DX256__ */

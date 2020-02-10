@@ -48,7 +48,5 @@ for ( TYPE __ToDo = set_runlp( SNOOZE_BLOCK );  __ToDo;  __ToDo = set_run( SNOOZ
 #include "SnoozeSPI.h"
 
 #endif /* cplusplus */
-
 #endif /* __HAL_H__ */
-
 #endif /* MK64FX512 */

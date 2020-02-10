@@ -33,10 +33,17 @@
 /***************************************************************************/
 #include "Arduino.h"
 #include "SnoozeBlock.h"
-#include "hal/TEENSY_36/hal.h"
-#include "hal/TEENSY_35/hal.h"
-#include "hal/TEENSY_32/hal.h"
+#if defined(__MKL26Z64__)
 #include "hal/TEENSY_LC/hal.h"
+#elif defined(__MK20DX256__)
+#include "hal/TEENSY_32/hal.h"
+#elif defined(__MK64FX512__)
+#include "hal/TEENSY_35/hal.h"
+#elif defined(__MK66FX1M0__)
+#include "hal/TEENSY_36/hal.h"
+#elif defined(__IMXRT1062__)
+#include "hal/TEENSY_40/hal.h"
+#endif
 /***************************************************************************/
 class SnoozeClass {
 private:
@@ -46,11 +53,11 @@ public:
     static void idle ( SNOOZE_BLOCK );
     /* sleep functions */
     static int sleep    ( SNOOZE_BLOCK );
-    static int deepSleep( SNOOZE_BLOCK, SLEEP_MODE mode = LLS );
-    static int hibernate( SNOOZE_BLOCK,  SLEEP_MODE mode = LLS );
-    //static int deepSleep( SNOOZE_BLOCK );
-    //static int hibernate( SNOOZE_BLOCK );
+    //static int deepSleep( SNOOZE_BLOCK, SLEEP_MODE mode = LLS );
+    //static int hibernate( SNOOZE_BLOCK,  SLEEP_MODE mode = LLS );
+    static int deepSleep( SNOOZE_BLOCK );
+    static int hibernate( SNOOZE_BLOCK );
 };
 extern SnoozeClass Snooze;
 /***************************************************************************/
-#endif /* defined(Snooze_h) */
+#endif /* Snooze_h */

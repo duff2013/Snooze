@@ -12,7 +12,7 @@
 /*******************************************************************************
  *
  *******************************************************************************/
-void Snoozelc5vBuffer::disableDriver( uint8_t type ) {
+void Snoozelc5vBuffer::disableDriver( uint8_t mode ) {
     volatile uint32_t *config;
     config = portConfigRegister( 17 );
     return_core_pin_config = *config;
@@ -20,7 +20,7 @@ void Snoozelc5vBuffer::disableDriver( uint8_t type ) {
 /*******************************************************************************
  *  Configure pin 17 on Teensy LC for OUTPUT LOW
  *******************************************************************************/
-void Snoozelc5vBuffer::enableDriver( uint8_t type ) {
+void Snoozelc5vBuffer::enableDriver( uint8_t mode ) {
     *portModeRegister( 17 ) &= ~digitalPinToBitMask( 17 );
     volatile uint32_t *config;
     config = portConfigRegister( 17 );
@@ -40,5 +40,4 @@ void Snoozelc5vBuffer::clearIsrFlags( uint32_t ipsr ) {
 void Snoozelc5vBuffer::isr( void ) {
     
 }
-
-#endif
+#endif /* __MKL26Z64__ */

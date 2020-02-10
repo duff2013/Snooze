@@ -9,4 +9,4 @@
 #define TIMER_WAKE      36
 #define TOUCH_WAKE      37
 
-#endif /* MK64FX512 */
+#endif /* IMXRT1062 */
