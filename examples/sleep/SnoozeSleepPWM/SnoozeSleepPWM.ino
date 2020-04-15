@@ -5,10 +5,11 @@
   pwm clocks are not active.
 
   Because 'sleep' mode puts the cpu speed
-  at 2 MHz the FTM registers have to be 
+  at 2 MHz the FTM registers have to be
   updated for the 2 MHz cpu which this
   driver does.
-  
+
+  Teensy 3.x/LC Only
 */
 #include <Snooze.h>
 #include "SnoozeSleepPWM.h"
@@ -23,7 +24,7 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   timer.setTimer(30);
   delay(300);
-  
+
 }
 
 void loop() {

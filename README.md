@@ -1,12 +1,12 @@
-# Snooze v6.3.6
+# Snooze v6.3.7
 
 ---
 Low power library for the Teensy LC/3.2/3.5/3.6/4.0 class microcontrollers.
 ---
 ***
-This is a maintenance update because of a change in the new class structure which the main Snooze Class is now decoupled from the Drivers and HAL.  Now sleep*, deepSleepand hibernate work with T_LC and 3.x. Now the T_LC/36  Driver "Touch" works in "sleep" mode. 
+Teensy 4.0 v1 update!
 
-Work on the  Teensy 4.0 is continuing.
+This is a maintenance update because of a change in the new class structure which the main Snooze Class is now decoupled from the Drivers and HAL.  Now sleep*, deepSleepand hibernate work with T_LC and 3.x. Now the T_LC/36  Driver "Touch" works in "sleep" mode. 
 
 * not all drivers work in "sleep" yet.
 ***
@@ -24,6 +24,9 @@ pinMode(LED_BUILTIN, OUTPUT);
 /********************************************************
 Define digital pins for waking the teensy up. This
 combines pinMode and attachInterrupt in one function.
+
+Teensy 4.0
+Digtal pins: all pins
 
 Teensy 3.x
 Digital pins: 2,4,6,7,9,10,11,13,16,21,22,26,30,33
@@ -48,9 +51,9 @@ digitalWrite(LED_BUILTIN, LOW);
 ```
 
 Current Divers:
-1. touch     - Using the Kinetis touch module to wake your Teensy. (Teensy 3.5 does not have Touch)
+1. touch     - Using the Kinetis touch module to wake your Teensy. (Teensy 3.5/4.0 does not have Touch)
 2. digital   - Wake your Teensy with a RISING or FALLING event on a certain pin.
-3. timer     - Use the Low Power timer in milliseconds to wake your Teensy,
+3. timer     - Use the Low Power timer in milliseconds T3.x/LC, seconds T4.x to wake your Teensy,
 4. alarm     - Use the RTC clock to wake your Teensy.
 5. compare   - Setup a voltage crossing to wake your Teensy.
 6. usbSerial - Does not wake the teensy it makes USB Serial play nice while using Snooze.
@@ -71,12 +74,16 @@ SnoozeBlock config(timer, digital);
 void setup() {
 pinMode(LED_BUILTIN, OUTPUT);
 /********************************************************
-* Set Low Power Timer wake up in milliseconds.
+* Set Low Power Timer wake up in milliseconds T3.x/LC, 
+* seconds T4.x.
 ********************************************************/
 timer.setTimer(5000);// milliseconds
 /********************************************************
 * Define digital pins for waking the teensy up. This
 * combines pinMode and attachInterrupt in one function.
+* 
+* Teensy 4.0
+* Digtal pins: all pins
 *
 * Teensy 3.x
 * Digital pins: 2,4,6,7,9,10,11,13,16,21,22,26,30,33

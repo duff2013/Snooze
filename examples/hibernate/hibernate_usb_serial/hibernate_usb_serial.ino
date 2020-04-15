@@ -1,6 +1,6 @@
 /***************************************
   This shows the use of the Snooze USB
-  Serial driver when using Hibernate.
+  Serial driver when using hibernate.
   The USB Serial driver does not wake the
   processor it only aids in using the USB
   Serial in sleeping appilcations.
@@ -18,14 +18,16 @@ Snoozelc5vBuffer  lc5vBuffer;
  Install drivers, timer to wake and USB Serial Driver to
  fix printing to serial monitor after sleeping.
  ***********************************************************/
-#if defined(__MK66FX1M0__)
-SnoozeBlock config_teensy36(usb, timer, digital);
+ #if defined(__IMXRT1062__)
+SnoozeBlock config_teensy40(usb, digital, timer);
+#elif defined(__MK66FX1M0__)
+SnoozeBlock config_teensy36(usb, digital, timer);
 #elif defined(__MK64FX512__)
-SnoozeBlock config_teensy35(usb, timer, digital);
+SnoozeBlock config_teensy35(usb, digital, timer);
 #elif defined(__MK20DX256__)
-SnoozeBlock config_teensy32(usb, timer, digital);
+SnoozeBlock config_teensy32(usb, digital, timer);
 #elif defined(__MKL26Z64__)
-SnoozeBlock config_teensyLC(usb, timer, digital, lc5vBuffer);
+SnoozeBlock config_teensyLC(lc5vBuffer, usb, digital, timer);
 #endif
 
 int idx;
@@ -56,7 +58,9 @@ void loop() {
      feed the sleep function its wakeup parameters. Then go
      to hibernate.
      ********************************************************/
-#if defined(__MK66FX1M0__)
+#if defined(__IMXRT1062__)
+    who = Snooze.hibernate( config_teensy40 );// return module that woke processor
+#elif defined(__MK66FX1M0__)
     who = Snooze.hibernate( config_teensy36 );// return module that woke processor
 #elif defined(__MK64FX512__)
     who = Snooze.hibernate( config_teensy35 );// return module that woke processor

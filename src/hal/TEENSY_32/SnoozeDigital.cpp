@@ -202,14 +202,14 @@ void SnoozeDigital::clearIsrFlags( uint32_t ipsr ) {
  *  sleep pin wakeups go through NVIC
  *
  *  @param pin  Teensy Pin
- *  @param mode CHANGE, FALLING or LOW, RISING or HIGH
+ *  @param type CHANGE, FALLING or LOW, RISING or HIGH
  *******************************************************************************/
-void SnoozeDigital::attachDigitalInterrupt( uint8_t pin, int mode ) {
+void SnoozeDigital::attachDigitalInterrupt( uint8_t pin, int type ) {
     volatile uint32_t *config;
     uint32_t cfg, mask;
     
     if ( pin >= CORE_NUM_DIGITAL ) return;
-    switch ( mode ) {
+    switch ( type ) {
         case CHANGE:	mask = 0x0B; break;
         case RISING:	mask = 0x09; break;
         case FALLING:	mask = 0x0A; break;

@@ -6,9 +6,9 @@
 
 class SnoozeSkeletonDriverClass : public SnoozeBlock {
 private:
-    virtual void disableDriver( void );
-    virtual void enableDriver( void );
-    virtual void clearIsrFlags( void );
+    virtual void disableDriver( uint8_t mode );
+    virtual void enableDriver( uint8_t mode );
+    virtual void clearIsrFlags( uint8_t mode );
     volatile uint32_t save_pin_config;
     int digital_pin;
     

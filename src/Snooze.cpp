@@ -43,11 +43,10 @@ int SnoozeClass::sleep( SNOOZE_BLOCK ) {
 //int SnoozeClass::deepSleep( SNOOZE_BLOCK, SLEEP_MODE mode ) {
 int SnoozeClass::deepSleep( SNOOZE_BLOCK ) {
     SnoozeBlock *p = &configuration;
-    p->enableDriver( 2 );
+    p->enableDriver( 1 );
     int source = hal_deepSleep( );
-    p->disableDriver( 2 );
+    p->disableDriver( 1 );
     return source;
-    
 }
 /*******************************************************************************
  *  hibernate - Most power savings.
@@ -59,8 +58,8 @@ int SnoozeClass::deepSleep( SNOOZE_BLOCK ) {
 //int SnoozeClass::hibernate( SNOOZE_BLOCK, SLEEP_MODE mode ) {
 int SnoozeClass::hibernate( SNOOZE_BLOCK ) {
     SnoozeBlock *p = &configuration;
-    p->enableDriver( 3 );
+    p->enableDriver( 2 );
     int source = hal_hibernate( );
-    p->disableDriver( 3 );
+    p->disableDriver( 2 );
     return source;
 }

@@ -15,17 +15,18 @@ SnoozeUSBSerial   usb;
 Snoozelc5vBuffer  lc5vBuffer;
 #endif
 /***********************************************************
- Install drivers, timer to wake and USB Serial Driver to
- fix printing to serial monitor after sleeping.
+ Install drivers
  ***********************************************************/
-#if defined(__MK66FX1M0__)
-SnoozeBlock config_teensy36(usb, timer, digital);
+ #if defined(__IMXRT1062__)
+SnoozeBlock config_teensy40(usb, digital, timer);
+#elif defined(__MK66FX1M0__)
+SnoozeBlock config_teensy36(usb, digital, timer);
 #elif defined(__MK64FX512__)
-SnoozeBlock config_teensy35(usb, timer, digital);
+SnoozeBlock config_teensy35(usb, digital, timer);
 #elif defined(__MK20DX256__)
-SnoozeBlock config_teensy32(usb, timer, digital);
+SnoozeBlock config_teensy32(usb, digital, timer);
 #elif defined(__MKL26Z64__)
-SnoozeBlock config_teensyLC(usb, timer, digital, lc5vBuffer);
+SnoozeBlock config_teensyLC(lc5vBuffer, usb, digital, timer);
 #endif
 
 int idx;
@@ -56,9 +57,9 @@ void loop() {
      feed the sleep function its wakeup parameters. Then go
      to deepSleep.
      ********************************************************/
-#if defined(__MK66FX1M0__)
-    who = Snooze.deepSleep( config_teensy36 );// return module that woke processor
-#elif defined(__MK64FX512__)
+#if defined(__IMXRT1062__)
+    who = Snooze.deepSleep( config_teensy40 );// return module that woke processor
+#elif defined(__MK66FX1M0__)
     who = Snooze.deepSleep( config_teensy35 );// return module that woke processor
 #elif defined(__MK20DX256__)
     who = Snooze.deepSleep( config_teensy32 );// return module that woke processor
@@ -76,7 +77,7 @@ void loop() {
     }
     // normal delay for Arduino Serial Monitor
     delay(200);
-    // print who woke the teensy up, i.e. timer || digital
+    // print who woke the teensy up, i.e. timer | digital
     Serial.printf("Timer Driver number indicator: %i | index: %i\n", who, idx);
     delay(1000);
     idx++;

@@ -116,6 +116,16 @@ volatile llwu_mask_t llwuMask;
 POWERDOWN_MODES PD_MODE = LLS;
 
 //----------------------------------------------------------------------------------
+// HAL specific power down setting
+void hal_set_powerdown_mode( POWERDOWN_MODES mode ) {
+    PD_MODE = mode;
+}
+//----------------------------------------------------------------------------------
+// HAL specific power down setting
+POWERDOWN_MODES hal_get_powerdown_mode( void ) {
+    return PD_MODE;
+}
+//----------------------------------------------------------------------------------
 void wait( void ) {
     // Clear the SLEEPDEEP bit to make sure we go into WAIT (sleep) mode instead of deep sleep.
     SCB_SCR = 0;

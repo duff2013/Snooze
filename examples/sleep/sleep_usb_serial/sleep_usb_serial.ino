@@ -1,8 +1,8 @@
 /***************************************
-  This shows the use of the Snooze 
-  USB Serial driver when using sleep. 
-  This USB Serial driver does not wake 
-  the processor it only aids in using 
+  This shows the use of the Snooze
+  USB Serial driver when using sleep.
+  This USB Serial driver does not wake
+  the processor it only aids in using
   USB Serial in sleeping appilcations.
  ****************************************/
 #include <Snooze.h>
@@ -14,21 +14,23 @@ SnoozeUSBSerial usb;
 Snoozelc5vBuffer  lc5vBuffer;
 #endif
 /***********************************************************
-  Install drivers, timer to wake and USB Serial to fix 
+  Install drivers, timer to wake and USB Serial to fix
   printing to serial monitor after sleeping.
  ***********************************************************/
-#if defined(__MK66FX1M0__)
+#if defined(__IMXRT1062__)
+SnoozeBlock config_teensy40(usb, digital, timer);
+#elif defined(__MK66FX1M0__)
 SnoozeBlock config_teensy36(usb, timer);
 #elif defined(__MK64FX512__)
-SnoozeBlock config_teensy35(usb, timer;
+SnoozeBlock config_teensy35(usb, timer);
 #elif defined(__MK20DX256__)
 SnoozeBlock config_teensy32(usb, timer);
 #elif defined(__MKL26Z64__)
-SnoozeBlock config_teensyLC(usb, timer, lc5vBuffer);
+SnoozeBlock config_teensyLC(lc5vBuffer, usb, timer);
 #endif
 
 int idx;
-                            
+
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   while (!Serial);
@@ -48,7 +50,9 @@ void loop() {
     feed the sleep function its wakeup parameters. Then go
     to sleep.
    ********************************************************/
-#if defined(__MK66FX1M0__)
+#if defined(__IMXRT1062__)
+  who = Snooze.sleep( config_teensy40 );// return module that woke processor
+#elif defined(__MK66FX1M0__)
   who = Snooze.sleep( config_teensy36 );// return module that woke processor
 #elif defined(__MK64FX512__)
   who = Snooze.sleep( config_teensy35 );// return module that woke processor

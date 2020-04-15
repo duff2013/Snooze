@@ -1,3 +1,9 @@
+><b>Updated (4/15/20 v6.3.7)</b><br>
+* Maintenance release.<br>
+* Added v1 Teensy 4.0 support.<br>
+* Updated and fixed examples.<br>
+* Updated docs.<br>
+
 ><b>Updated (2/9/20 v6.3.6)</b><br>
 * Maintenance release.<br>
 * Fixed Digital driver pin type to HAL.<br>

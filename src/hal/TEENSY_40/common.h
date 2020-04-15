@@ -11,7 +11,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern volatile int wake_source;
+
 #ifdef __cplusplus
 }
 #endif

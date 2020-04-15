@@ -2,7 +2,7 @@
 /*
 
 */
-void SnoozeSkeletonDriverClass::enableDriver( void ) {
+void SnoozeSkeletonDriverClass::enableDriver( uint8_t mode ) {
   // This function gets called before any sleep or
   // low power operation from the Snooze Class.
 
@@ -25,7 +25,7 @@ void SnoozeSkeletonDriverClass::enableDriver( void ) {
 /*
 
 */
-void SnoozeSkeletonDriverClass::disableDriver( void ) {
+void SnoozeSkeletonDriverClass::disableDriver( uint8_t mode ) {
   // This function gets called after any sleep or
   // low power operation from the Snooze Class.
 
@@ -50,7 +50,7 @@ void SnoozeSkeletonDriverClass::disableDriver( void ) {
 /*
 
 */
-void SnoozeSkeletonDriverClass::clearIsrFlags( void ) {
+void SnoozeSkeletonDriverClass::clearIsrFlags( uint8_t mode ) {
   // This function gets called from wakeup Isr, you clear
   // any module flags that need to cleared here.
 

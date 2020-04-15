@@ -20,36 +20,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  ***********************************************************************************
- *  hal.h
- *  Teensy 40
+ *  SnoozeAlarm.h
+ *  Teensy 4.0
  *
- * Purpose: Teensy 4.0 HAL
+ * Purpose: RTC Driver
  *
  **********************************************************************************/
 #if defined(__IMXRT1062__)
 
-#ifndef __HAL_H__
-#define __HAL_H__
+#ifndef SnoozeAlarm_h
+#define SnoozeAlarm_h
 
-#define TYPE uint8_t
-#define REDUCED_CPU_BLOCK( SNOOZE_BLOCK )   \
-for ( TYPE __ToDo = set_runlp( SNOOZE_BLOCK );  __ToDo;  __ToDo = set_run( SNOOZE_BLOCK ) )
-
-
-#ifdef __cplusplus
+#include "Arduino.h"
 #include "common.h"
-#include "SnoozeDigital.h"
-#include "SnoozeUSBSerial.h"
-#include "SnoozeTimer.h"
-#include "SnoozeCompare.h"
-#include "SnoozeAlarm.h"
+#include "SnoozeBlock.h"
 
-// TODO - add Drivers
-/*
-#include "SnoozeAudio.h"
-#include "SnoozeSPI.h"
- */
-
-#endif /* cplusplus */
-#endif /* __HAL_H__ */
-#endif /* IMXRT1062 */
+class SnoozeAlarm : public SnoozeBlock {
+private:
+    virtual void disableDriver( uint8_t mode );
+    virtual void enableDriver( uint8_t mode );
+    virtual void clearIsrFlags( uint32_t ipsr );
+    //time_t rtc_set_sync_provider( void );
+    void ( * return_rtc_irq ) ( void );
+    time_t alarm;
+    uint8_t return_priority;
+    uint8_t return_isr_enabled;
+    uint32_t TAR;
+    uint32_t IER;
+    bool CCM_CCGR2_clock_active;
+    bool timer_;
+    static volatile uint8_t sleep_type;
+public:
+    SnoozeAlarm( void ) : TAR( false ), IER( false ),
+                        CCM_CCGR2_clock_active( false )
+    {
+        isDriver = true;
+    }
+    void setRtcTimer( uint8_t hours, uint8_t minutes, uint8_t seconds );
+    void setAlarm( time_t alarmTime );
+};
+#endif /* SnoozeAlarm_h */
+#endif /* __IMXRT1062__ */

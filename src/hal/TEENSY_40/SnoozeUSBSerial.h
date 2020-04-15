@@ -20,36 +20,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  ***********************************************************************************
- *  hal.h
- *  Teensy 40
+ *  SnoozeUSBSerial.h
+ *  Teensy 4.0
  *
- * Purpose: Teensy 4.0 HAL
+ * Purpose: Low Power USB Serial Driver
  *
  **********************************************************************************/
 #if defined(__IMXRT1062__)
 
-#ifndef __HAL_H__
-#define __HAL_H__
+#ifndef SnoozeUSBSerial_h
+#define SnoozeUSBSerial_h
 
-#define TYPE uint8_t
-#define REDUCED_CPU_BLOCK( SNOOZE_BLOCK )   \
-for ( TYPE __ToDo = set_runlp( SNOOZE_BLOCK );  __ToDo;  __ToDo = set_run( SNOOZE_BLOCK ) )
-
-
-#ifdef __cplusplus
+#include "SnoozeBlock.h"
 #include "common.h"
-#include "SnoozeDigital.h"
-#include "SnoozeUSBSerial.h"
-#include "SnoozeTimer.h"
-#include "SnoozeCompare.h"
-#include "SnoozeAlarm.h"
 
-// TODO - add Drivers
-/*
-#include "SnoozeAudio.h"
-#include "SnoozeSPI.h"
- */
-
-#endif /* cplusplus */
-#endif /* __HAL_H__ */
-#endif /* IMXRT1062 */
+class SnoozeUSBSerial : public SnoozeBlock {
+private:
+    virtual void enableDriver( uint8_t mode );
+    virtual void disableDriver( uint8_t mode );
+    virtual void clearIsrFlags( uint32_t ipsr );
+    static void isr( void );
+    uint32_t pll_usb1;
+public:
+    SnoozeUSBSerial( void ) : pll_usb1(0) {
+        isDriver = true;
+        isUsed = true;
+    }
+};
+#endif /* SnoozeUSBSerial_h */
+#endif /* __IMXRT1062__ */

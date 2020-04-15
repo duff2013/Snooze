@@ -5,9 +5,10 @@
  (pin 21) which will wake the Teensy and start logging data until
  the button is released in which the Teensy will go back into
  deepSleep.
- 
- The SPI Driver configures the SDIO or SPI pins to minimize leakage
- current during deepSleep and reconfigure the pins back after waking.
+
+ The SPI Driver configures the SDIO or SPI pins to minimize
+ leakage current during deepSleep and reconfigure the pins
+ back after wake up.
  */
 
 /***********************************************************
@@ -56,7 +57,7 @@ void setup() {
     pinMode(LED_BUILTIN, OUTPUT);
     // Configure pin 21 for bounce library
     pinMode(21, INPUT_PULLUP);
-    
+
     /******************Snooze Driver Config******************/
     // Configure pin 21 for Snooze wakeup, also used by bounce
     // but no need to reconfigure the pin after waking Snooze
@@ -65,16 +66,17 @@ void setup() {
     // Configure SD Card for Low Power operation
     sdCard.setClockPin( BUILTIN_SDCARD );
     /****************End Snooze Driver Config****************/
-    
+
     //UNCOMMENT THESE TWO LINES FOR TEENSY AUDIO BOARD:
     //SPI.setMOSI(7);  // Audio shield has MOSI on pin 7
     //SPI.setSCK(14);  // Audio shield has SCK on pin 14
-    
+
     // wait for port to open:
     while (!Serial);
     delay(100);
-    
-    Serial.print("Snooze SD Card Push Button Hold Data-Logger Example");
+
+    Serial.println("Snooze SD Card Push Button Hold Data-Logger Example");
+    Serial.println("---------------------------------------------------");
     // see if the card is present and can be initialized:
     SD.begin(chipSelect);
     if (!card.init(SPI_HALF_SPEED, chipSelect)) {
@@ -120,7 +122,7 @@ inline void sleepDataLogger() {
     while (!Serial || time < 100) {
         // print out a bunch of NULLS to serial monitor
         Serial.write(0x00);
-        delay(5);
+        //delay(5);
     }
     // normal delay for Arduino Serial Monitor to connect to pc
     delay(100);
@@ -147,7 +149,7 @@ void handleButtonHold() {
 }
 // ----------------------------------------------------------------------------------------------
 void logData(uint32_t count) {
-    
+
     // make a string for assembling the data to log:
     String dataString;// = st;//"Time\tAna1\tAna2\tAna3\r\n";
     // read three sensors and append to the string:
@@ -163,7 +165,7 @@ void logData(uint32_t count) {
     // open the file. note that only one file can be open at a time,
     // so you have to close this one before opening another.
     File dataFile = SD.open("datalog.txt", FILE_WRITE);
-    
+
     // if the file is available, write to it:
     if (dataFile) {
         dataFile.print(dataString);
@@ -193,13 +195,13 @@ void sdCardInfo() {
         default:
             Serial.println("Unknown");
     }
-    
+
     // Now we will try to open the 'volume'/'partition' - it should be FAT16 or FAT32
     if (!volume.init(card)) {
         Serial.println("Could not find FAT16/FAT32 partition.\nMake sure you've formatted the card");
         return;
     }
-    
+
     // print the type and size of the first FAT-type volume
     uint32_t volumesize;
     Serial.print("\nVolume type is FAT");
@@ -220,10 +222,10 @@ void sdCardInfo() {
     Serial.print("Volume size (Mbytes): ");
     volumesize /= 1024;
     Serial.println(volumesize);
-    
+
     Serial.println("\nFiles found on the card (name, date and size in bytes): ");
     root.openRoot(volume);
-    
+
     // list all files in the card with date and size
     root.ls(LS_R | LS_DATE | LS_SIZE);
     delay(100);
@@ -244,27 +246,27 @@ time_t getTeensy3Time() {
 }
 
 String digitalClockDisplay(elapsedMillis millis_t) {
-    
+
     String time;
-    
+
     if (hour() < 10) time += 0;
     //< 10 ? '0' + hour() : hour();
     time += hour() ;
     time += ":";
-    
+
     if (minute() < 10) time += 0;
     //< 10 ? '0' + minute() : minute();
     time += minute() ;
     time += ":";
-    
+
     if (second() < 10) time += 0;
     time += second();
     time += ".";
-    
+
     if (millis_t < 100) time += 0;
     if (millis_t < 10) time += 0;
     time += (int)millis_t;
-    
+
     return time;
 }
 // ----------------------------------------------------------------------------------------------
