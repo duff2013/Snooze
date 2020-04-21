@@ -52,8 +52,6 @@ void SnoozeTouch::pinMode( int _pin, int thresh ) {
  *  <#Description#>
  *******************************************************************************/
 void SnoozeTouch::disableDriver( uint8_t mode ) {
-    //if ( mode == RUN_LP || mode == VLPW ) return;
-    //if ( mode <= 1 ) return;
     if ( mode == 0 ) return;
     if ( mode == 1 ) {
         if ( return_isr_enabled == 0 )  NVIC_DISABLE_IRQ( IRQ_TSI ); //disable irq
@@ -81,8 +79,6 @@ void SnoozeTouch::disableDriver( uint8_t mode ) {
  *  <#Description#>
  *******************************************************************************/
 void SnoozeTouch::enableDriver( uint8_t mode ) {
-    //if ( mode == RUN_LP || mode == VLPW ) return;
-    //if ( mode <= 1 ) return;
     if ( mode == 0 ) return;
     if ( mode == 1 ) {
         return_priority = NVIC_GET_PRIORITY( IRQ_TSI );//get current priority

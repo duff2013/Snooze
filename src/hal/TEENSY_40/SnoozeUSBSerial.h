@@ -34,15 +34,28 @@
 #include "SnoozeBlock.h"
 #include "common.h"
 
-class SnoozeUSBSerial : public SnoozeBlock {
+#define USB_SERIAL_BUFFER_SIZE 100
+
+class SnoozeUSBSerial : public SnoozeBlock, public Stream {
 private:
     virtual void enableDriver( uint8_t mode );
     virtual void disableDriver( uint8_t mode );
     virtual void clearIsrFlags( uint32_t ipsr );
     static void isr( void );
+    char print_buffer[USB_SERIAL_BUFFER_SIZE];
     uint32_t pll_usb1;
 public:
-    SnoozeUSBSerial( void ) : pll_usb1(0) {
+    virtual size_t write( uint8_t b );
+    virtual size_t write( const uint8_t *buffer, size_t size );
+    virtual int availableForWrite( void );
+    virtual void flush( void );
+    virtual int available( );
+    virtual int read( );
+    virtual int peek( );
+    operator bool( ) {
+        return usb_configuration && ( usb_cdc_line_rtsdtr & USB_SERIAL_DTR ) && ( ( uint32_t )( systick_millis_count - usb_cdc_line_rtsdtr_millis ) >= 15 );
+    }
+    SnoozeUSBSerial( void ) : pll_usb1( 0 ) {
         isDriver = true;
         isUsed = true;
     }

@@ -1,11 +1,13 @@
 /********************************************************************
  - Snooze Skelton Driver Example -
- A driver class needs to inherient from the SnoozeBlock class. You must 
+ A driver class needs to inherient from the SnoozeBlock class. You must
  override the 'enableDriver', 'disbaleDriver' and optional 'clearIsrFlags'
  virtual functions.
- 
+
  This example driver class saves the state of the pin, configures
  it as an OUTPUT and blinks the LED before and after going to sleep.
+
+ Supported Micros: T-LC/3.x/4.0
  ********************************************************************/
 #include <Snooze.h>
 #include <wiring.h>

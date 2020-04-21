@@ -2,7 +2,7 @@
  *  SnoozeAudio.h
  *  Teensy 3.2
  *
- * Purpose: Audio Driver
+ *  Purpose: Audio Driver
  *
  **********************************************************************************/
 #if defined(__MK20DX256__)

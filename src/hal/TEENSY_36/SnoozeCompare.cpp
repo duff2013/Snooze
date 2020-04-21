@@ -78,9 +78,7 @@ void SnoozeCompare::pinMode( int _pin, int _type, float val ) {
  *  Disable Driver
  *******************************************************************************/
 void SnoozeCompare::disableDriver( uint8_t type ) {
-    //if ( mode == RUN_LP ) { return; }
     if (type == 0) return;
-    //if ( mode == VLPW || mode == VLPS ) {
     if (type == 1) {
         IRQ_NUMBER_t IRQ_CMP;
         switch (pin) {
@@ -133,9 +131,7 @@ void SnoozeCompare::disableDriver( uint8_t type ) {
  *  Enable Driver
  *******************************************************************************/
 void SnoozeCompare::enableDriver( uint8_t type ) {
-    //if ( mode == RUN_LP ) { return; }
     if (type == 0) return;
-    //if ( mode == VLPW || mode == VLPS ) {
     if (type == 1) {
         IRQ_NUMBER_t IRQ_CMP;
         switch (pin) {
@@ -194,26 +190,18 @@ void SnoozeCompare::enableDriver( uint8_t type ) {
         _pin = 0x00;
     }
     else if ( pin == 4 ) {
-        //if ( mode >= LLS ) llwu_configure_modules_mask( LLWU_CMP2_MOD );
-        if (type >= 2) {
-            //digitalWriteFast(LED_BUILTIN, HIGH);
-            llwu_configure_modules_mask( LLWU_CMP2_MOD );
-        }
+        if (type >= 2) llwu_configure_modules_mask( LLWU_CMP2_MOD );
         return_core_pin_config[1] = CORE_PIN4_CONFIG;
         CORE_PIN4_CONFIG = PORT_PCR_MUX( 0 );
         _pin = 0x01;
     }
     else if ( pin == 9 ) {
-        //if ( mode >= LLS ) llwu_configure_modules_mask( LLWU_CMP1_MOD );
-        if (type >= 2) {
-            llwu_configure_modules_mask( LLWU_CMP1_MOD );
-        }
+        if (type >= 2) llwu_configure_modules_mask( LLWU_CMP1_MOD );
         return_core_pin_config[2] = CORE_PIN9_CONFIG;
         CORE_PIN9_CONFIG = PORT_PCR_MUX( 0 );
         _pin = 0x01;
     }
     // save if isr is already enabled and enable isr if not
-    //if ( mode == VLPW || mode == VLPS ) {
     if (type == 1) {
         IRQ_NUMBER_t IRQ_CMP;
         switch (pin) {

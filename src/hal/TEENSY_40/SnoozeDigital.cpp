@@ -93,7 +93,7 @@ void SnoozeDigital::enableDriver( uint8_t mode ) {
             //digitalWriteFast( pinNumber, pin_type );
         }
         
-        if ( mode == 2 ) {
+        if ( mode == 3 ) {
             volatile uint32_t *gpio = portOutputRegister( pinNumber );
             switch( ( uint32_t )gpio ) {
                 case ( uint32_t )&GPIO6_DR: {
@@ -232,7 +232,7 @@ void SnoozeDigital::enableDriver( uint8_t mode ) {
                     break;
             }
         }
-        else if ( mode == 1 ) {
+        else if ( mode <= 2 ) {
             return_isr_gpio6789_enabled = NVIC_IS_ENABLED( IRQ_GPIO6789 );
             NVIC_DISABLE_IRQ( IRQ_GPIO6789 );
             NVIC_CLEAR_PENDING( IRQ_GPIO6789 );
@@ -263,7 +263,7 @@ void SnoozeDigital::disableDriver( uint8_t mode ) {
         config = portConfigRegister( pinNumber );
         *config = return_core_pin_config[pinNumber];
         
-        if ( mode == 2 ) {
+        if ( mode == 3 ) {
             volatile uint32_t *gpio = portOutputRegister( pinNumber );
             switch( ( uint32_t )gpio ) {
                 case ( uint32_t )&GPIO6_DR: {
@@ -362,7 +362,7 @@ void SnoozeDigital::disableDriver( uint8_t mode ) {
                     break;
             }
         }
-        else if ( mode == 1 ) {
+        else if ( mode <= 2 ) {
             NVIC_SET_PRIORITY( IRQ_GPIO6789, return_priority_gpio6789 );
             __disable_irq( );
             attachInterruptVector( IRQ_GPIO6789, return_gpio6789_irq );// set previous isr func
@@ -384,7 +384,7 @@ void SnoozeDigital::clearIsrFlags( uint32_t ipsr ) {
         _pin &= ~( ( uint64_t )1 << pinNumber );// remove pin from local list
         if ( pinNumber > 33 ) continue;
         volatile uint32_t *gpio = portOutputRegister( pinNumber );
-        if ( sleep_type == 2 ) {
+        if ( sleep_type == 3 ) {
             switch( ( uint32_t )gpio ) {
                 case ( uint32_t )&GPIO6_DR:
                     gpio = &GPIO1_DR;
@@ -419,7 +419,7 @@ void SnoozeDigital::clearIsrFlags( uint32_t ipsr ) {
 void SnoozeDigital::attachDigitalInterrupt( uint8_t pin, int type ) {
     if ( pin >= 33 ) return;
     volatile uint32_t *gpio = portOutputRegister( pin );
-    if ( sleep_type == 2 ) {
+    if ( sleep_type == 3 ) {
         switch( ( uint32_t )gpio ) {
             case ( uint32_t )&GPIO6_DR:
                 gpio = &GPIO1_DR;

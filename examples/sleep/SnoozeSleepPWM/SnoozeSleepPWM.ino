@@ -1,4 +1,4 @@
-/*
+/***************************************
   This example shows how you can use the pwm
   while in 'sleep' mode, pwm will not work
   with deepSleep or hibernate because the
@@ -9,8 +9,10 @@
   updated for the 2 MHz cpu which this
   driver does.
 
-  Teensy 3.x/LC Only
-*/
+  Supported Micros: T-LC/3.x
+
+  Teensy 4.0 will not work with this sketch
+ ****************************************/
 #include <Snooze.h>
 #include "SnoozeSleepPWM.h"
 

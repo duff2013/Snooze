@@ -44,13 +44,11 @@ int SnoozeDigital::pinMode( int _pin, int mode, int type ) {
  *******************************************************************************/
 void SnoozeDigital::enableDriver( uint8_t mode ) {
     sleep_type = mode;
-    //if ( mode == RUN_LP ) { return; }
     if (mode == 0) return;
 
     uint32_t _pin = pin;
     isr_pin = pin;
     // if using sleep must setup pin interrupt to wake
-    //if ( mode == VLPW || mode == VLPS ) {
     if (mode == 1) {
         return_isr_a_enabled  = NVIC_IS_ENABLED( IRQ_PORTA );
         return_isr_cd_enabled = NVIC_IS_ENABLED( IRQ_PORTCD );
@@ -97,7 +95,7 @@ void SnoozeDigital::enableDriver( uint8_t mode ) {
                 *config |= ( PORT_PCR_PE ); // pulldown
                 *config &= ~( PORT_PCR_PS );
             }
-            //if ( mode == VLPW || mode == VLPS ) {
+        
             if (mode == 1) {
                 attachDigitalInterrupt( pinNumber, pin_type );// set pin interrupt
             }
@@ -116,7 +114,6 @@ void SnoozeDigital::enableDriver( uint8_t mode ) {
  *  Disable interrupt and configure pin to orignal state.
  *******************************************************************************/
 void SnoozeDigital::disableDriver( uint8_t mode ) {
-    //if ( mode == RUN_LP ) { return; }
     if (mode == 0) return;
 
     uint32_t _pin = pin;
@@ -132,7 +129,6 @@ void SnoozeDigital::disableDriver( uint8_t mode ) {
         
         _pin &= ~( ( uint32_t )1 << pinNumber );// remove pin from list
     }
-    //if ( mode == VLPW || mode == VLPS ) {
     if (mode == 1) {
         NVIC_SET_PRIORITY( IRQ_PORTA,  return_priority_a );//return priority
         NVIC_SET_PRIORITY( IRQ_PORTCD, return_priority_cd );//return priority
@@ -159,7 +155,6 @@ void SnoozeDigital::clearIsrFlags( uint32_t ipsr ) {
     PORTD_ISFR = isfr_d;*/
     
     // return if using deepSleep or hibernate
-    //if ( mode == LLS || mode == VLLS3 || mode == VLLS2 || mode == VLLS1 ) return;
     if ( sleep_type != 1 ) return;
     uint32_t _pin = isr_pin;
     while ( __builtin_popcount( _pin ) ) {

@@ -1,10 +1,12 @@
 /********************************************************************
- * - Snooze REDUCED_CPU_BLOCK Hardware Serial Example -
- *
- * HardwareSerial1_LP Driver Class reconfigures Serial1 to work at
- * a CPU speed of 2 MHz while in the REDUCED_CPU_BLOCK.
- *
- * Use second Teensy to read from this serial port.
+ - Snooze REDUCED_CPU_BLOCK Hardware Serial Example -
+
+ HardwareSerial1_LP Driver Class reconfigures Serial1 to work at
+ a CPU speed of 2 MHz while in the REDUCED_CPU_BLOCK.
+
+ Use second Teensy to read from this serial port.
+
+ Supported Micros: T-LC/3.x
  ********************************************************************/
 #include <Snooze.h>
 #include "HardwareSerial1_LP.h"
@@ -30,9 +32,9 @@ void loop() {
     // print serial1 running at F_CPU
     Serial1.printf("F_CPU:\t%i\n", F_CPU);
     Serial1.flush();
-    
+
     digitalWriteFast(LED_BUILTIN, LOW);
-    
+
     // REDUCED_CPU_BLOCK will run the HardwareSerial1_LP Driver before
     // and after the code inside the brackets
     REDUCED_CPU_BLOCK(serialConfig) {
@@ -47,7 +49,7 @@ void loop() {
         Serial1.println("----------------------------------------");
         Serial1.flush();
     }
-    
+
     digitalWriteFast(LED_BUILTIN, HIGH);
     delay(500);
 }

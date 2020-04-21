@@ -23,7 +23,7 @@
  *  SnoozeTimer.h
  *  Teensy 3.2
  *
- * Purpose: Low Power Timer Driver
+ *  Purpose: Low Power Timer Driver
  *
  **********************************************************************************/
 #if defined(__MK20DX256__)

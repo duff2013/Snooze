@@ -2,7 +2,7 @@
  *  SnoozeTouch.h
  *  Teensy 3.2
  *
- * Purpose: Touch (TSI) Driver
+ *  Purpose: Touch (TSI) Driver
  *
  **********************************************************************************/
 #if defined(__MK20DX256__)
@@ -65,7 +65,6 @@ void SnoozeTouch::pinMode( int _pin, int thresh ) {
  *  <#Description#>
  *******************************************************************************/
 void SnoozeTouch::disableDriver( uint8_t mode ) {
-    //if ( mode == RUN_LP || mode == VLPW ) return;
     if ( mode <= 1 ) return;
     uint8_t _pin = pin;
     
@@ -85,7 +84,6 @@ void SnoozeTouch::disableDriver( uint8_t mode ) {
  *  <#Description#>
  *******************************************************************************/
 void SnoozeTouch::enableDriver( uint8_t mode ) {
-    //if ( mode == RUN_LP || mode == VLPW ) return;
     if ( mode <= 1 ) return;
     uint8_t _pin = pin;
     if ( _pin >= NUM_DIGITAL_PINS ) return;

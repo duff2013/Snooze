@@ -1,5 +1,7 @@
 /***************************************
   This shows all the wakeups for deepSleep
+
+  Supported Micros: T-LC/3.x/4.0
 ****************************************/
 #include <Snooze.h>
 // Load drivers
@@ -7,7 +9,7 @@ SnoozeDigital digital;
 SnoozeCompare compare;
 SnoozeTimer timer;
 SnoozeUSBSerial usb;
-#if !defined(__MK64FX512__) || defined(__IMXRT1062__)
+#if !defined(__MK64FX512__) && !defined(__IMXRT1062__)
 SnoozeTouch touch;
 #endif
 SnoozeAlarm	alarm;
@@ -30,7 +32,7 @@ Snoozelc5vBuffer  lc5vBuffer;
   Teensy 3.2 can use any Core Drivers together.
 ***********************************************************/
 #if defined(__IMXRT1062__)
-SnoozeBlock config_teensy40(usb, digital, compare, alarm);
+SnoozeBlock config_teensy40(usb, digital, alarm);
 #elif defined(__MK66FX1M0__)
 SnoozeBlock config_teensy36(touch, digital, alarm);
 #elif defined(__MK64FX512__)
@@ -77,7 +79,11 @@ void setup() {
     Teensy 3.x/LC Set Low Power Timer wake up in Milliseconds.
     MAX: 65535ms
   ********************************************************/
-  timer.setTimer(5000);// milliseconds
+#if defined(__IMXRT1062__)
+    timer.setTimer(5);// seconds
+#else
+    timer.setTimer(5000);// milliseconds
+#endif
 
   /********************************************************
     In deeSleep the Compare module works by setting the
@@ -121,7 +127,7 @@ void setup() {
     Teensy LC
     Touch Sense pins: 0,1,3,4,15,16,17,18,19,22,23
   ********************************************************/
-#if !defined(__MK64FX512__) || defined(__IMXRT1062__)
+#if !defined(__MK64FX512__) && !defined(__IMXRT1062__)
   touch.pinMode(0, touchRead(0) + 250); // pin, threshold
 #endif
 }

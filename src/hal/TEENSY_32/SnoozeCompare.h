@@ -23,7 +23,7 @@
  *  SnoozeCompare.h
  *  Teensy 3.2
  *
- * Purpose: Compare Driver
+ *  Purpose: Compare Driver
  *
  **********************************************************************************/
 #if defined(__MK20DX256__)

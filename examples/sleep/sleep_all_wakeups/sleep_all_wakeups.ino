@@ -3,6 +3,8 @@
 
   Sleep is the most flexable and any
   interrupt can wake the processor.
+
+  Supported Micros: T-LC/3.x/4.0
 ****************************************/
 #include <Snooze.h>
 // Load drivers
@@ -10,6 +12,7 @@ SnoozeDigital digital;
 SnoozeCompare compare;
 SnoozeTimer timer;
 SnoozeAlarm  alarm;
+SnoozeUSBSerial usb;
 #if defined(__MKL26Z64__)
 // configures the lc's 5v data buffer (OUTPUT, LOW) for low power
 Snoozelc5vBuffer  lc5vBuffer;
@@ -68,11 +71,18 @@ void setup() {
   alarm.setRtcTimer(0, 0, 10);// hour, min, sec
 #endif
 
-  /********************************************************
-    Set Low Power Timer wake up in milliseconds T3.x/LC, 
-    seconds T4.x.
-  ********************************************************/
+/********************************************************
+  Teensy 4.0 Set Low Power Timer wake up in Seconds.
+  MAX: 131071s
+
+  Teensy 3.x/LC Set Low Power Timer wake up in Milliseconds.
+  MAX: 65535ms
+********************************************************/
+#if defined(__IMXRT1062__)
+  timer.setTimer(5);// seconds
+#else
   timer.setTimer(5000);// milliseconds
+#endif
 
   /********************************************************
     In sleep the Compare module works by setting the

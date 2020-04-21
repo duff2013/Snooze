@@ -23,7 +23,7 @@
  *  SnoozeTouch.h
  *  Teensy 3.2
  *
- * Purpose: Touch (TSI) Driver
+ *  Purpose: Touch (TSI) Driver
  *
  **********************************************************************************/
 #if defined(__MK20DX256__)

@@ -20,44 +20,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  ***********************************************************************************
- *  SnoozeUSBSerial.h
- *  Teensy LC
+ *  SnoozeSPI.h
+ *  Teensy 4.0
  *
- * Purpose: Low Power USB Serial Driver
+ *  Purpose: Low Power USB Serial Driver
  *
  **********************************************************************************/
-#if defined(__MKL26Z64__)
+#if defined(__IMXRT1062__)
 
-#ifndef SnoozeUSBSerial_h
-#define SnoozeUSBSerial_h
+#ifndef SnoozeSPI_h
+#define SnoozeSPI_h
 
 #include "SnoozeBlock.h"
 #include "common.h"
 
-#define USB_SERIAL_BUFFER_SIZE 100
+#define BUILTIN_SD_CLK_PIN 254
 
-class SnoozeUSBSerial : public SnoozeBlock, public Stream {
-private:
+class SnoozeSPI : public SnoozeBlock {
+    private:
     virtual void enableDriver( uint8_t mode );
     virtual void disableDriver( uint8_t mode );
-    virtual void clearIsrFlags( uint32_t ipsr );
-    static void isr( void );
-    char print_buffer[USB_SERIAL_BUFFER_SIZE];
-public:
-    SnoozeUSBSerial( void ) {
+    virtual void clearIsrFlags( uint32_t ipsr ) {}
+    static void isr( void ) {}
+    volatile uint32_t return_core_pin_config;
+    public:
+    SnoozeSPI( void ) {
         isDriver = true;
         isUsed = true;
     }
-    virtual size_t write( uint8_t b );
-    virtual size_t write( const uint8_t *buffer, size_t size );
-    virtual int availableForWrite( void );
-    virtual void flush( void );
-    virtual int available( );
-    virtual int read( );
-    virtual int peek( );
-    operator bool( ) {
-        return usb_configuration && ( usb_cdc_line_rtsdtr & USB_SERIAL_DTR ) && ( ( uint32_t )( systick_millis_count - usb_cdc_line_rtsdtr_millis ) >= 15 );
-    }
+    uint32_t clk_pin;
+    void setClockPin( uint8_t pin );
 };
-#endif /* SnoozeUSBSerial_h */
-#endif /* __MKL26Z64__ */
+#endif /* SnoozeSPI_h */
+#endif /* __IMXRT1062__ */

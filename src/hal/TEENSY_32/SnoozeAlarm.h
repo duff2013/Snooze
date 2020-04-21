@@ -23,7 +23,7 @@
  *  SnoozeAlarm.h
  *  Teensy 3.2
  *
- * Purpose: RTC Driver
+ *  Purpose: RTC Driver
  *
  **********************************************************************************/
 #if defined(__MK20DX256__)

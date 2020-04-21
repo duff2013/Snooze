@@ -1,11 +1,11 @@
 /***********************************************************************************
  *  SnoozeSPI.h
- *  Teensy 3.2
+ *  Teensy 4.0
  *
  *  Purpose: SPI Driver
  *
  **********************************************************************************/
-#if defined(__MK20DX256__)
+#if defined(__IMXRT1062__)
 
 #include "SnoozeSPI.h"
 #define INTERNAL_SPI_CLK_PIN 60
@@ -23,20 +23,20 @@ void SnoozeSPI::setClockPin( uint8_t pin ) {
  *  
  *******************************************************************************/
 void SnoozeSPI::disableDriver( uint8_t mode ) {
-    *portModeRegister( clk_pin ) = 0;
-    volatile uint32_t *config;
-    config = portConfigRegister( clk_pin );
-    *config = return_core_pin_config;
+    //*portModeRegister( clk_pin ) = 0;
+    //volatile uint32_t *config;
+    //config = portConfigRegister( clk_pin );
+    //*config = return_core_pin_config;
 }
 /*******************************************************************************
  *  SPI clk -> output low
  *******************************************************************************/
 void SnoozeSPI::enableDriver( uint8_t mode ) {
-    volatile uint32_t *config;
-    config = portConfigRegister( clk_pin );
-    return_core_pin_config = *config;
-    *portModeRegister( clk_pin ) = 1;
-    *config = PORT_PCR_SRE | PORT_PCR_DSE | PORT_PCR_MUX( 1 );
-    *config &= ~PORT_PCR_ODE;
+    //volatile uint32_t *config;
+    //config = portConfigRegister( clk_pin );
+    //return_core_pin_config = *config;
+    //*portModeRegister( clk_pin ) = 1;
+    //*config = PORT_PCR_SRE | PORT_PCR_DSE | PORT_PCR_MUX( 1 );
+    //*config &= ~PORT_PCR_ODE;
 }
-#endif /* __MK20DX256__ */
+#endif /* __IMXRT1062__ */

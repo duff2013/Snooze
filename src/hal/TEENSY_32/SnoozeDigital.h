@@ -23,7 +23,7 @@
  *  SnoozeDigital.h
  *  Teensy 3.2
  *
- * Purpose: Digital Pin Driver
+ *  Purpose: Digital Pin Driver
  *
  **********************************************************************************/
 #if defined(__MK20DX256__)

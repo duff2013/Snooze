@@ -77,9 +77,7 @@ void SnoozeAlarm::disableDriver( uint8_t mode ) {
  *  <#Description#>
  *******************************************************************************/
 void SnoozeAlarm::enableDriver( uint8_t mode ) {
-    //if ( mode == RUN_LP ) { return; }
     if (mode == 0) return;
-    //if ( mode == VLPW || mode == VLPS ) {
     if ( mode == 1 ) {
         return_priority = NVIC_GET_PRIORITY( IRQ_RTC_ALARM );//get current priority
         int priority = nvic_execution_priority( );// get current priority
@@ -95,8 +93,6 @@ void SnoozeAlarm::enableDriver( uint8_t mode ) {
     if ( SIM_SCGC6 & SIM_SCGC6_RTC ) SIM_SCGC6_clock_active = true;
     else SIM_SCGC6 |= SIM_SCGC6_RTC;
     
-    
-    //if ( mode == VLPW || mode == VLPS) {
     if ( mode == 1 ) {
         return_isr_enabled = NVIC_IS_ENABLED( IRQ_RTC_ALARM );
         if ( return_isr_enabled == 0 ) NVIC_ENABLE_IRQ( IRQ_RTC_ALARM );

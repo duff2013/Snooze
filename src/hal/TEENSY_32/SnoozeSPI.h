@@ -23,7 +23,7 @@
  *  SnoozeSPI.h
  *  Teensy 3.2
  *
- * Purpose: Low Power USB Serial Driver
+ *  Purpose: Low Power USB Serial Driver
  *
  **********************************************************************************/
 #if defined(__MK20DX256__)

@@ -171,9 +171,9 @@ void SnoozeCompare::pinMode( int _pin, int _type, float val ) {
  *******************************************************************************/
 void SnoozeCompare::disableDriver( uint8_t mode ) {
     if ( mode == 0 ) return;
-    IRQ_NUMBER_t IRQ_CMP = 0;
+    IRQ_NUMBER_t IRQ_CMP;
     if ( mode == 1 ) {
-        switch (pin) {
+        switch ( pin ) {
             case 0:
                 IRQ_CMP = IRQ_ACMP4;
                 break;
@@ -299,9 +299,9 @@ void SnoozeCompare::disableDriver( uint8_t mode ) {
  *******************************************************************************/
 void SnoozeCompare::enableDriver( uint8_t mode ) {
     if (mode == 0) return;
-    IRQ_NUMBER_t IRQ_CMP = 0;
+    IRQ_NUMBER_t IRQ_CMP;
     if ( mode == 1 ) {
-        switch (pin) {
+        switch ( pin ) {
             case 0:
                 IRQ_CMP = IRQ_ACMP4;
                 break;

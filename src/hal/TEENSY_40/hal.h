@@ -43,11 +43,11 @@ for ( TYPE __ToDo = set_runlp( SNOOZE_BLOCK );  __ToDo;  __ToDo = set_run( SNOOZ
 #include "SnoozeTimer.h"
 #include "SnoozeCompare.h"
 #include "SnoozeAlarm.h"
+#include "SnoozeSPI.h"
 
 // TODO - add Drivers
 /*
 #include "SnoozeAudio.h"
-#include "SnoozeSPI.h"
  */
 
 #endif /* cplusplus */

@@ -46,11 +46,9 @@ int SnoozeDigital::pinMode( int _pin, int mode, int type ) {
  *******************************************************************************/
 void SnoozeDigital::enableDriver( uint8_t mode ) {
     sleep_type = mode;
-    //if ( mode == RUN_LP ) { return; }
     if (mode == 0) return;
     uint64_t _pin = pin;
     isr_pin = pin;
-    //if ( mode == VLPW || mode == VLPS ) {
     if ( mode == 1 ) {
         return_isr_a_enabled = NVIC_IS_ENABLED( IRQ_PORTA );
         return_isr_b_enabled = NVIC_IS_ENABLED( IRQ_PORTB );
@@ -122,7 +120,6 @@ void SnoozeDigital::enableDriver( uint8_t mode ) {
                 *config |= ( PORT_PCR_PE ); // pulldown
                 *config &= ~( PORT_PCR_PS );
             }
-            //if ( mode == VLPW || mode == VLPS ) {
             if ( mode == 1 ) {
                 attachDigitalInterrupt( pinNumber, pin_type );// set pin interrupt
             }
@@ -141,7 +138,6 @@ void SnoozeDigital::enableDriver( uint8_t mode ) {
  *  Disable interrupt and configure pin to orignal state.
  *******************************************************************************/
 void SnoozeDigital::disableDriver( uint8_t mode ) {
-    //if ( mode == RUN_LP ) { return; }
     if (mode == 0) return;
     uint64_t _pin = pin;
     while ( __builtin_popcountll( _pin ) ) {
@@ -156,7 +152,6 @@ void SnoozeDigital::disableDriver( uint8_t mode ) {
         
         _pin &= ~( ( uint64_t )1 << pinNumber );// remove pin from list
     }
-    //if ( mode == VLPW || mode == VLPS ) {
     if ( mode == 1 ) {
         NVIC_SET_PRIORITY( IRQ_PORTA, return_priority_a );//return priority
         NVIC_SET_PRIORITY( IRQ_PORTB, return_priority_b );//return priority

@@ -275,15 +275,15 @@ FASTRUN void set_clock_lp_dcdc( void ) {
 //---------------------------------------------------------------------------------
 FASTRUN void start_usb_pll( void ) {
     while ( 1 ) {
-        uint32_t n = CCM_ANALOG_PLL_USB1; // pg 759
+        uint32_t n = CCM_ANALOG_PLL_USB1;
         if ( n & CCM_ANALOG_PLL_USB1_DIV_SELECT ) {
-            
-            CCM_ANALOG_PLL_USB1_CLR = 0xC000;     // bypass 24 MHz
+            // bypass 24 MHz
+            CCM_ANALOG_PLL_USB1_CLR = 0xC000;
             CCM_ANALOG_PLL_USB1_SET = CCM_ANALOG_PLL_USB1_BYPASS; // bypass
             CCM_ANALOG_PLL_USB1_CLR = CCM_ANALOG_PLL_USB1_POWER | // power down
-            CCM_ANALOG_PLL_USB1_DIV_SELECT |    // use 480 MHz
-            CCM_ANALOG_PLL_USB1_ENABLE |      // disable
-            CCM_ANALOG_PLL_USB1_EN_USB_CLKS;    // disable usb
+            CCM_ANALOG_PLL_USB1_DIV_SELECT |                      // use 480 MHz
+            CCM_ANALOG_PLL_USB1_ENABLE |                          // disable
+            CCM_ANALOG_PLL_USB1_EN_USB_CLKS;                      // disable usb
             continue;
         }
         if ( !( n & CCM_ANALOG_PLL_USB1_ENABLE ) ) {
@@ -608,7 +608,7 @@ void save_context( void ) {
      :  "r2", "r3", "r4", "r5"// clobbers
      );*/
 }
-
+//----------------------------------------------------------------------------------
 void load_context( void ) {
     //volatile uint32_t *common  = &s_common_regs_context_buf;
     //volatile uint32_t *special = &s_special_regs_context_buf;
@@ -632,7 +632,7 @@ void load_context( void ) {
      :  "r2", "r3", "r4", "r5"// clobbers
      );*/
 }
-
+//----------------------------------------------------------------------------------
 void start_up( void ) {
     /*__asm__ volatile( "LDR     R1, =gpSpecRegsContextStackBottom" );
      __asm__ volatile( "LDR     R0, [R1]" );
@@ -650,7 +650,7 @@ void start_up( void ) {
 }
 //----------------------------------------------------------------------------------
 void startup_early_hook( void ) {
-    if (SRC_SRSR == 0x0) {
+    if ( SRC_SRSR == 0x0 ) {
         IOMUXC_GPR_GPR1 &= ~IOMUXC_GPR_GPR1_GINT;
         /*GPIO1_ISR = 0;//0xFFFFFFFF;
          GPIO2_ISR = 0;//0xFFFFFFFF;
@@ -767,9 +767,6 @@ int hal_sleep ( void ) {
     
     enable_plls( );
     
-    //USBPHY1_CTRL_CLR = 0xFFFFFFFF;
-    //USBPHY2_CTRL_CLR = 0xFFFFFFFF;
-    
     SYST_CSR |= SYST_CSR_TICKINT;
     
     return wake_source;
@@ -814,9 +811,6 @@ int hal_deepSleep ( void ) {
     reg0 |= DCDC_REG0_DISABLE_AUTO_CLK_SWITCH | DCDC_REG0_SEL_CLK | DCDC_REG0_PWD_OSC_INT;
     
     DCDC_REG0 = reg0;
-    
-    USBPHY1_CTRL = 0xFFFFFFFF;
-    USBPHY2_CTRL = 0xFFFFFFFF;
     
     disable_plls( );
     
@@ -925,14 +919,6 @@ int hal_hibernate ( void ) {
     //NVIC_DISABLE_IRQ(IRQ_GPR_IRQ);
     //NVIC_CLEAR_PENDING(IRQ_GPR_IRQ);
     /**************************************************************/
-    
-    //uint32_t ccgr0 = CCM_CCGR0;
-    //uint32_t ccgr1 = CCM_CCGR1;
-    //uint32_t ccgr2 = CCM_CCGR2;
-    //uint32_t ccgr3 = CCM_CCGR3;
-    //uint32_t ccgr4 = CCM_CCGR4;
-    //uint32_t ccgr5 = CCM_CCGR5;
-    //uint32_t ccgr6 = CCM_CCGR6;
     CCM_CCGR0 = 0x45;
     CCM_CCGR1 = 0 | ( CCM_CCGR1 & ( CCM_CCGR1_GPT1_SERIAL( 2 ) | CCM_CCGR1_GPT1_BUS( 2 ) ) );
     CCM_CCGR2 = 0x1 | ( CCM_CCGR2 & CCM_CCGR2_IOMUXC_SNVS( 2 ) );
@@ -961,10 +947,6 @@ int hal_hibernate ( void ) {
     __disable_irq();
     set_clock_rc_osc( );
     __enable_irq();
-    
-    // Power down USBPHY
-    //USBPHY1_CTRL = 0xFFFFFFFF;
-    //USBPHY2_CTRL = 0xFFFFFFFF;
     
     //Disconnected the internal load resistor
     DCDC_REG1 &= ~DCDC_REG1_REG_RLOAD_SW;
@@ -1006,7 +988,6 @@ int hal_hibernate ( void ) {
     
     CCM_CCR = ( CCM_CCR & ~0x7E00000 ) | CCM_CCR_REG_BYPASS_COUNT( 0x3 ) | CCM_CCR_OSCNT( 0xAF );
     CCM_CCR |= ( CCM_CCR_RBC_EN | CCM_CCR_COSC_EN  );
-    //CCM_CCR |= ( CCM_CCR_COSC_EN  );
     
     for ( int i = 0; i < 12 * 22; i++ ) __asm volatile ( "nop \n" );
     
@@ -1018,17 +999,13 @@ int hal_hibernate ( void ) {
     
     IOMUXC_GPR_GPR4 = 0x00000010;
     while( ( IOMUXC_GPR_GPR4 & 0x00100000 ) != 0x00100000 );
-    IOMUXC_GPR_GPR4 = 0x000036f0;//0x000036f0;
+    IOMUXC_GPR_GPR4 = 0x000036f0;
     IOMUXC_GPR_GPR7 = 0x0000ffff;
     IOMUXC_GPR_GPR8 = 0xfffcffff;
     IOMUXC_GPR_GPR12 = 0x0000000a;
-    
-    //while( ( IOMUXC_GPR_GPR4 & 0x36f00000 ) != 0x36f00000 );
     while( ( IOMUXC_GPR_GPR4 & 0x36f00000 ) != 0x36f00000 );
     while( ( IOMUXC_GPR_GPR7 & 0xffff0000 ) != 0xffff0000 );
-    
-    //for ( int i = 0; i < 22 * 640; i++ ) __asm volatile ( "nop \n" );
-    
+
     /*IOMUXC_GPR_GPR4 = 0x00000011;
      while ((IOMUXC_GPR_GPR4 & 0x00110000) != 0x00110000){};
      digitalWriteFast( LED_BUILTIN, HIGH );
@@ -1045,9 +1022,8 @@ int hal_hibernate ( void ) {
     __asm volatile ( "isb \n" );
     __asm volatile ( "wfi \n" );
     
-    //digitalWriteFast( LED_BUILTIN, LOW );
-    
-    while(1);
+    // future landing spot for context restore from hibernate reset
+    while( 1 );
     
     return wake_source;
 }

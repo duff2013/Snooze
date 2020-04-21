@@ -2,7 +2,7 @@
  *  SnoozeTimer.h
  *  Teensy 3.2
  *
- * Purpose: Low Power Timer Driver
+ *  Purpose: Low Power Timer Driver
  *
  **********************************************************************************/
 #if defined(__MK20DX256__)
@@ -38,9 +38,7 @@ void SnoozeTimer::setTimer( uint16_t newPeriod ) {
  *******************************************************************************/
 void SnoozeTimer::disableDriver( uint8_t mode ) {
     LPTMR0_CSR = 0;
-    //if ( mode == RUN_LP ) return;
     if ( mode == 0 ) return;
-    //if ( mode == VLPW || mode == VLPS ) {
     if ( mode == 1 ) {
         if ( return_isr_enabled == 0 )  NVIC_DISABLE_IRQ( IRQ_LPTMR ); //disable irq
         NVIC_SET_PRIORITY( IRQ_LPTMR, return_priority );// return priority
@@ -59,9 +57,7 @@ void SnoozeTimer::disableDriver( uint8_t mode ) {
  *  Enables low power timer and saves regiater and clock state
  *******************************************************************************/
 void SnoozeTimer::enableDriver( uint8_t mode ) {
-    //if ( mode == RUN_LP ) return;
     if ( mode == 0 ) return;
-    //if ( mode == VLPW || mode == VLPS ) {
     if ( mode == 1 ) {
         return_priority = NVIC_GET_PRIORITY( IRQ_LPTMR );//get current priority
         int priority = nvic_execution_priority( );// get current priority
@@ -102,7 +98,6 @@ void SnoozeTimer::enableDriver( uint8_t mode ) {
      LPTMR0_CMR = period;
      }*/
     
-    //if ( mode == VLPW || mode == VLPS ) {
     if ( mode == 1 ) {
         return_isr_enabled = NVIC_IS_ENABLED( IRQ_LPTMR );
         if ( return_isr_enabled == 0 ) NVIC_ENABLE_IRQ( IRQ_LPTMR );

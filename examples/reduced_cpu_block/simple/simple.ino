@@ -3,6 +3,8 @@
  * code at 2 MHz (VLPR). See micro_lp and
  * delay_lp to see how to convert core
  * functionality at F_CPU to work at 2 MHz.
+
+ Supported Micros: T-LC/3.x
  ****************************************/
 #include <Snooze.h>
 #include "delay.h"
@@ -35,42 +37,42 @@ void SOS() {
     delay(0250);               // wait for a second
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED_BUILTIN off by making the voltage LOW
     delay(0250);               // wait for a second
-    
+
     digitalWrite(LED_BUILTIN, HIGH);   // turn the LED_BUILTIN on (HIGH is the voltage level)
     delay(0250);               // wait for a second
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED_BUILTIN off by making the voltage LOW
     delay(0250);               // wait for a second
-    
+
     digitalWrite(LED_BUILTIN, HIGH);   // turn the LED_BUILTIN on (HIGH is the voltage level)
     delay(0250);               // wait for a second
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED_BUILTIN off by making the voltage LOW
     delay(0600);               // wait for a second
-    
+
     digitalWrite(LED_BUILTIN, HIGH);   // turn the LED_BUILTIN on (HIGH is the voltage level)
     delay(1000);               // wait for a second
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED_BUILTIN off by making the voltage LOW
     delay(0250);               // wait for a second
-    
+
     digitalWrite(LED_BUILTIN, HIGH);   // turn the LED_BUILTIN on (HIGH is the voltage level)
     delay(1000);               // wait for a second
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED_BUILTIN off by making the voltage LOW
     delay(0250);               // wait for a second
-    
+
     digitalWrite(LED_BUILTIN, HIGH);   // turn the LED_BUILTIN on (HIGH is the voltage level)
     delay(1000);               // wait for a second
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED_BUILTIN off by making the voltage LOW
     delay(0250);               // wait for a second
-    
+
     digitalWrite(LED_BUILTIN, HIGH);   // turn the LED_BUILTIN on (HIGH is the voltage level)
     delay(0250);               // wait for a second
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED_BUILTIN off by making the voltage LOW
     delay(0250);               // wait for a second
-    
+
     digitalWrite(LED_BUILTIN, HIGH);   // turn the LED_BUILTIN on (HIGH is the voltage level)
     delay(0250);               // wait for a second
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED_BUILTIN off by making the voltage LOW
     delay(0250);               // wait for a second
-    
+
     digitalWrite(LED_BUILTIN, HIGH);   // turn the LED_BUILTIN on (HIGH is the voltage level)
     delay(0250);               // wait for a second
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED_BUILTIN off by making the voltage LOW
@@ -82,42 +84,42 @@ void SOS_LP() {
     delay_lp(0250);               // wait for a second
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED_BUILTIN off by making the voltage LOW
     delay_lp(0250);               // wait for a second
-    
+
     digitalWrite(LED_BUILTIN, HIGH);   // turn the LED_BUILTIN on (HIGH is the voltage level)
     delay_lp(0250);               // wait for a second
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED_BUILTIN off by making the voltage LOW
     delay_lp(0250);               // wait for a second
-    
+
     digitalWrite(LED_BUILTIN, HIGH);   // turn the LED_BUILTIN on (HIGH is the voltage level)
     delay_lp(0250);               // wait for a second
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED_BUILTIN off by making the voltage LOW
     delay_lp(0600);               // wait for a second
-    
+
     digitalWrite(LED_BUILTIN, HIGH);   // turn the LED_BUILTIN on (HIGH is the voltage level)
     delay_lp(1000);               // wait for a second
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED_BUILTIN off by making the voltage LOW
     delay_lp(0250);               // wait for a second
-    
+
     digitalWrite(LED_BUILTIN, HIGH);   // turn the LED_BUILTIN on (HIGH is the voltage level)
     delay_lp(1000);               // wait for a second
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED_BUILTIN off by making the voltage LOW
     delay_lp(0250);               // wait for a second
-    
+
     digitalWrite(LED_BUILTIN, HIGH);   // turn the LED_BUILTIN on (HIGH is the voltage level)
     delay_lp(1000);               // wait for a second
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED_BUILTIN off by making the voltage LOW
     delay_lp(0250);               // wait for a second
-    
+
     digitalWrite(LED_BUILTIN, HIGH);   // turn the LED_BUILTIN on (HIGH is the voltage level)
     delay_lp(0250);               // wait for a second
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED_BUILTIN off by making the voltage LOW
     delay_lp(0250);               // wait for a second
-    
+
     digitalWrite(LED_BUILTIN, HIGH);   // turn the LED_BUILTIN on (HIGH is the voltage level)
     delay_lp(0250);               // wait for a second
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED_BUILTIN off by making the voltage LOW
     delay_lp(0250);               // wait for a second
-    
+
     digitalWrite(LED_BUILTIN, HIGH);   // turn the LED_BUILTIN on (HIGH is the voltage level)
     delay_lp(0250);               // wait for a second
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED_BUILTIN off by making the voltage LOW

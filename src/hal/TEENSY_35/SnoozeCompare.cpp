@@ -71,9 +71,7 @@ void SnoozeCompare::pinMode( int _pin, int _type, float val ) {
  *  Disable Driver
  *******************************************************************************/
 void SnoozeCompare::disableDriver( uint8_t mode ) {
-    //if ( mode == RUN_LP ) { return; }
     if (mode == 0) return;
-    //if ( mode == VLPW || mode == VLPS ) {
     if (mode == 1) {
         IRQ_NUMBER_t IRQ_CMP;
         switch (pin) {
@@ -121,9 +119,7 @@ void SnoozeCompare::disableDriver( uint8_t mode ) {
  *  Enable Driver
  *******************************************************************************/
 void SnoozeCompare::enableDriver( uint8_t mode ) {
-    //if ( mode == RUN_LP ) { return; }
     if (mode == 0) return;
-    //if ( mode == VLPW || mode == VLPS ) {
     if (mode == 1) {
         IRQ_NUMBER_t IRQ_CMP;
         switch (pin) {
@@ -198,7 +194,6 @@ void SnoozeCompare::enableDriver( uint8_t mode ) {
         _pin = 0x01;
     }
     // save if isr is already enabled and enable isr if not
-    //if ( mode == VLPW || mode == VLPS ) {
      if (mode == 1) {
         IRQ_NUMBER_t IRQ_CMP;
         switch (pin) {

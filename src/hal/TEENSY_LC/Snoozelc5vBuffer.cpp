@@ -32,7 +32,7 @@ void Snoozelc5vBuffer::enableDriver( uint8_t mode ) {
  *  not used
  *******************************************************************************/
 void Snoozelc5vBuffer::clearIsrFlags( uint32_t ipsr ) {
-    //isr( );
+
 }
 /*******************************************************************************
  *  not used

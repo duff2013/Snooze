@@ -1,3 +1,10 @@
+><b>Updated (4/20/20 v6.3.8)</b><br>
+* Maintenance release.<br>
+* Added new examples.<br>
+* Fixed all sketchs to work now, hopefully:).<br>
+* Teensy 4.0 should work now, many fixes.<br>
+* More code clean ups.<br>
+
 ><b>Updated (4/15/20 v6.3.7)</b><br>
 * Maintenance release.<br>
 * Added v1 Teensy 4.0 support.<br>

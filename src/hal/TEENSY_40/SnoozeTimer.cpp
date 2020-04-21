@@ -45,13 +45,13 @@ void SnoozeTimer::setTimer( uint32_t newPeriod ) {
  *******************************************************************************/
 void SnoozeTimer::disableDriver( uint8_t mode ) {
     if ( mode == 0 ) return;
-    if ( mode == 1 ) {
+    //if ( mode <= 2 ) {
         if ( return_isr_enabled == 0 )  NVIC_DISABLE_IRQ( IRQ_GPT1 ); //disable irq
         NVIC_SET_PRIORITY( IRQ_GPT1, return_priority );// return priority
         __disable_irq( );
         attachInterruptVector( IRQ_GPT1, return_gpt1_irq );// return prev interrupt
         __enable_irq( );
-    }
+    //}
     
     //IOMUXC_GPR_GPR5 = iomuxc_gpr_gpr5;
     GPT1_OCR1 = gpt1_ocr1;
@@ -72,7 +72,7 @@ void SnoozeTimer::disableDriver( uint8_t mode ) {
  *******************************************************************************/
 void SnoozeTimer::enableDriver( uint8_t mode ) {
     if ( mode == 0 ) return;
-    if ( mode == 1 ) {
+    //if ( mode == 1 ) {
         return_priority = NVIC_GET_PRIORITY( IRQ_GPT1 );//get current priority
         int priority = nvic_execution_priority( );// get current priority
         // if running from handler mode set priority higher than current handler
@@ -82,7 +82,7 @@ void SnoozeTimer::enableDriver( uint8_t mode ) {
         return_gpt1_irq = _VectorsRam[IRQ_GPT1+16];// save prev isr
         attachInterruptVector( IRQ_GPT1, &wakeup_isr );
         __enable_irq( );
-    }
+    //}
     
     if ( CCM_CCGR1 & CCM_CCGR1_GPT1_SERIAL( CCM_CCGR_ON ) ) CCM_CCGR1_clock_active = true;
     else CCM_CCGR1 |= CCM_CCGR1_GPT1_SERIAL( CCM_CCGR_ON );

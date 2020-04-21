@@ -2,7 +2,7 @@
  *  SnoozeCompare.h
  *  Teensy 3.2
  *
- * Purpose: Compare Driver
+ *  Purpose: Compare Driver
  *
  **********************************************************************************/
 #if defined(__MK20DX256__)
@@ -71,9 +71,7 @@ void SnoozeCompare::pinMode( int _pin, int _type, float val ) {
  *  Disable Driver
  *******************************************************************************/
 void SnoozeCompare::disableDriver( uint8_t mode ) {
-    //if ( mode == RUN_LP ) { return; }
     if (mode == 0) return;
-    //if ( mode == VLPW || mode == VLPS ) {
     if (mode == 1) {
         IRQ_NUMBER_t IRQ_CMP;
         switch (pin) {
@@ -121,9 +119,7 @@ void SnoozeCompare::disableDriver( uint8_t mode ) {
  *  Enable Driver
  *******************************************************************************/
 void SnoozeCompare::enableDriver( uint8_t mode ) {
-    //if ( mode == RUN_LP ) { return; }
     if (mode == 0) return;
-    //if ( mode == VLPW || mode == VLPS ) {
     if ( mode == 1 ) {
         IRQ_NUMBER_t IRQ_CMP;
         switch (pin) {
@@ -167,7 +163,6 @@ void SnoozeCompare::enableDriver( uint8_t mode ) {
     *cmpx_cr1 = 0;
     *cmpx_scr = 0;
     if ( pin == 11 ) {
-        //if ( mode >= LLS ) {
         if (mode >= 2) {
             llwu_configure_modules_mask( LLWU_CMP0_MOD );
         }
@@ -176,7 +171,6 @@ void SnoozeCompare::enableDriver( uint8_t mode ) {
         _pin = 0x00;
     }
     else if ( pin == 4 ) {
-        //if ( mode >= LLS ) {
         if (mode >= 2) {
             llwu_configure_modules_mask( LLWU_CMP2_MOD );
         }
@@ -185,7 +179,6 @@ void SnoozeCompare::enableDriver( uint8_t mode ) {
         _pin = 0x01;
     }
     else if ( pin == 9 ) {
-        //if ( mode >= LLS ) {
         if (mode >= 2) {
             llwu_configure_modules_mask( LLWU_CMP1_MOD );
         }
@@ -194,8 +187,7 @@ void SnoozeCompare::enableDriver( uint8_t mode ) {
         _pin = 0x01;
     }
     // save if isr is already enabled and enable isr if not
-    //if ( mode == VLPW || mode == VLPS ) {
-    if (mode == 1) {
+    if ( mode == 1 ) {
         IRQ_NUMBER_t IRQ_CMP;
         switch (pin) {
             case 11:
