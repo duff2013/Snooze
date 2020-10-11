@@ -650,7 +650,8 @@ void start_up( void ) {
 }
 //----------------------------------------------------------------------------------
 void startup_early_hook( void ) {
-    if ( SRC_SRSR == 0x0 ) {
+    uint32_t OR_D_GPR = IOMUXC_GPR_GPR4 | IOMUXC_GPR_GPR7 | IOMUXC_GPR_GPR8 | IOMUXC_GPR_GPR12;
+    if ( OR_D_GPR > 0x0 ) {
         IOMUXC_GPR_GPR1 &= ~IOMUXC_GPR_GPR1_GINT;
         /*GPIO1_ISR = 0;//0xFFFFFFFF;
          GPIO2_ISR = 0;//0xFFFFFFFF;
@@ -948,10 +949,10 @@ int hal_hibernate ( void ) {
     set_clock_rc_osc( );
     __enable_irq();
     
-    //Disconnected the internal load resistor
+    // Disconnected the internal load resistor
     DCDC_REG1 &= ~DCDC_REG1_REG_RLOAD_SW;
     
-    //Power Down output range comparator
+    // Power Down output range comparator
     DCDC_REG0 |= DCDC_REG0_PWD_CMP_OFFSET;
     
     DCDC_REG0 &= ~( DCDC_REG0_PWD_ZCD | DCDC_REG0_PWD_CMP_OFFSET );
@@ -1001,7 +1002,7 @@ int hal_hibernate ( void ) {
     while( ( IOMUXC_GPR_GPR4 & 0x00100000 ) != 0x00100000 );
     IOMUXC_GPR_GPR4 = 0x000036f0;
     IOMUXC_GPR_GPR7 = 0x0000ffff;
-    IOMUXC_GPR_GPR8 = 0xfffcffff;
+    IOMUXC_GPR_GPR8 =  0xfffcffff;
     IOMUXC_GPR_GPR12 = 0x0000000a;
     while( ( IOMUXC_GPR_GPR4 & 0x36f00000 ) != 0x36f00000 );
     while( ( IOMUXC_GPR_GPR7 & 0xffff0000 ) != 0xffff0000 );

@@ -33,16 +33,22 @@
 
 #include "SnoozeBlock.h"
 #include "common.h"
+#include "SPI.h"
 
 #define BUILTIN_SD_CLK_PIN 254
 
 class SnoozeSPI : public SnoozeBlock {
     private:
+    IMXRT_LPSPI_t & port() { return *(IMXRT_LPSPI_t *)port_addr; }
+    const SPIClass::SPI_Hardware_t & hardware() { return *(const SPIClass::SPI_Hardware_t *)hardware_addr; }
+    uintptr_t port_addr;
+    uintptr_t hardware_addr;
+    //static SPIClass::SPI_Hardware_t *port_hw;
     virtual void enableDriver( uint8_t mode );
     virtual void disableDriver( uint8_t mode );
     virtual void clearIsrFlags( uint32_t ipsr ) {}
-    static void isr( void ) {}
-    volatile uint32_t return_core_pin_config;
+    static void isr( void ) { }
+    //uintptr_t *port;
     public:
     SnoozeSPI( void ) {
         isDriver = true;
@@ -50,6 +56,7 @@ class SnoozeSPI : public SnoozeBlock {
     }
     uint32_t clk_pin;
     void setClockPin( uint8_t pin );
+    void setSPIClass( SPIClass *p );
 };
 #endif /* SnoozeSPI_h */
 #endif /* __IMXRT1062__ */

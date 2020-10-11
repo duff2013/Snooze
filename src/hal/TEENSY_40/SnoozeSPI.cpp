@@ -9,6 +9,21 @@
 
 #include "SnoozeSPI.h"
 #define INTERNAL_SPI_CLK_PIN 60
+
+/*******************************************************************************
+ *
+ *******************************************************************************/
+void SnoozeSPI::setSPIClass( SPIClass *p ) {
+    if ( p == &SPI ) {
+        port_addr = ( uintptr_t )&IMXRT_LPSPI4_S;
+    }
+    else if ( p == &SPI1 ) {
+        port_addr = ( uintptr_t )&IMXRT_LPSPI3_S;
+    }
+    else if ( p == &SPI2 ) {
+        port_addr = ( uintptr_t )&IMXRT_LPSPI1_S;
+    }
+}
 /*******************************************************************************
  *
  *******************************************************************************/
@@ -23,6 +38,17 @@ void SnoozeSPI::setClockPin( uint8_t pin ) {
  *  
  *******************************************************************************/
 void SnoozeSPI::disableDriver( uint8_t mode ) {
+    port( ).CR = LPSPI_CR_MEN;
+    
+    uint32_t fast_io = IOMUXC_PAD_DSE(7) | IOMUXC_PAD_SPEED(2);
+    *(portControlRegister(11)) = fast_io;
+    *(portControlRegister(12)) = fast_io;
+    *(portControlRegister(13)) = fast_io;
+    
+    *(portConfigRegister(11)) = 0x03 | 0x10;
+    *(portConfigRegister(12)) = 0x03 | 0x10;
+    *(portConfigRegister(13)) = 0x03 | 0x10;
+    //LPSPI4_CR = 0;
     //*portModeRegister( clk_pin ) = 0;
     //volatile uint32_t *config;
     //config = portConfigRegister( clk_pin );
@@ -32,6 +58,17 @@ void SnoozeSPI::disableDriver( uint8_t mode ) {
  *  SPI clk -> output low
  *******************************************************************************/
 void SnoozeSPI::enableDriver( uint8_t mode ) {
+    port( ).CR = 0;
+    uint32_t disabled_io = IOMUXC_PAD_DSE(7) | IOMUXC_PAD_HYS;
+    uint32_t sck_io = IOMUXC_PAD_DSE(7);
+    *(portControlRegister(11)) = disabled_io;
+    *(portControlRegister(12)) = disabled_io;
+    *(portControlRegister(13)) = sck_io;
+    
+    *(portConfigRegister(11)) = 0x05;
+    *(portConfigRegister(12)) = 0x05;
+    *(portConfigRegister(13)) = 0x05 | 0x10;
+    //LPSPI4_CR = 0;
     //volatile uint32_t *config;
     //config = portConfigRegister( clk_pin );
     //return_core_pin_config = *config;
