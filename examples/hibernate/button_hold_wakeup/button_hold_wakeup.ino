@@ -27,7 +27,7 @@ SnoozeDigital digital;// this is the pin wakeup driver
 Snoozelc5vBuffer lc5vBuffer;
 #endif
 
-const uint8_t BUTTON = 7;
+const uint8_t BUTTON = 6;
 
 // debounce of 5ms
 Bounce button = Bounce(BUTTON, 5);

@@ -650,7 +650,8 @@ void start_up( void ) {
 }
 //----------------------------------------------------------------------------------
 void startup_early_hook( void ) {
-    if ( SRC_SRSR == 0x0 ) {
+    uint32_t OR_D_GPR = IOMUXC_GPR_GPR4 | IOMUXC_GPR_GPR7 | IOMUXC_GPR_GPR8 | IOMUXC_GPR_GPR12;
+    if ( OR_D_GPR > 0x0 ) {
         IOMUXC_GPR_GPR1 &= ~IOMUXC_GPR_GPR1_GINT;
         /*GPIO1_ISR = 0;//0xFFFFFFFF;
          GPIO2_ISR = 0;//0xFFFFFFFF;

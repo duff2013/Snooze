@@ -1,3 +1,8 @@
+Updated (10/10/20 v6.3.9)
+Updated T4 SPI driver.
+Changed Button Hold example pin to 6.
+Updated start early hook in T4.
+
 ><b>Updated (4/20/20 v6.3.8)</b><br>
 * Maintenance release.<br>
 * Added new examples.<br>
