@@ -246,7 +246,7 @@ void sdCardInfo() {
   usb.println(volumesize);
 
   usb.println("\nFiles found on the card (name, date and size in bytes): ");
-  root.openRoot(volume);
+  root.open("/");
 
   // list all files in the card with date and size
   root.ls(LS_R | LS_DATE | LS_SIZE);
